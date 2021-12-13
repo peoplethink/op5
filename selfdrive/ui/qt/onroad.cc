@@ -467,28 +467,29 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
 
   bool is_cruise_set = (cruiseMaxSpeed > 0 && cruiseMaxSpeed < 255);
 
-  int mdps_bus = car_params.getMdpsBus();
+  //int mdps_bus = car_params.getMdpsBus();
   int scc_bus = car_params.getSccBus();
 
   QString infoText;
-  infoText.sprintf("AO(%.2f/%.2f) SR(%.2f) SRC(%.2f) SAD(%.2f) MDPS(%d) SCC(%d) LAD(%.2f/%.2f) SCC(%.2f/%.2f/%.2f)",
-                      live_params.getAngleOffsetDeg(),
-                      live_params.getAngleOffsetAverageDeg(),
+  infoText.sprintf("SR(%.2f) SRC(%.2f) SAD(%.2f) SCC(%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)",
+                      //live_params.getAngleOffsetDeg(),
+                      //live_params.getAngleOffsetAverageDeg(),
                       controls_state.getSteerRatio(),
                       controls_state.getSteerRateCost(),
                       controls_state.getSteerActuatorDelay(),
-                      mdps_bus, scc_bus,
-                      controls_state.getLongitudinalActuatorDelayLowerBound(),
-                      controls_state.getLongitudinalActuatorDelayUpperBound(),
+                      //mdps_bus, 
+		      scc_bus,
                       controls_state.getSccGasFactor(),
                       controls_state.getSccBrakeFactor(),
-                      controls_state.getSccCurvatureFactor()
+                      controls_state.getSccCurvatureFactor(),
+		      controls_state.getLongitudinalActuatorDelayLowerBound(),
+                      controls_state.getLongitudinalActuatorDelayUpperBound()
                       );
 
   // info
   configFont(p, "Open Sans", 34, "Regular");
   p.setPen(QColor(0xff, 0xff, 0xff, 220));
-  p.drawText(rect().left() + 20, rect().height() - 15, infoText);
+  p.drawText(rect().left() + 50, rect().height() - 15, infoText);
 }
 
 void OnroadHud::drawMaxSpeed(QPainter &p, UIState& s) {
@@ -636,16 +637,16 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   }
   else if(longControl && gap == autoTrGap) {
     str = "AUTO";
-    textColor = QColor(120, 255, 120, 200);
+    textColor = QColor(255, 255, 255, 250);
   }
   else {
     str.sprintf("%d", (int)gap);
     textColor = QColor(120, 255, 120, 200);
-    textSize = 70.f;
+    textSize = 26.f;
   }
 
   configFont(p, "Open Sans", 35, "Bold");
-  drawText(p, x, y-20, "GAP", 200);
+  drawText(p, x, y-20, "", 200);
 
   configFont(p, "Open Sans", textSize, "Bold");
   drawTextWithColor(p, x, y+50, str, textColor);
