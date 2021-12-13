@@ -34,7 +34,8 @@ class CarState(CarStateBase):
     self.cruise_main_button = 0
     self.mdps_error_cnt = 0
     self.cruise_unavail_cnt = 0
-
+    self.obj_valid = 0 #장푸님 오토 크루즈 셋
+    
     self.apply_steer = 0.
 
     # scc smoother
@@ -45,6 +46,7 @@ class CarState(CarStateBase):
     self.standstill = False
     self.cruiseState_enabled = False
     self.cruiseState_speed = 0
+    self.prev_cruiseState_speed = 0 #장푸님 오토 크루즈 셋
 
     self.use_cluster_speed = Params().get_bool('UseClusterSpeed')
     self.long_control_enabled = Params().get_bool('LongControlEnabled')
@@ -213,6 +215,13 @@ class CarState(CarStateBase):
     self.standstill = ret.standstill or ret.cruiseState.standstill
     self.cruiseState_enabled = ret.cruiseState.enabled
     self.cruiseState_speed = ret.cruiseState.speed
+    #장푸님 오토 크루즈 셋
+    self.prev_cruiseState_speed = self.cruiseState_speed if self.cruiseState_speed else self.prev_cruiseState_speed
+    self.obj_valid = cp_scc.vl["SCC11"]['ObjValid']
+
+    if self.cruise_buttons == 4: #cancel
+      self.prev_cruiseState_speed = 0
+    #종료
     ret.cruiseGap = self.cruise_gap
 
     tpms_unit = cp.vl["TPMS11"]["UNIT"] * 0.725 if int(cp.vl["TPMS11"]["UNIT"]) > 0 else 1.

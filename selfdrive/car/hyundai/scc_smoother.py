@@ -14,7 +14,7 @@ from selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import AUTO_TR_CRUISE_
 from selfdrive.ntune import ntune_scc_get
 from selfdrive.road_speed_limiter import road_speed_limiter_get_max_speed, road_speed_limiter_get_active
 
-SYNC_MARGIN = 3.
+SYNC_MARGIN = 5.
 
 # do not modify
 MIN_SET_SPEED_KPH = V_CRUISE_MIN
@@ -201,17 +201,17 @@ class SccSmoother:
     CC.sccSmoother.cruiseMaxSpeed = controls.v_cruise_kph
 
     CC.sccSmoother.autoTrGap = AUTO_TR_CRUISE_GAP
-
-    ascc_enabled = CS.acc_mode and enabled and CS.cruiseState_enabled \
-                   and 1 < CS.cruiseState_speed < 255 and not CS.brake_pressed
+    ascc_enabled = CS.acc_mode and enabled and CS.cruiseState_enabled and 1 < CS.cruiseState_speed < 255 and not CS.brake_pressed
+    #장푸
+    ascc_auto_set = enabled and (clu11_speed > 32 or CS.obj_valid) and CS.gas_pressed and CS.prev_cruiseState_speed and not CS.cruiseState_speed #
 
     if not self.longcontrol:
-      if not ascc_enabled or CS.standstill or CS.cruise_buttons != Buttons.NONE:
+      if (not ascc_enabled or CS.standstill or CS.cruise_buttons != Buttons.NONE) and not ascc_auto_set: # 장푸
         self.reset()
         self.wait_timer = max(ALIVE_COUNT) + max(WAIT_COUNT)
         return
 
-    if not ascc_enabled:
+    if not ascc_enabled and not ascc_auto_set: # 장푸
       self.reset()
 
     self.cal_target_speed(CS, clu11_speed, controls)
@@ -220,10 +220,13 @@ class SccSmoother:
 
     if self.wait_timer > 0:
       self.wait_timer -= 1
-    elif ascc_enabled and not CS.out.cruiseState.standstill:
-
+    elif ascc_enabled or ascc_auto_set:#
+      
       if self.alive_timer == 0:
-        self.btn = self.get_button(CS.cruiseState_speed * self.speed_conv_to_clu)
+        if ascc_enabled:
+          self.btn = self.get_button(CS.cruiseState_speed * self.speed_conv_to_clu)#
+        elif ascc_auto_set:
+          self.btn = Buttons.SET_DECEL #RES_ACCEL
         self.alive_count = SccSmoother.get_alive_count()
 
       if self.btn != Buttons.NONE:
