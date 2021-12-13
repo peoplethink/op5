@@ -201,7 +201,7 @@ def thermald_thread():
   thermal_config = HARDWARE.get_thermal_config()
 
   restart_triggered_ts = 0.
-  panda_state_ts = 0.
+  #panda_state_ts = 0.
 
   # TODO: use PI controller for UNO
   controller = PIController(k_p=0, k_i=2e-3, neg_limit=-80, pos_limit=0, rate=(1 / DT_TRML))
@@ -209,6 +209,8 @@ def thermald_thread():
   # Leave flag for loggerd to indicate device was left onroad
   if params.get_bool("IsOnroad"):
     params.put_bool("BootedOnroad", True)
+  is_openpilot_view_enabled = 0 
+  is_openpilot_dir = True
 
   while True:
     pandaStates = messaging.recv_sock(pandaState_sock, wait=True)
@@ -240,7 +242,7 @@ def thermald_thread():
           onroad_conditions["ignition"] = False
       else:
         no_panda_cnt = 0
-        panda_state_ts = sec_since_boot()
+        #panda_state_ts = sec_since_boot()
         onroad_conditions["ignition"] = pandaState.ignitionLine or pandaState.ignitionCan
 
       in_car = pandaState.harnessStatus != log.PandaState.HarnessStatus.notConnected
@@ -267,12 +269,18 @@ def thermald_thread():
           pandaState_prev.pandaType != log.PandaState.PandaType.unknown:
           params.clear_all(ParamKeyType.CLEAR_ON_PANDA_DISCONNECT)
       pandaState_prev = pandaState
-
-    else:
-      if sec_since_boot() - panda_state_ts > 3.:
-        if onroad_conditions["ignition"]:
-          cloudlog.error("Lost panda connection while onroad")
-        onroad_conditions["ignition"] = False
+      
+    elif params.get_bool("IsOpenpilotViewEnabled") and not params.get_bool("IsDriverViewEnabled") and is_openpilot_view_enabled == 0:
+      is_openpilot_view_enabled = 1
+      onroad_conditions["ignition"] = True
+    elif not params.get_bool("IsOpenpilotViewEnabled") and not params.get_bool("IsDriverViewEnabled") and is_openpilot_view_enabled == 1:
+      is_openpilot_view_enabled = 0
+      onroad_conditions["ignition"] = False
+   # else:
+   #   if sec_since_boot() - panda_state_ts > 5.:
+   #     if startup_conditions["ignition"]:
+   #       cloudlog.error("Lost panda connection while onroad")
+   #     startup_conditions["ignition"] = False 
 
     # these are expensive calls. update every 10s
     if (count % int(10. / DT_TRML)) == 0:

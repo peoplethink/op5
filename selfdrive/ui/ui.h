@@ -69,10 +69,10 @@ typedef enum UIStatus {
 } UIStatus;
 
 const QColor bg_colors [] = {
-  [STATUS_DISENGAGED] =  QColor(0x17, 0x33, 0x49, 0xc8),
-  [STATUS_ENGAGED] = QColor(0x17, 0x86, 0x44, 0xf1),
-  [STATUS_WARNING] = QColor(0xDA, 0x6F, 0x25, 0xf1),
-  [STATUS_ALERT] = QColor(0xC9, 0x22, 0x31, 0xf1),
+  [STATUS_DISENGAGED] =  QColor(0x00, 0x00, 0x00, 0xff),
+  [STATUS_ENGAGED] = QColor(0x87, 0xce, 0xeb, 0x30),
+  [STATUS_WARNING] = QColor(0x80, 0x80, 0x80, 0x0f),
+  [STATUS_ALERT] = QColor(0xC9, 0x22, 0x31, 0x65),
 };
 
 typedef struct {
@@ -84,6 +84,7 @@ typedef struct UIScene {
   mat3 view_from_calib;
   bool world_objects_visible;
 
+  bool is_OpenpilotViewEnabled;
   cereal::PandaState::PandaType pandaType;
 
   // modelV2

@@ -58,6 +58,7 @@ def manager_init():
     ("WarningOverSpeedLimit", "0"),
     ("DisableOpFcw", "0"),
     ("ShowDebugUI", "0"),
+    ("IsOpenpilotViewEnabled", "0"),
     ("NewRadarInterface", "0"),
   ]
   if not PC:
