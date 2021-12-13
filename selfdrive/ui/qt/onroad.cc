@@ -589,7 +589,7 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   {
     const int w = 58;
     const int h = 126;
-    const int x = 110 + 1650;
+    const int x = 110 + 1635;
     const int y = height() - h - 80 + 60;
 
     auto tpms = car_state.getTpms();
