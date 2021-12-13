@@ -63,6 +63,7 @@ void SshControl::getUserKeys(const QString &username) {
 
   request->sendRequest("https://github.com/" + username + ".keys");
 }
+
 OpenpilotView::OpenpilotView() : AbstractControl("주행화면 미리보기", "주행화면 미리보기 실행", "") {
 
   // setup widget
