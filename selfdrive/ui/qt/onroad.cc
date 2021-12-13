@@ -589,7 +589,7 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   {
     const int w = 58;
     const int h = 126;
-    const int x = 110 + 1800;
+    const int x = 110 + 1500;
     const int y = height() - h - 80 + 70;
 
     auto tpms = car_state.getTpms();
@@ -645,11 +645,11 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
     textSize = 26.f;
   }
 
-  configFont(p, "Open Sans", 35, "Bold");
+  configFont(p, "Open Sans", 30, "Bold");
   drawText(p, x, y-20, "", 200);
 
   configFont(p, "Open Sans", textSize, "Bold");
-  drawTextWithColor(p, x-100-100-80, y+70+60, str, textColor);
+  drawTextWithColor(p, x-100-100-80-30, y+70+65, str, textColor);
 	
   // brake
   x = radius / 2 + (bdr_s * 2) + (radius + 50) * 2;
