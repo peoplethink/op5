@@ -489,7 +489,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   // info
   configFont(p, "Open Sans", 34, "Regular");
   p.setPen(QColor(0xff, 0xff, 0xff, 220));
-  p.drawText(rect().left() + 100, rect().height() - 15, infoText);
+  p.drawText(rect().left() + 120, rect().height() - 15, infoText);
 }
 
 void OnroadHud::drawMaxSpeed(QPainter &p, UIState& s) {
@@ -550,7 +550,7 @@ void OnroadHud::drawSpeed(QPainter &p, UIState& s) {
   configFont(p, "Open Sans", 176, "Bold");
   drawText(p, rect().center().x(), 230, speed);
   configFont(p, "Open Sans", 66, "Regular");
-  drawText(p, rect().center().x(), 310, s.scene.is_metric ? "km/h" : "mph", 200);
+  //drawText(p, rect().center().x(), 310, s.scene.is_metric ? "km/h" : "mph", 200);
 }
 
 static const QColor get_tpms_color(float tpms) {
@@ -589,8 +589,8 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   {
     const int w = 58;
     const int h = 126;
-    const int x = 110 + 1000;
-    const int y = height() - h - 80 + 80;
+    const int x = 110 + 1800;
+    const int y = height() - h - 80 + 70;
 
     auto tpms = car_state.getTpms();
     const float fl = tpms.getFl();
@@ -649,7 +649,7 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   drawText(p, x, y-20, "", 200);
 
   configFont(p, "Open Sans", textSize, "Bold");
-  drawTextWithColor(p, x-100-100, y+70+70, str, textColor);
+  drawTextWithColor(p, x-100-100-80, y+70+60, str, textColor);
 
   // brake
   x = radius / 2 + (bdr_s * 2) + (radius + 50) * 2;
