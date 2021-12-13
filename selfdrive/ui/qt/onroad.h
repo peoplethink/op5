@@ -31,9 +31,9 @@ private:
   const int img_size = (radius / 2) * 1.5;
 
   // neokii
-  QPixmap ic_brake;
-  QPixmap ic_autohold_warning;
-  QPixmap ic_autohold_active;
+  //QPixmap ic_brake;
+  //QPixmap ic_autohold_warning;
+  //QPixmap ic_autohold_active;
   QPixmap ic_nda;
   QPixmap ic_hda;
   QPixmap ic_tire_pressure;
