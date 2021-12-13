@@ -489,7 +489,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   // info
   configFont(p, "Open Sans", 34, "Regular");
   p.setPen(QColor(0xff, 0xff, 0xff, 220));
-  p.drawText(rect().left() + 50, rect().height() - 15, infoText);
+  p.drawText(rect().left() + 100, rect().height() - 15, infoText);
 }
 
 void OnroadHud::drawMaxSpeed(QPainter &p, UIState& s) {
@@ -624,7 +624,7 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
 
   p.save();
   p.setPen(Qt::NoPen);
-  p.setBrush(QBrush(QColor(0, 0, 0, 255 * .1f)));
+  p.setBrush(QBrush(QColor(255, 255, 255, 255 * 0.0f)));
   p.drawEllipse(x - radius / 2, y - radius / 2, radius, radius);
   p.restore();
 
@@ -649,7 +649,7 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   drawText(p, x, y-20, "", 200);
 
   configFont(p, "Open Sans", textSize, "Bold");
-  drawTextWithColor(p, x, y+50, str, textColor);
+  drawTextWithColor(p, x-100, y+70, str, textColor);
 
   // brake
   x = radius / 2 + (bdr_s * 2) + (radius + 50) * 2;
