@@ -642,10 +642,10 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   else {
     str.sprintf("%d", (int)gap);
     textColor = QColor(120, 255, 120, 200);
-    textSize = 26.f;
+    textSize = 70.f;
   }
 
-  configFont(p, "Open Sans", 30, "Bold");
+  configFont(p, "Open Sans", 35, "Bold");
   drawText(p, x, y-20, "", 200);
 
   configFont(p, "Open Sans", textSize, "Bold");
