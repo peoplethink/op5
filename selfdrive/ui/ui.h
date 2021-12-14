@@ -83,8 +83,6 @@ typedef struct {
 typedef struct UIScene {
   mat3 view_from_calib;
   bool world_objects_visible;
-  int lateralControlSelect;
-  float output_scale;
 
   bool is_OpenpilotViewEnabled;
   cereal::PandaState::PandaType pandaType;
