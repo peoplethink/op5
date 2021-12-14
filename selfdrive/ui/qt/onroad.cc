@@ -459,7 +459,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   const auto live_params = sm["liveParameters"].getLiveParameters();
 	
   int lateralControlState = controls_state.getLateralControlSelect();
-  const char* lateral_state[] = {"PID", "INDI", "LQR"};
+  const auto lateral_state[] = {"PID", "INDI", "LQR"};
 
   const auto scc_smoother = sm["carControl"].getCarControl().getSccSmoother();
   bool is_metric = s.scene.is_metric;
