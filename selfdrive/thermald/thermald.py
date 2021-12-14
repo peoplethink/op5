@@ -17,7 +17,7 @@ from common.params import Params, ParamKeyType
 from common.realtime import DT_TRML, sec_since_boot
 from common.dict_helpers import strip_deprecated_keys
 from selfdrive.controls.lib.alertmanager import set_offroad_alert
-from selfdrive.controls.lib.pid import PIDController
+from selfdrive.controls.lib.pid import PIController
 from selfdrive.hardware import EON, TICI, PC, HARDWARE
 from selfdrive.loggerd.config import get_available_percent
 from selfdrive.swaglog import cloudlog
@@ -204,7 +204,7 @@ def thermald_thread():
   #panda_state_ts = 0.
 
   # TODO: use PI controller for UNO
-  controller = PIDController(k_p=0, k_i=2e-3, neg_limit=-80, pos_limit=0, rate=(1 / DT_TRML))
+  controller = PIController(k_p=0, k_i=2e-3, neg_limit=-80, pos_limit=0, rate=(1 / DT_TRML))
 
   # Leave flag for loggerd to indicate device was left onroad
   if params.get_bool("IsOnroad"):
