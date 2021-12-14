@@ -119,7 +119,7 @@ static void update_state(UIState *s) {
       scene.output_scale = scene.controls_state.getLateralControlState().getPidState().getOutput();
     } else if (scene.lateralControlSelect == 1) {
       scene.output_scale = scene.controls_state.getLateralControlState().getIndiState().getOutput();
-    } else if (scene.lateralControlSelect == 2) {
+    } else if (s->scene.lateralControlSelect == 2) {
       scene.output_scale = scene.controls_state.getLateralControlState().getLqrState().getOutput();
     }  
   }
