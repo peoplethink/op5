@@ -40,21 +40,65 @@ class CarInterface(CarInterfaceBase):
 
     ret.communityFeature = True
 
-    tire_stiffness_factor = 1.
+    tire_stiffness_factor = 0.85
     ret.maxSteeringAngleDeg = 90.
 
-    # lateral
-    ret.lateralTuning.init('lqr')
-
-    ret.lateralTuning.lqr.scale = 1700.
-    ret.lateralTuning.lqr.ki = 0.01
-    ret.lateralTuning.lqr.dcGain = 0.0028
-
-    ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
-    ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
-    ret.lateralTuning.lqr.c = [1., 0.]
-    ret.lateralTuning.lqr.k = [-110., 451.]
-    ret.lateralTuning.lqr.l = [0.33, 0.318]
+    # -------------PID
+    if Params().get("LateralControlSelect", encoding='utf8') == "0":
+      if candidate in [CAR.GENESIS, CAR.GENESIS_G80, CAR.GENESIS_EQ900]:
+          ret.lateralTuning.pid.kf = 0.000038
+          ret.lateralTuning.pid.kpBP = [0., 10., 30.]
+          ret.lateralTuning.pid.kpV = [0.01, 0.04, 0.06]
+          ret.lateralTuning.pid.kiBP = [0., 30.]
+          ret.lateralTuning.pid.kiV = [0.02, 0.02]
+          ret.lateralTuning.pid.kdBP = [0.]
+          ret.lateralTuning.pid.kdV = [1.0]
+          ret.lateralTuning.pid.newKfTuned = True
+          
+          #ret.lateralTuning.pid.kf = 0.00003
+          #ret.lateralTuning.pid.kpBP = [0., 10., 30.]
+          #ret.lateralTuning.pid.kpV = [0.05, 0.064, 0.065]
+          #ret.lateralTuning.pid.kiBP = [0., 30.]
+          #ret.lateralTuning.pid.kiV = [0.02, 0.02]
+          #ret.lateralTuning.pid.kdBP = [0.]
+          #ret.lateralTuning.pid.kdV = [1.]
+          #ret.lateralTuning.pid.newKfTuned = True
+          
+          ret.steerActuatorDelay = 0.08
+          ret.steerRateCost = 0.5
+          ret.steerLimitTimer = 2.5
+          ret.steerRatio = 16.5 #고정말고 학습. . 
+    
+    # ---------------INDI
+    elif Params().get("LateralControlSelect", encoding='utf8') == "1":
+      if candidate in [CAR.GENESIS, CAR.GENESIS_EQ900]:
+          ret.lateralTuning.init('indi')
+          ret.lateralTuning.indi.innerLoopGainBP = [0.]
+          ret.lateralTuning.indi.innerLoopGainV = [3.5]
+          ret.lateralTuning.indi.outerLoopGainBP = [0.]
+          ret.lateralTuning.indi.outerLoopGainV = [2.0]
+          ret.lateralTuning.indi.timeConstantBP = [0.]
+          ret.lateralTuning.indi.timeConstantV = [1.4]
+          ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
+          ret.lateralTuning.indi.actuatorEffectivenessV = [1.3]
+          
+          ret.steerActuatorDelay = 0.3
+          ret.steerRateCost = 0.5
+          ret.steerLimitTimer = 2.0
+          ret.steerRatio = 15.0
+  
+    # ---------------LQR
+    elif Params().get("LateralControlSelect", encoding='utf8') == "2":
+      if candidate in [CAR.GENESIS, CAR.GENESIS_G80, CAR.GENESIS_EQ900]:
+          ret.lateralTuning.init('lqr')
+          ret.lateralTuning.lqr.scale = 1500.
+          ret.lateralTuning.lqr.ki = 0.02
+          ret.lateralTuning.lqr.dcGain = 0.0027
+          ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
+          ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
+          ret.lateralTuning.lqr.c = [1., 0.]
+          ret.lateralTuning.lqr.k = [-110, 451]
+          ret.lateralTuning.lqr.l = [0.33, 0.318]
 
     ret.steerRatio = 13.5
     ret.steerActuatorDelay = 0.0
