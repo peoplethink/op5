@@ -379,6 +379,11 @@ QWidget * network_panel(QWidget * parent) {
 VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
   QVBoxLayout *layout = new QVBoxLayout(this);
   layout->addWidget(new LabelControl("UI설정", ""));
+  layout->addWidget(new ParamControl("ShowCgearUI",
+                                            "주행기어단수 보기",
+                                            "기어레버 위치와 기어단수를 볼수 있습니다..",
+                                            "../assets/offroad/icon_shell.png"
+                                            ));
   layout->addWidget(horizontal_line());
   layout->addWidget(new LabelControl("제어메뉴", ""));
   layout->addWidget(new LateralControlSelect());
