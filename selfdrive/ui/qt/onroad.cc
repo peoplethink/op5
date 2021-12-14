@@ -453,7 +453,6 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   if(s.show_debug && width() > 1200)
     drawDebugText(p, s);
 
-  const UIScene *scene = &s->scene;
   char str[1024];
   const auto car_state = sm["carState"].getCarState();
   const auto controls_state = sm["controlsState"].getControlsState();
