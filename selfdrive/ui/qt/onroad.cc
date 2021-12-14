@@ -996,11 +996,11 @@ void OnroadHud::drawBsd(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
   auto car_state = sm["carState"].getCarState();
 
-  const int car_size = 200;
-  const int car_shift = 550;
+  const int car_size = 150;
+  const int car_shift = 500;
   const int car_x_left =  s.fb_w/2 - car_shift;
   const int car_x_right = s.fb_w/2 + car_shift;
-  const int car_y = 500;
+  const int car_y = 550;
   const int car_img_size_w = (car_size * 1);
   const int car_img_size_h = (car_size * 1);
   const int car_img_x_left = (car_x_left - (car_img_size_w / 2));
