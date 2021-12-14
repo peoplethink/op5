@@ -355,6 +355,18 @@ QWidget * network_panel(QWidget * parent) {
   // SSH key management
   list->addItem(new SshToggle());
   list->addItem(new SshControl());
+  list->addItem(horizontal_line());
+  // add
+  const char* gitpull = "sh /data/openpilot/gitpull.sh";
+  auto gitpullbtn = new ButtonControl("GitPull", "실행");
+  QObject::connect(gitpullbtn, &ButtonControl::clicked, [=]() {
+    if (ConfirmationDialog::confirm("GitPull 실행하시겠습니까?", w)){
+      std::system(gitpull);
+      QTimer::singleShot(1000, []() { Hardware::reboot(); });
+    }
+  });
+  list->addItem(gitpullbtn);
+  list->addItem(horizontal_line());
 
   layout->addWidget(list);
   layout->addStretch(1);
@@ -592,6 +604,12 @@ CommunityPanel::CommunityPanel(QWidget* parent) : QWidget(parent) {
   )");
 
   QList<ParamControl*> toggles;
+  
+  toggles.append(new ParamControl("PutPrebuilt", 
+                                           "Smart Prebuilt 실행 ",
+                                           "Prebuilt 파일을 생성하며 부팅속도를 향상시킵니다.",
+                                            "../assets/offroad/icon_shell.png",
+                                            this));
 
   toggles.append(new ParamControl("UseClusterSpeed",
                                             "계기판 속도 사용",

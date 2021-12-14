@@ -47,6 +47,16 @@ private:
 
   void refresh();
 };
+class GitHash : public AbstractControl {
+  Q_OBJECT
+public:
+  GitHash();
+
+private:
+  QLabel local_hash;
+  QLabel remote_hash;
+  Params params;
+};
 // openpilot Preview
 class OpenpilotView : public AbstractControl {
   Q_OBJECT

@@ -62,6 +62,7 @@ def manager_init():
     ("ShowDebugUI", "0"),
     ("IsOpenpilotViewEnabled", "0"),
     ("NewRadarInterface", "0"),
+    ("PutPrebuilt", "0"),
     ("SteerLockout", "0"),  
   ]
   if not PC:
