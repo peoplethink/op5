@@ -88,7 +88,9 @@ typedef struct UIScene {
 
   bool is_OpenpilotViewEnabled;
   cereal::PandaState::PandaType pandaType;
-
+  cereal::ControlsState::Reader controls_state;
+  cereal::CarControl::Reader car_control;
+  
   // modelV2
   float lane_line_probs[4];
   float road_edge_stds[2];
