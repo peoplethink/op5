@@ -261,7 +261,7 @@ void DevicePanel::reboot() {
 
 void DevicePanel::poweroff() {
   if (QUIState::ui_state.status == UIStatus::STATUS_DISENGAGED) {
-    if (ConfirmationDialog::confirm("종료하시겠습?", this)) {
+    if (ConfirmationDialog::confirm("종료하시겠습니까?", this)) {
       // Check engaged again in case it changed while the dialog was open
       if (QUIState::ui_state.status == UIStatus::STATUS_DISENGAGED) {
         Params().putBool("DoShutdown", true);
@@ -389,11 +389,11 @@ VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
                                             "후측방 감지기 이미지를 볼수 있습니다..",
                                             "../assets/offroad/icon_shell.png"
                                             ));
-  layout->addWidget(new ParamControl("ShowTpmsUI",
+  /*layout->addWidget(new ParamControl("ShowTpmsUI",
                                             "타이어공기압 정보 보기",
                                             "타이어공기압 를 볼수 있습니다..",
                                             "../assets/offroad/icon_shell.png"
-                                            ));
+                                            ));*/
   layout->addWidget(horizontal_line());
   layout->addWidget(new LabelControl("제어메뉴", ""));
   layout->addWidget(new LateralControlSelect());
