@@ -111,6 +111,10 @@ static void update_sockets(UIState *s) {
 static void update_state(UIState *s) {
   SubMaster &sm = *(s->sm);
   UIScene &scene = s->scene;
+  
+  if (sm.frame % (UI_FREQ / 2) == 0) {
+    auto cs = sm["controlsState"].getControlsState();
+  }
 
   if (scene.started && sm.updated("controlsState")) {
     scene.controls_state = sm["controlsState"].getControlsState();
