@@ -455,7 +455,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
 
   const UIScene *scene = &s->scene;
   char str[1024];
-  const auto car_state = (*s->sm)["carState"].getCarState();
+  const auto car_state = sm["carState"].getCarState();
   const auto controls_state = sm["controlsState"].getControlsState();
   const auto car_params = sm["carParams"].getCarParams();
   const auto live_params = sm["liveParameters"].getLiveParameters();
