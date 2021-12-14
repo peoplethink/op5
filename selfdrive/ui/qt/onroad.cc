@@ -1016,8 +1016,8 @@ void OnroadHud::drawBsd(QPainter &p, UIState& s) {
   bool car_valid_left = bool(car_state.getLeftBlindspot());
   bool car_valid_right = bool(car_state.getRightBlindspot());
 
-  car_valid_left = 1; // 디버그용
-  car_valid_right = 1;
+  //car_valid_left = 1; // 디버그용
+  //car_valid_right = 1;
 
     if (car_valid_status_changed != car_valid_status) {
       blindspot_blinkingrate = 114;
