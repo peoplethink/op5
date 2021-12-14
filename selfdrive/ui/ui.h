@@ -123,6 +123,7 @@ typedef struct UIState {
 
   bool recording = false;
   bool show_debug = false;
+  bool show_gear = false;//기어
 
 } UIState;
 
