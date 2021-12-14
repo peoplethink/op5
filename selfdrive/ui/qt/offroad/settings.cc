@@ -384,6 +384,11 @@ VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
                                             "기어레버 위치와 기어단수를 볼수 있습니다..",
                                             "../assets/offroad/icon_shell.png"
                                             ));
+  layout->addWidget(new ParamControl("ShowBsdUI",
+                                            "측후방정보 보기",
+                                            "측후방 감지기 이미지를 볼수 있습니다..",
+                                            "../assets/offroad/icon_shell.png"
+                                            ));
   layout->addWidget(horizontal_line());
   layout->addWidget(new LabelControl("제어메뉴", ""));
   layout->addWidget(new LateralControlSelect());
