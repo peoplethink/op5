@@ -160,6 +160,13 @@ class CarState(CarStateBase):
       ret.gas = cp.vl["EMS12"]["PV_AV_CAN"] / 100.
       ret.gasPressed = bool(cp.vl["EMS16"]["CF_Ems_AclAct"])
 
+    if not self.car_fingerprint in FEATURES["use_elect_gears"]:
+    #if self.car_fingerprint in [CAR.GENESIS, CAR.GENESIS_EQ900, CAR.GENESIS_EQ900_L, CAR.K7]: 
+      ret.currentGear = cp.vl["LVR11"]["CF_Lvr_CGear"]
+
+    gear_disp2 = cp.vl["LVR11"] #["CF_Lvr_CGear"] 
+    print(gear_disp2)
+
     # TODO: refactor gear parsing in function
     # Gear Selection via Cluster - For those Kia/Hyundai which are not fully discovered, we can use the Cluster Indicator for Gear Selection,
     # as this seems to be standard over all cars, but is not the preferred method.
@@ -279,7 +286,18 @@ class CarState(CarStateBase):
       ("ESC_Off_Step", "TCS15", 0),
       ("AVH_LAMP", "TCS15", 0),
 
-      #("CF_Lvr_GearInf", "LVR11", 0),        # Transmission Gear (0 = N or P, 1-8 = Fwd, 14 = Rev)
+      ("Lvr12_00", "LVR12", 0),     
+      ("Lvr12_01", "LVR12", 0),     
+      ("Lvr12_02", "LVR12", 0),     
+      ("Lvr12_03", "LVR12", 0),     
+      ("Lvr12_04", "LVR12", 0),     
+      ("Lvr12_05", "LVR12", 0),     
+      ("Lvr12_06", "LVR12", 0),     
+      ("Lvr12_07", "LVR12", 0),     
+
+      ("CF_Lvr_CGear", "LVR11", 0), 
+      ("CF_Lvr_GearInf", "LVR11", 0),  
+
 
       ("MainMode_ACC", "SCC11", 1),
       ("SCCInfoDisplay", "SCC11", 0),
