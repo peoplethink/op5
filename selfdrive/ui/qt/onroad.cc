@@ -966,11 +966,11 @@ void OnroadHud::drawCgear(QPainter &p, UIState& s) {
   tgear.sprintf("%.0f", t_gear);
   configFont(p, "Open Sans", 150, "Regular");
 
-  shifter = 1; //디버그용
+  //shifter = 1; //디버그용
   p.setPen(QColor(255, 255, 255, 255)); 
 
   int x_gear = 30;
-  int y_gear = 970;
+  int y_gear = 960;
   if ((t_gear < 9) && (t_gear !=0)) { 
     p.drawText(x_gear, y_gear, tgear);
   } else if (t_gear == 14 ) { 
