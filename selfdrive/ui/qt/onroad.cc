@@ -969,8 +969,8 @@ void OnroadHud::drawCgear(QPainter &p, UIState& s) {
   shifter = 1; //디버그용
   p.setPen(QColor(255, 255, 255, 255)); 
 
-  int x_gear = 85-50;
-  int y_gear = 800+100;
+  int x_gear = 30;
+  int y_gear = 1000;
   if ((t_gear < 9) && (t_gear !=0)) { 
     p.drawText(x_gear, y_gear, tgear);
   } else if (t_gear == 14 ) { 
