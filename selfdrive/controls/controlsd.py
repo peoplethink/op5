@@ -133,14 +133,18 @@ class Controls:
     self.LoC = LongControl(self.CP)
     self.VM = VehicleModel(self.CP)
 
+    self.lateral_control_select = 0
     if self.CP.steerControlType == car.CarParams.SteerControlType.angle:
-      self.LaC = LatControlAngle(self.CP)
+      self.LaC = LatControlAngle(self.CP, self.CI )
     elif self.CP.lateralTuning.which() == 'pid':
       self.LaC = LatControlPID(self.CP, self.CI)
+      self.lateral_control_select = 0
     elif self.CP.lateralTuning.which() == 'indi':
-      self.LaC = LatControlINDI(self.CP)
+      self.LaC = LatControlINDI(self.CP, self.CI)
+      self.lateral_control_select = 1
     elif self.CP.lateralTuning.which() == 'lqr':
-      self.LaC = LatControlLQR(self.CP)
+      self.LaC = LatControlLQR(self.CP, self.CI)
+      self.lateral_control_select = 2
 
     self.initialized = False
     self.state = State.disabled
@@ -154,7 +158,6 @@ class Controls:
     self.cruise_mismatch_counter = 0
     self.can_error_counter = 0
     self.last_blinker_frame = 0
-    self.saturated_count = 0
     self.distance_traveled = 0
     self.last_functional_fan_frame = 0
     self.events_prev = []
@@ -359,8 +362,8 @@ class Controls:
       #  if not self.sm['liveLocationKalman'].gpsOK and (self.distance_traveled > 1000):
       #    # Not show in first 1 km to allow for driving out of garage. This event shows after 5 minutes
       #    self.events.add(EventName.noGps)
-      if not self.sm.all_alive(self.camera_packets):
-        self.events.add(EventName.cameraMalfunction)
+      #if not self.sm.all_alive(self.camera_packets):
+      #  self.events.add(EventName.cameraMalfunction)
       if self.sm['modelV2'].frameDropPerc > 20:
         self.events.add(EventName.modeldLagging)
       if self.sm['liveLocationKalman'].excessiveResets:
@@ -518,7 +521,11 @@ class Controls:
 
     lat_plan = self.sm['lateralPlan']
     long_plan = self.sm['longitudinalPlan']
-
+    
+    orientation = self.sm['liveLocationKalman'].orientationNED
+    roll = orientation.value[0] if orientation.valid else 0
+    #roll = self.sm['liveParameters'].roll
+    
     actuators = car.CarControl.Actuators.new_message()
     actuators.longControlState = self.LoC.long_control_state
 
@@ -545,8 +552,9 @@ class Controls:
                                                                              lat_plan.psis,
                                                                              lat_plan.curvatures,
                                                                              lat_plan.curvatureRates)
-      actuators.steer, actuators.steeringAngleDeg, lac_log = self.LaC.update(lat_active, CS, self.CP, self.VM, params,
-                                                                             desired_curvature, desired_curvature_rate)
+      
+      actuators.steer, actuators.steeringAngleDeg, lac_log = self.LaC.update(self.active, CS, self.CP, self.VM, params,
+                                                                             desired_curvature, desired_curvature_rate, roll)
     else:
       lac_log = log.ControlsState.LateralDebugState.new_message()
       if self.sm.rcv_frame['testJoystick'] > 0 and self.active:
@@ -670,8 +678,12 @@ class Controls:
 
     # Curvature & Steering angle
     params = self.sm['liveParameters']
-    steer_angle_without_offset = math.radians(CS.steeringAngleDeg - params.angleOffsetAverageDeg)
-    curvature = -self.VM.calc_curvature(steer_angle_without_offset, CS.vEgo)
+    
+    orientation = self.sm['liveLocationKalman'].orientationNED
+    roll = orientation.value[0] if orientation.valid else 0
+    
+    steer_angle_without_offset = math.radians(CS.steeringAngleDeg - params.angleOffsetDeg)
+    curvature = -self.VM.calc_curvature(steer_angle_without_offset, CS.vEgo, roll)
 
     # controlsState
     dat = messaging.new_message('controlsState')
@@ -702,7 +714,7 @@ class Controls:
     controlsState.startMonoTime = int(start_time * 1e9)
     controlsState.forceDecel = bool(force_decel)
     controlsState.canErrorCounter = self.can_error_counter
-
+    controlsState.lateralControlSelect = int(self.lateral_control_select)
     controlsState.angleSteers = steer_angle_without_offset * CV.RAD_TO_DEG
     controlsState.applyAccel = self.apply_accel
     controlsState.aReqValue = self.aReqValue
