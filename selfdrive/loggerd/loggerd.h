@@ -60,7 +60,7 @@ const LogCameraInfo cameras_logged[] = {
   {
     .type = RoadCam,
     .stream_type = VISION_STREAM_ROAD,
-    .filename = "fcamera.hevc",
+    .filename = "fcamera.ts",
     .fps = MAIN_FPS,
     .bitrate = MAIN_BITRATE,
     .is_h265 = true,
@@ -68,7 +68,7 @@ const LogCameraInfo cameras_logged[] = {
     .has_qcamera = true,
     .trigger_rotate = true,
     .enable = true,
-    .record = true,
+    .record = Params().getBool("RecordFront"),
   },
   {
     .type = DriverCam,
@@ -81,7 +81,7 @@ const LogCameraInfo cameras_logged[] = {
     .has_qcamera = false,
     .trigger_rotate = Hardware::TICI(),
     .enable = !Hardware::PC(),
-    .record = Params().getBool("RecordFront"),
+    .record = false,
   },
   {
     .type = WideRoadCam,
@@ -94,7 +94,7 @@ const LogCameraInfo cameras_logged[] = {
     .has_qcamera = false,
     .trigger_rotate = true,
     .enable = Hardware::TICI(),
-    .record = Hardware::TICI(),
+    .record = false,
   },
 };
 const LogCameraInfo qcam_info = {
@@ -108,7 +108,6 @@ const LogCameraInfo qcam_info = {
 };
 
 struct LoggerdState {
-  Context *ctx;
   LoggerState logger = {};
   char segment_path[4096];
   std::mutex rotate_lock;
