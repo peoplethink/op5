@@ -262,6 +262,8 @@ OnroadHud::OnroadHud(QWidget *parent) : QWidget(parent) {
   ic_turn_signal_l = QPixmap("../assets/images/turn_signal_l.png");
   ic_turn_signal_r = QPixmap("../assets/images/turn_signal_r.png");
   ic_satellite = QPixmap("../assets/images/satellite.png");
+  ic_bsd_l = QPixmap("../assets/images/img_car_left.png"); //bsd
+  ic_bsd_r = QPixmap("../assets/images/img_car_right.png"); //bsd
 }
 
 void OnroadHud::updateState(const UIState &s) {
@@ -455,6 +457,9 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
 	
   if(s.show_gear && width() > 1200)
     drawCgear(p, s);//기어
+	
+  if(s.show_bsd && width() > 1200)
+    drawBsd(p, s);//bsd
 
   char str[1024];
   const auto car_state = sm["carState"].getCarState();
@@ -984,5 +989,66 @@ void OnroadHud::drawCgear(QPainter &p, UIState& s) {
     p.drawText(x_gear, y_gear, "N");
   }
   // 1 "P"   2 "D"  3 "N" 4 "R"
+
+}
+
+void OnroadHud::drawBsd(QPainter &p, UIState& s) {
+  const SubMaster &sm = *(s.sm);
+  auto car_state = sm["carState"].getCarState();
+
+  const int car_size = 230;
+  const int car_shift = 930;
+  const int car_x_left =  s.fb_w/2 - car_shift;
+  const int car_x_right = s.fb_w/2 + car_shift;
+  const int car_y = 620;
+  const int car_img_size_w = (car_size * 1);
+  const int car_img_size_h = (car_size * 1);
+  const int car_img_x_left = (car_x_left - (car_img_size_w / 2));
+  const int car_img_x_right = (car_x_right - (car_img_size_w / 2));
+  const int car_img_y = (car_y - (car_size / 4));
+
+  bool leftblindspot;
+  bool rightblindspot;
+  int blindspot_blinkingrate = 120;
+  int car_valid_status_changed = 0;
+  int car_valid_status = 0;
+
+  bool car_valid_left = bool(car_state.getLeftBlindspot());
+  bool car_valid_right = bool(car_state.getRightBlindspot());
+
+  car_valid_left = 1; // ui 
+  car_valid_right = 1;
+
+    if (car_valid_status_changed != car_valid_status) {
+      blindspot_blinkingrate = 114;
+      car_valid_status_changed = car_valid_status;
+    }
+    if (car_valid_left || car_valid_right) {
+      if (!car_valid_left && car_valid_right) {
+        car_valid_status = 1;
+      } else if (car_valid_left && !car_valid_right) {
+        car_valid_status = 2;
+      } else if (car_valid_left && car_valid_right) {
+        car_valid_status = 3;
+      } else {
+        car_valid_status = 0;
+      }
+      blindspot_blinkingrate -= 6;
+      if(blindspot_blinkingrate<0) blindspot_blinkingrate = 120;
+      if (blindspot_blinkingrate>=60) {
+        p.setOpacity(1.0);
+      } else {
+        p.setOpacity(0.0);;
+      }
+    } else {
+      blindspot_blinkingrate = 120;
+    }
+
+    if(car_valid_left) {
+      p.drawPixmap(car_img_x_left, car_img_y, car_img_size_w, car_img_size_h, ic_bsd_l);
+    }
+    if(car_valid_right) {
+      p.drawPixmap(car_img_x_right, car_img_y, car_img_size_w, car_img_size_h, ic_bsd_r);
+    }
 
 }
