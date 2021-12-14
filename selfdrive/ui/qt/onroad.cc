@@ -452,8 +452,10 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
 
   if(s.show_debug && width() > 1200)
     drawDebugText(p, s);
-
 	
+  if(s.show_gear && width() > 1200)
+    drawCgear(p, s);//기어
+
   char str[1024];
   const auto car_state = sm["carState"].getCarState();
   const auto controls_state = sm["controlsState"].getControlsState();
@@ -684,6 +686,7 @@ void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {
   int activeNDA = scc_smoother.getRoadLimitSpeedActive();
   int limit_speed = scc_smoother.getRoadLimitSpeed();
   int left_dist = scc_smoother.getRoadLimitSpeedLeftDist();
+  //activeNDA = 1; //
 
   if(activeNDA > 0)
   {
@@ -947,4 +950,39 @@ void OnroadHud::drawDebugText(QPainter &p, UIState& s) {
   y += height;
   str.sprintf("Lead: %.1f/%.1f/%.1f\n", radar_dist, vision_dist, (radar_dist - vision_dist));
   p.drawText(text_x, y, str);
+}
+//기어
+void OnroadHud::drawCgear(QPainter &p, UIState& s) {
+  const SubMaster &sm = *(s.sm);
+  auto car_state = sm["carState"].getCarState();
+
+  auto t_gear = car_state.getCurrentGear();
+  int shifter;
+
+  shifter = int(car_state.getGearShifter());
+
+  QString tgear, tgearshifter;
+
+  tgear.sprintf("%.0f", t_gear);
+  configFont(p, "Open Sans", 170, "Regular");
+
+  //shifter = 1; //디버그용
+  p.setPen(QColor(255, 165, 0, 255)); 
+
+  int x_gear = 85;
+  int y_gear = 800;
+  if ((t_gear < 9) && (t_gear !=0)) { 
+    p.drawText(x_gear, y_gear, tgear);
+  } else if (t_gear == 14 ) { 
+    p.setPen(QColor(201, 34, 49, 255));
+    p.drawText(x_gear, y_gear, "R");
+  } else if (shifter == 1 ) { 
+    p.setPen(QColor(0, 255, 0, 255));
+    p.drawText(x_gear, y_gear, "P");
+  } else if (shifter == 3 ) {  
+    p.setPen(QColor(0, 0, 255, 255));
+    p.drawText(x_gear, y_gear, "N");
+  }
+  // 1 "P"   2 "D"  3 "N" 4 "R"
+
 }
