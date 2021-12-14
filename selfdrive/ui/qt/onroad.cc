@@ -432,6 +432,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   p.fillRect(0, 0, width(), header_h, bg);
 
   const SubMaster &sm = *(s.sm);
+  UIScene &scene = s->scene;
 
   drawLaneLines(p, s.scene);
 
@@ -453,6 +454,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   if(s.show_debug && width() > 1200)
     drawDebugText(p, s);
 
+	
   char str[1024];
   const auto car_state = sm["carState"].getCarState();
   const auto controls_state = sm["controlsState"].getControlsState();
