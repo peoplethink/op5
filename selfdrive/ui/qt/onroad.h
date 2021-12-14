@@ -54,6 +54,7 @@ private:
   void drawTurnSignals(QPainter &p, UIState& s);
   void drawGpsStatus(QPainter &p, UIState& s);
   void drawDebugText(QPainter &p, UIState& s);
+  void drawCgear(QPainter &p, UIState& s);//기어
 
 public:
   void drawCommunity(QPainter &p, UIState& s);
