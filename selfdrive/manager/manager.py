@@ -58,6 +58,7 @@ def manager_init():
     ("KeepSteeringTurnSignals", "0"),
     ("WarningOverSpeedLimit", "0"),
     ("C3MdpsSet", "0"),
+    ("ShowBsdUI", "1"),
     ("DisableOpFcw", "0"),
     ("ShowDebugUI", "0"),
     ("IsOpenpilotViewEnabled", "0"),
