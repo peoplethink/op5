@@ -59,6 +59,7 @@ def manager_init():
     ("WarningOverSpeedLimit", "0"),
     ("C3MdpsSet", "0"),
     ("ShowBsdUI", "1"),
+    ("ShowTpmsUI", "1"),
     ("DisableOpFcw", "0"),
     ("ShowDebugUI", "0"),
     ("IsOpenpilotViewEnabled", "0"),
