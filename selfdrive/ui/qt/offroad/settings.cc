@@ -385,8 +385,13 @@ VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
                                             "../assets/offroad/icon_shell.png"
                                             ));
   layout->addWidget(new ParamControl("ShowBsdUI",
-                                            "측후방정보 보기",
-                                            "측후방 감지기 이미지를 볼수 있습니다..",
+                                            "후측방감지기 보기",
+                                            "후측방 감지기 이미지를 볼수 있습니다..",
+                                            "../assets/offroad/icon_shell.png"
+                                            ));
+  layout->addWidget(new ParamControl("ShowTpmsUI",
+                                            "타이어공기압 정보 보기",
+                                            "타이어공기압 를 볼수 있습니다..",
                                             "../assets/offroad/icon_shell.png"
                                             ));
   layout->addWidget(horizontal_line());
@@ -397,14 +402,19 @@ VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
                                             "콤마3 MDPS 개조 버스1로 고정",
                                             "../assets/offroad/icon_road.png",
                                             this));
+  layout->addWidget(new ParamControl("KeepSteeringTurnSignals",
+                                            "상시조향 옵션.",
+                                            "방향지시등 작동시 상시조향 가능",
+                                            "../assets/offroad/icon_openpilot.png",
+                                            this));
   layout->addWidget(new ParamControl("WarningOverSpeedLimit",
-                                            "Warning when speed limit is exceeded.",
-                                            "",
+                                            "카메라과속시 계기판 알림기능.",
+                                            "NDA 카메라 과속시 허드 계기판에 알림기능 표시",
                                             "../assets/offroad/icon_openpilot.png",
                                             this));
   layout->addWidget(new ParamControl("SteerLockout",
-                                            "Enable Higher Than 90° Lateral Control",
-                                            "This disables the max steer limit of 90°.This will cause fault on certain cars that have a 90° limit.",
+                                            "90도 이상 조향가능차량 선택",
+                                            "90도 이상 조향가능차량만 선택(제네시스DH제외).",
                                             "../assets/offroad/icon_road.png",
                                             this));
   
@@ -675,11 +685,6 @@ CommunityPanel::CommunityPanel(QWidget* parent) : QWidget(parent) {
                                             "../assets/offroad/icon_road.png",
                                             this));*/
 
-  toggles.append(new ParamControl("KeepSteeringTurnSignals",
-                                            "Keep steering while turn signals.",
-                                            "",
-                                            "../assets/offroad/icon_openpilot.png",
-                                            this));
 
   /*toggles.append(new ParamControl("NewRadarInterface",
                                             "Use new radar interface",
@@ -698,12 +703,6 @@ CommunityPanel::CommunityPanel(QWidget* parent) : QWidget(parent) {
                                             "",
                                             "../assets/offroad/icon_shell.png",
                                             this));
-
-  /*toggles.append(new ParamControl("CustomLeadMark",
-                                            "Use custom lead mark",
-                                            "",
-                                            "../assets/offroad/icon_road.png",
-                                            this));*/
 
   for(ParamControl *toggle : toggles) {
     if(main_layout->count() != 0) {
