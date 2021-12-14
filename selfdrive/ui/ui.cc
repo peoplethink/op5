@@ -211,6 +211,7 @@ void ui_update_params(UIState *s) {
   s->scene.is_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled"); 
   s->scene.is_metric = params.getBool("IsMetric");
   s->show_debug = params.getBool("ShowDebugUI");
+  s->show_gear = params.getBool("ShowCgearUI");//기어
 }
 
 static void update_status(UIState *s) {
