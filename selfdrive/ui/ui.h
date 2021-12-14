@@ -125,10 +125,6 @@ typedef struct UIState {
   bool show_debug = false;
   bool show_gear = false;//기어
   bool show_bsd = false;//bsd
-  bool leftblindspot;
-  bool rightblindspot;
-  int blindspot_blinkingrate = 120;
-  int car_valid_status_changed = 0;
 
 } UIState;
 
