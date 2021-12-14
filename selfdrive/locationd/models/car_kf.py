@@ -5,6 +5,7 @@ from typing import Any, Dict
 
 import numpy as np
 
+from selfdrive.controls.lib.vehicle_model import ACCELERATION_DUE_TO_GRAVITY
 from selfdrive.locationd.models.constants import ObservationKind
 from selfdrive.swaglog import cloudlog
 
@@ -18,6 +19,7 @@ else:
 
 
 i = 0
+ACCELERATION_DUE_TO_GRAVITY = 9.8
 
 def _slice(n):
   global i
@@ -37,6 +39,7 @@ class States():
   VELOCITY = _slice(2)  # (x, y) [m/s]
   YAW_RATE = _slice(1)  # [rad/s]
   STEER_ANGLE = _slice(1)  # [rad]
+  ROAD_ROLL = _slice(1)  # [rad]
 
 
 class CarKalman(KalmanFilter):
@@ -51,6 +54,7 @@ class CarKalman(KalmanFilter):
     10.0, 0.0,
     0.0,
     0.0,
+    0.0,
   ])
 
   # process noise
@@ -63,12 +67,14 @@ class CarKalman(KalmanFilter):
     .1**2, .01**2,
     math.radians(0.1)**2,
     math.radians(0.1)**2,
+    math.radians(0.5)**2,
   ])
   P_initial = Q.copy()
 
   obs_noise: Dict[int, Any] = {
     ObservationKind.STEER_ANGLE: np.atleast_2d(math.radians(0.01)**2),
     ObservationKind.ANGLE_OFFSET_FAST: np.atleast_2d(math.radians(10.0)**2),
+    ObservationKind.ROAD_ROLL: np.atleast_2d(math.radians(1.0)**2),
     ObservationKind.STEER_RATIO: np.atleast_2d(5.0**2),
     ObservationKind.STIFFNESS: np.atleast_2d(5.0**2),
     ObservationKind.ROAD_FRAME_X_SPEED: np.atleast_2d(0.1**2),
@@ -106,6 +112,7 @@ class CarKalman(KalmanFilter):
     cF, cR = x * cF_orig, x * cR_orig
     angle_offset = state[States.ANGLE_OFFSET, :][0, 0]
     angle_offset_fast = state[States.ANGLE_OFFSET_FAST, :][0, 0]
+    theta = state[States.ROAD_ROLL, :][0, 0]
     sa = state[States.STEER_ANGLE, :][0, 0]
 
     sR = state[States.STEER_RATIO, :][0, 0]
@@ -121,9 +128,13 @@ class CarKalman(KalmanFilter):
     B = sp.Matrix(np.zeros((2, 1)))
     B[0, 0] = cF / m / sR
     B[1, 0] = (cF * aF) / j / sR
+    
+    C = sp.Matrix(np.zeros((2, 1)))
+    C[0, 0] = ACCELERATION_DUE_TO_GRAVITY
+    C[1, 0] = 0
 
     x = sp.Matrix([v, r])  # lateral velocity, yaw rate
-    x_dot = A * x + B * (sa - angle_offset - angle_offset_fast)
+    x_dot = A * x + B * (sa - angle_offset - angle_offset_fast) - C * theta
 
     dt = sp.Symbol('dt')
     state_dot = sp.Matrix(np.zeros((dim_state, 1)))
@@ -145,6 +156,7 @@ class CarKalman(KalmanFilter):
       [sp.Matrix([angle_offset_fast]), ObservationKind.ANGLE_OFFSET_FAST, None],
       [sp.Matrix([sR]), ObservationKind.STEER_RATIO, None],
       [sp.Matrix([x]), ObservationKind.STIFFNESS, None],
+      [sp.Matrix([theta]), ObservationKind.ROAD_ROLL, None],
     ]
 
     gen_code(generated_dir, name, f_sym, dt, state_sym, obs_eqs, dim_state, dim_state, global_vars=global_vars)
