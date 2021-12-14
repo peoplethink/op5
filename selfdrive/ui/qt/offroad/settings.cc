@@ -366,6 +366,7 @@ QWidget * network_panel(QWidget * parent) {
 //VIP menu
 VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
   QVBoxLayout *layout = new QVBoxLayout(this);
+  layout->addWidget(new LabelControl("UI설정", ""));
   layout->addWidget(horizontal_line());
   layout->addWidget(new LabelControl("제어메뉴", ""));
   layout->addWidget(new LateralControlSelect());
@@ -379,6 +380,12 @@ VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
                                             "",
                                             "../assets/offroad/icon_openpilot.png",
                                             this));
+  layout->addWidget(new ParamControl("SteerLockout",
+                                            "Enable Higher Than 90° Lateral Control",
+                                            "This disables the max steer limit of 90°.This will cause fault on certain cars that have a 90° limit.",
+                                            "../assets/offroad/icon_road.png",
+                                            this));
+  
   layout->addWidget(horizontal_line());
 }
 

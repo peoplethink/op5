@@ -42,7 +42,10 @@ class CarInterface(CarInterfaceBase):
     ret.communityFeature = True
 
     tire_stiffness_factor = 0.85
-    ret.maxSteeringAngleDeg = 90.
+    if Params().get_bool('SteerLockout'):
+      ret.maxSteeringAngleDeg = 1000
+    else:
+      ret.maxSteeringAngleDeg = 90
 
     # -------------PID
     if Params().get("LateralControlSelect", encoding='utf8') == "0":
@@ -68,7 +71,7 @@ class CarInterface(CarInterfaceBase):
           ret.steerActuatorDelay = 0.08
           ret.steerRateCost = 0.5
           ret.steerLimitTimer = 2.5
-          ret.steerRatio = 16.5 #고정말고 학습. . 
+          ret.steerRatio = 16.5 
     
     # ---------------INDI
     elif Params().get("LateralControlSelect", encoding='utf8') == "1":
