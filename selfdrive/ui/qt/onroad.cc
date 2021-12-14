@@ -453,9 +453,15 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   if(s.show_debug && width() > 1200)
     drawDebugText(p, s);
 
+  const UIScene *scene = &s->scene;
+  char str[1024];
+  const auto car_state = (*s->sm)["carState"].getCarState();
   const auto controls_state = sm["controlsState"].getControlsState();
   const auto car_params = sm["carParams"].getCarParams();
   const auto live_params = sm["liveParameters"].getLiveParameters();
+	
+  int lateralControlState = controls_state.getLateralControlSelect();
+  const char* lateral_state[] = {"PID", "INDI", "LQR"};
 
   const auto scc_smoother = sm["carControl"].getCarControl().getSccSmoother();
   bool is_metric = s.scene.is_metric;
@@ -471,7 +477,8 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   int scc_bus = car_params.getSccBus();
 
   QString infoText;
-  infoText.sprintf("SR(%.2f) SRC(%.2f) SAD(%.2f) SCC(%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)",
+  infoText.sprintf(" %s SR(%.2f) SRC(%.2f) SAD(%.2f) SCC(%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)",
+		      lateral_state[lateralControlState],
                       //live_params.getAngleOffsetDeg(),
                       //live_params.getAngleOffsetAverageDeg(),
                       controls_state.getSteerRatio(),
