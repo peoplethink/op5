@@ -432,7 +432,6 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   p.fillRect(0, 0, width(), header_h, bg);
 
   const SubMaster &sm = *(s.sm);
-  UIScene &scene = s->scene;
 
   drawLaneLines(p, s.scene);
 
