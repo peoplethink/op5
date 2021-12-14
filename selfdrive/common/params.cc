@@ -174,6 +174,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"Offroad_UpdateFailed", CLEAR_ON_MANAGER_START},
 
     {"SelectedCar", PERSISTENT},
+    {"LateralControlSelect", PERSISTENT},
     {"UseClusterSpeed", PERSISTENT},
     {"LongControlEnabled", PERSISTENT},
     {"MadModeEnabled", PERSISTENT},
