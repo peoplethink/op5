@@ -57,6 +57,7 @@ def manager_init():
     ("StockNaviDecelEnabled", "0"),
     ("KeepSteeringTurnSignals", "0"),
     ("WarningOverSpeedLimit", "0"),
+    ("C3MdpsSet", "0"),
     ("DisableOpFcw", "0"),
     ("ShowDebugUI", "0"),
     ("IsOpenpilotViewEnabled", "0"),
