@@ -191,6 +191,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"DisableOpFcw", PERSISTENT},
     {"ShowDebugUI", PERSISTENT},
     {"ShowBsdUI", PERSISTENT},
+    {"ShowTpmsUI", PERSISTENT},
     {"C3MdpsSet", PERSISTENT},
     {"KeepSteeringTurnSignals", PERSISTENT},
     {"WarningOverSpeedLimit", PERSISTENT},
