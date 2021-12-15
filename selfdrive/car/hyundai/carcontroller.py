@@ -264,4 +264,4 @@ class CarController():
         state = 2 if self.car_fingerprint in FEATURES["send_hda_state_2"] else 1
         can_sends.append(create_hda_mfc(self.packer, activated_hda, state))
 
-    return can_sends
+    return actuators, can_sends
