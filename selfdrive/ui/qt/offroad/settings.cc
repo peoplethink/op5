@@ -378,6 +378,11 @@ QWidget * network_panel(QWidget * parent) {
 VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
   QVBoxLayout *layout = new QVBoxLayout(this);
   layout->addWidget(new LabelControl("UI설정", ""));
+  layout->addWidget(new ParamControl("ShowDebugUI",
+                                            "디버그 내용 보기",
+                                            "가감속 등 디버그 내용을 화면에 띄웁니다.",
+                                            "../assets/offroad/icon_shell.png",
+                                            this));
   layout->addWidget(new ParamControl("ShowCgearUI",
                                             "주행기어단수 보기",
                                             "기어레버 위치와 기어단수를 볼수 있습니다..",
@@ -671,7 +676,7 @@ CommunityPanel::CommunityPanel(QWidget* parent) : QWidget(parent) {
                                             this));
 
   toggles.append(new ParamControl("SccSmootherSyncGasPressed",
-                                            "Sync set speed on gas pressed",
+                                            "가속 속도 동기화",
                                             "",
                                             "../assets/offroad/icon_road.png",
                                             this));
@@ -694,12 +699,7 @@ CommunityPanel::CommunityPanel(QWidget* parent) : QWidget(parent) {
                                             "",
                                             "../assets/offroad/icon_shell.png",
                                             this));*/
-  
-  toggles.append(new ParamControl("ShowDebugUI",
-                                            "디버그 내용 보기",
-                                            "가감속 등 디버그 내용을 화면에 띄웁니다.",
-                                            "../assets/offroad/icon_shell.png",
-                                            this));
+
 
   /*toggles.append(new ParamControl("CustomLeadMark",
                                             "레이더표시를 개조",
