@@ -484,7 +484,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   int scc_bus = car_params.getSccBus();
 
   QString infoText;
-  infoText.sprintf(" %s SR(%.2f) SRC(%.2f) SAD(%.2f) SCC(%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)",
+  infoText.sprintf(" %s SR(%.2f) SC(%.2f) SD(%.2f) (%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)",
 		      lateral_state[lateralControlState],
                       //live_params.getAngleOffsetDeg(),
                       //live_params.getAngleOffsetAverageDeg(),
