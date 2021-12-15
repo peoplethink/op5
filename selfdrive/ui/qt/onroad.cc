@@ -250,9 +250,10 @@ void OnroadAlerts::paintEvent(QPaintEvent *event) {
 
 // OnroadHud
 OnroadHud::OnroadHud(QWidget *parent) : QWidget(parent) {
-  ic_engage = QPixmap("../assets/img_chffr_wheel.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+  engage_img = QPixmap("../assets/img_chffr_wheel.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   //dm_img = QPixmap("../assets/img_driver_face.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
+  connect(this, &OnroadHud::valueChanged, [=] { update(); });
+	
   //ic_brake = QPixmap("../assets/images/img_brake_disc.png").scaled(img_size, img_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
   //ic_autohold_warning = QPixmap("../assets/images/img_autohold_warning.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   //ic_autohold_active = QPixmap("../assets/images/img_autohold_active.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -267,9 +268,24 @@ OnroadHud::OnroadHud(QWidget *parent) : QWidget(parent) {
 }
 
 void OnroadHud::updateState(const UIState &s) {
+  const SubMaster &sm = *(s.sm);
+  const auto cs = sm["controlsState"].getControlsState();
+  // update engageability and DM icons at 2Hz
+  if (sm.frame % (UI_FREQ / 2) == 0) {
+    setProperty("engageable", cs.getEngageable() || cs.getEnabled());
+    //setProperty("dmActive", sm["driverMonitoringState"].getDriverMonitoringState().getIsActiveMode());
+  }
 }
 
 void OnroadHud::paintEvent(QPaintEvent *event) {
+  QPainter p(this);
+  p.setRenderHint(QPainter::Antialiasing);
+  // engage-ability icon
+  if (engageable) {
+    drawIcon(p, rect().right() - radius / 2 - bdr_s * 2, radius / 2 + int(bdr_s * 1.5),
+             engage_img, bg_colors[status], 1.0);
+  }
+
   if(QUIState::ui_state.recording) {
     QPainter p(this);
     drawCommunity(p, QUIState::ui_state);
@@ -392,6 +408,7 @@ void OnroadHud::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
 
 void NvgWindow::paintGL() {
   CameraViewWidget::paintGL();
+	
   UIState *s = &QUIState::ui_state;
   if (s->scene.world_objects_visible) {
     if(!s->recording) {
