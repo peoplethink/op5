@@ -17,6 +17,7 @@
 class OnroadHud : public QWidget {
   Q_OBJECT
   Q_PROPERTY(bool engageable MEMBER engageable NOTIFY valueChanged); 
+  Q_PROPERTY(int status MEMBER status NOTIFY valueChanged);
 
 public:
   explicit OnroadHud(QWidget *parent);
@@ -32,6 +33,7 @@ private:
   const int radius = 192;
   const int img_size = (radius / 2) * 1.5;
   bool engageable = false;
+  int status = STATUS_DISENGAGED;
   
   // neokii
   QPixmap ic_engage;
