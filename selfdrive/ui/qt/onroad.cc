@@ -281,11 +281,19 @@ void OnroadHud::updateState(const UIState &s) {
 }
 
 void OnroadHud::paintEvent(QPaintEvent *event) {
+  UIState *s = &QUIState::ui_state;
   QPainter p(this);
-  p.setRenderHint(QPainter::Antialiasing);
+  //p.setRenderHint(QPainter::Antialiasing);
+	
+  // Header gradient
+  QLinearGradient bg(0, header_h - (header_h / 2.5), 0, header_h);
+  bg.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0.45));
+  bg.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
+  p.fillRect(0, 0, width(), header_h, bg);
+	
   // engage-ability icon
   if (engageable) {
-    drawIcon(p, rect().right() - radius / 2 - bdr_s * 2, radius / 2 + int(bdr_s * 1.5),
+    drawIcon(p, rect().right() - radius / 2 - bdr_s * 2, radius / 2 + bdr_s,
              engage_img, bg_colors[status], 1.0);
   }
 
