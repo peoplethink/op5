@@ -565,24 +565,7 @@ void OnroadHud::drawSpeed(QPainter &p, UIState& s) {
   configFont(p, "Open Sans", 176, "Bold");
   drawText(p, rect().center().x(), 230, speed);
   configFont(p, "Open Sans", 66, "Regular");
-  //drawText(p, rect().center().x(), 310, s.scene.is_metric ? "km/h" : "mph", 200);
-	
-  // update engageability and DM icons at 2Hz
-  if (sm.frame % (UI_FREQ / 2) == 0) {
-    setProperty("engageable", cs.getEngageable() || cs.getEnabled());
-    //setProperty("dmActive", sm["driverMonitoringState"].getDriverMonitoringState().getIsActiveMode());
-  }
-}
-
-void OnroadHud::paintEvent(QPaintEvent *event) {
-  QPainter p(this);
-  p.setRenderHint(QPainter::Antialiasing);
-	
-  // engage-ability icon
-  if (engageable) {
-    drawIcon(p, rect().right() - radius / 2 - bdr_s * 2, radius / 2 + int(bdr_s * 1.5),
-             engage_img, bg_colors[status], 1.0);
-  }
+  //drawText(p, rect().center().x(), 310, s.scene.is_metric ? "km/h" : "mph", 200)
 }
 
 static const QColor get_tpms_color(float tpms) {
