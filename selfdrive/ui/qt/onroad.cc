@@ -503,7 +503,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   // info
   configFont(p, "Open Sans", 34, "Regular");
   p.setPen(QColor(0xff, 0xff, 0xff, 220));
-  p.drawText(rect().left() + 160, rect().height() - 15, infoText);
+  p.drawText(rect().left() + 180, rect().height() - 15, infoText);
   drawBottomIcons(p, s);
 }
 
@@ -968,12 +968,12 @@ void OnroadHud::drawCgear(QPainter &p, UIState& s) {
   QString tgear, tgearshifter;
 
   tgear.sprintf("%.0f", t_gear);
-  configFont(p, "Open Sans", 150, "Regular");
+  configFont(p, "Sans-semibold", 150, "Regular");
 
-  //shifter = 1; //디버그용
+  shifter = 1; //디버그용
   p.setPen(QColor(255, 255, 255, 255)); 
 
-  int x_gear = 30;
+  int x_gear = 50;
   int y_gear = 960;
   if ((t_gear < 9) && (t_gear !=0)) { 
     p.drawText(x_gear, y_gear, tgear);
@@ -1015,8 +1015,8 @@ void OnroadHud::drawBsd(QPainter &p, UIState& s) {
   bool car_valid_left = bool(car_state.getLeftBlindspot());
   bool car_valid_right = bool(car_state.getRightBlindspot());
 
-  //car_valid_left = 1; // 디버그용
-  //car_valid_right = 1;
+  car_valid_left = 1; // 디버그용
+  car_valid_right = 1;
 
     if (car_valid_status_changed != car_valid_status) {
       blindspot_blinkingrate = 114;
