@@ -16,6 +16,7 @@
 
 class OnroadHud : public QWidget {
   Q_OBJECT
+  Q_PROPERTY(bool engageable MEMBER engageable NOTIFY valueChanged); 
 
 public:
   explicit OnroadHud(QWidget *parent);
@@ -26,9 +27,11 @@ private:
   void drawText(QPainter &p, int x, int y, const QString &text, int alpha = 255);
   void drawTextWithColor(QPainter &p, int x, int y, const QString &text, QColor& color);
   void paintEvent(QPaintEvent *event) override;
- 
+  
+  QPixmap engage_img;
   const int radius = 192;
   const int img_size = (radius / 2) * 1.5;
+  bool engageable = false;
   
   // neokii
   QPixmap ic_engage;
