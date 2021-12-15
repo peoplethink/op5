@@ -270,6 +270,9 @@ OnroadHud::OnroadHud(QWidget *parent) : QWidget(parent) {
 void OnroadHud::updateState(const UIState &s) {
   const SubMaster &sm = *(s.sm);
   const auto cs = sm["controlsState"].getControlsState();
+	
+  setProperty("status", s.status);
+	
   // update engageability and DM icons at 2Hz
   if (sm.frame % (UI_FREQ / 2) == 0) {
     setProperty("engageable", cs.getEngageable() || cs.getEnabled());
