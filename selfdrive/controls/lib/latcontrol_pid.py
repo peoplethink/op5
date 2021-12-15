@@ -16,13 +16,12 @@ class LatControlPID(LatControl):
                               derivative_period=0.1)
     self.new_kf_tuned = CP.lateralTuning.pid.newKfTuned
     self.get_steer_feedforward = CI.get_steer_feedforward_function()
-    self.output_steer_last = 0.0
 
   def reset(self):
     super().reset()
     self.pid.reset()
 
-  def update(self, active, CS, CP, CI, VM, params, desired_curvature, desired_curvature_rate, roll):
+  def update(self, active, CS, CP, VM, params, desired_curvature, desired_curvature_rate, roll):
     pid_log = log.ControlsState.LateralPIDState.new_message()
     pid_log.steeringAngleDeg = float(CS.steeringAngleDeg)
     pid_log.steeringRateDeg = float(CS.steeringRateDeg)
@@ -35,7 +34,7 @@ class LatControlPID(LatControl):
     if CS.vEgo < MIN_STEER_SPEED or not active:
       output_steer = 0.0
       pid_log.active = False
-      self.reset()
+      self.pid.reset()
     else:
       steers_max = get_steer_max(CP, CS.vEgo)
       self.pid.pos_limit = steers_max
@@ -46,7 +45,7 @@ class LatControlPID(LatControl):
 
       deadzone = 0.0
 
-      output_steer = self.pid.update(angle_steers_des, CS.steeringAngleDeg, CI.calc_last_outputs(self.output_steer_last), 
+      output_steer = self.pid.update(angle_steers_des, CS.steeringAngleDeg, override=CS.steeringPressed,
                                      feedforward=steer_feedforward, speed=CS.vEgo, deadzone=deadzone)
       pid_log.active = True
       pid_log.p = self.pid.p
@@ -55,5 +54,4 @@ class LatControlPID(LatControl):
       pid_log.output = output_steer
       pid_log.saturated = self._check_saturation(steers_max - abs(output_steer) < 1e-3, CS)
 
-    self.ouptut_steer_last = output_steer
     return output_steer, angle_steers_des, pid_log

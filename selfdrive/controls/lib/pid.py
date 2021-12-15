@@ -1,3 +1,4 @@
+import numpy as np
 from numbers import Number
 
 from common.numpy_fast import clip, interp
@@ -28,7 +29,7 @@ class PIDController():
     self.pos_limit = pos_limit
     self.neg_limit = neg_limit
 
-    self.i_unwind_rate = 1.0 / rate
+    self.i_unwind_rate = 0.3 / rate
     self.i_rate = 1.0 / rate
     self._d_period = round(derivative_period * rate)  # period of time for derivative calculation (seconds converted to frames)
 
@@ -53,14 +54,11 @@ class PIDController():
     self.control = 0
     self.errors = []
 
-  def update(self, setpoint, measurement, last_output, speed=0.0, feedforward=0., deadzone=0.):
+  def update(self, setpoint, measurement, speed=0.0, override=False, feedforward=0., deadzone=0., freeze_integrator=False):
     self.speed = speed
-
-    i_bf = self.i_unwind_rate * (self.p + self.i + self.f - last_output)
 
     error = float(apply_deadzone(setpoint - measurement, deadzone))
     self.p = error * self.k_p
-    self.i = self.i + error * self.k_i * self.i_rate - i_bf
     self.f = feedforward * self.k_f
 
     d = 0
@@ -68,10 +66,20 @@ class PIDController():
       d = (error - self.errors[-self._d_period]) / self._d_period  # get deriv in terms of 100hz (tune scale doesn't change)
       d *= self.k_d
 
-    #ensure PI controller action is not clipped when ff is large
-    self.f = clip(self.f, self.neg_limit, self.pos_limit)
+    if override:
+      self.i -= self.i_unwind_rate * float(np.sign(self.i))
+    else:
+      i = self.i + error * self.k_i * self.i_rate
+      control = self.p + self.f + i + d
 
-    control = self.p + self.i + self.f + d
+      # Update when changing i will move the control away from the limits
+      # or when i will move towards the sign of the error
+      if ((error >= 0 and (control <= self.pos_limit or i < 0.0)) or
+          (error <= 0 and (control >= self.neg_limit or i > 0.0))) and \
+         not freeze_integrator:
+        self.i = i
+
+    control = self.p + self.f + self.i + d
     self.i = self.i_decay_factor * self.i
     self.errors.append(float(error))
     while len(self.errors) > self._d_period:

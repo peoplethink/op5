@@ -553,7 +553,7 @@ class Controls:
                                                                              lat_plan.curvatures,
                                                                              lat_plan.curvatureRates)
       
-      actuators.steer, actuators.steeringAngleDeg, lac_log = self.LaC.update(self.active, CS, self.CP, self.CI, self.VM, params,
+      actuators.steer, actuators.steeringAngleDeg, lac_log = self.LaC.update(self.active, CS, self.CP, self.VM, params,
                                                                              desired_curvature, desired_curvature_rate, roll)
     else:
       lac_log = log.ControlsState.LateralDebugState.new_message()

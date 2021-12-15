@@ -103,12 +103,6 @@ class CarInterfaceBase():
     ret.longitudinalActuatorDelayUpperBound = 0.15
     return ret
 
-  def calc_last_outputs(self, request):
-    lat_out = request
-    if hasattr(self.CC, 'get_last_output'):
-      lat_out = self.CC.get_last_output()
-    return lat_out
-    
   # returns a car.CarState, pass in car.CarControl
   def update(self, c, can_strings):
     raise NotImplementedError
