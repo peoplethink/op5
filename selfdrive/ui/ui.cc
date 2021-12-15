@@ -213,6 +213,7 @@ void ui_update_params(UIState *s) {
   s->show_debug = params.getBool("ShowDebugUI");
   s->show_gear = params.getBool("ShowCgearUI");//기어
   s->show_bsd = params.getBool("ShowBsdUI");//bsd
+  s->show_tpms = params.getBool("ShowTpmsUI");
 }
 
 static void update_status(UIState *s) {

@@ -125,7 +125,8 @@ typedef struct UIState {
   bool show_debug = false;
   bool show_gear = false;//기어
   bool show_bsd = false;//bsd
-
+  bool show_tpms = false;
+  
 } UIState;
 
 

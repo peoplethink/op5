@@ -449,6 +449,9 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   drawTurnSignals(p, s);
   drawGpsStatus(p, s);
 
+  if(s.show_tpms && width() > 1200)
+    drawTpms(p, s);
+	
   if(s.show_debug && width() > 1200)
     drawDebugText(p, s);
 	
@@ -597,38 +600,6 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   int x = radius / 2 + (bdr_s * 2) + (radius + 50);
   const int y = rect().bottom() - footer_h / 2 - 10;
 
-  // tire pressure
-  {
-    const int w = 58;
-    const int h = 126;
-    const int x = 110 + 1635;
-    const int y = height() - h - 80 + 60;
-
-    auto tpms = car_state.getTpms();
-    const float fl = tpms.getFl();
-    const float fr = tpms.getFr();
-    const float rl = tpms.getRl();
-    const float rr = tpms.getRr();
-
-    p.setOpacity(0.8);
-    p.drawPixmap(x, y, w, h, ic_tire_pressure);
-
-    configFont(p, "Open Sans", 38, "Bold");
-
-    QFontMetrics fm(p.font());
-    QRect rcFont = fm.boundingRect("9");
-
-    int center_x = x + 4;
-    int center_y = y + h/2;
-    const int marginX = (int)(rcFont.width() * 2.7f);
-    const int marginY = (int)((h/2 - rcFont.height()) * 0.7f);
-
-    drawText2(p, center_x-marginX, center_y-marginY-rcFont.height(), Qt::AlignRight, get_tpms_text(fl), get_tpms_color(fl));
-    drawText2(p, center_x+marginX, center_y-marginY-rcFont.height(), Qt::AlignLeft, get_tpms_text(fr), get_tpms_color(fr));
-    drawText2(p, center_x-marginX, center_y+marginY, Qt::AlignRight, get_tpms_text(rl), get_tpms_color(rl));
-    drawText2(p, center_x+marginX, center_y+marginY, Qt::AlignLeft, get_tpms_text(rr), get_tpms_color(rr));
-  }
-
   // cruise gap
   int gap = car_state.getCruiseGap();
   bool longControl = scc_smoother.getLongControl();
@@ -679,6 +650,40 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   }
 
   p.setOpacity(1.);
+}
+
+void OnroadHud::drawTpms(QPainter &p, UIState& s) {
+  const SubMaster &sm = *(s.sm);
+  auto car_state = sm["carState"].getCarState();
+
+  const int w = 58;
+  const int h = 126;
+  const int x = 110 + 1635;
+  const int y = height() - h - 80 + 60;
+
+  auto tpms = car_state.getTpms();
+  const float fl = tpms.getFl();
+  const float fr = tpms.getFr();
+  const float rl = tpms.getRl();
+  const float rr = tpms.getRr();
+
+  p.setOpacity(0.8);
+  p.drawPixmap(x, y, w, h, ic_tire_pressure);
+
+  configFont(p, "Open Sans", 38, "Bold");
+
+  QFontMetrics fm(p.font());
+  QRect rcFont = fm.boundingRect("9");
+
+  int center_x = x + 4;
+  int center_y = y + h/2;
+  const int marginX = (int)(rcFont.width() * 2.7f);
+  const int marginY = (int)((h/2 - rcFont.height()) * 0.7f);
+
+  drawText2(p, center_x-marginX, center_y-marginY-rcFont.height(), Qt::AlignRight, get_tpms_text(fl), get_tpms_color(fl));
+  drawText2(p, center_x+marginX, center_y-marginY-rcFont.height(), Qt::AlignLeft, get_tpms_text(fr), get_tpms_color(fr));
+  drawText2(p, center_x-marginX, center_y+marginY, Qt::AlignRight, get_tpms_text(rl), get_tpms_color(rl));
+  drawText2(p, center_x+marginX, center_y+marginY, Qt::AlignLeft, get_tpms_text(rr), get_tpms_color(rr));
 }
 
 void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {

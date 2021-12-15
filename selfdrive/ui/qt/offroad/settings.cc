@@ -393,11 +393,11 @@ VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
                                             "후측방 감지기 이미지를 볼수 있습니다..",
                                             "../assets/offroad/icon_shell.png"
                                             ));
-  /*layout->addWidget(new ParamControl("ShowTpmsUI",
+  layout->addWidget(new ParamControl("ShowTpmsUI",
                                             "타이어공기압 정보 보기",
                                             "타이어공기압 를 볼수 있습니다..",
                                             "../assets/offroad/icon_shell.png"
-                                            ));*/
+                                            ));
   layout->addWidget(horizontal_line());
   layout->addWidget(new LabelControl("제어메뉴", ""));
   layout->addWidget(new LateralControlSelect());
