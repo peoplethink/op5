@@ -148,8 +148,6 @@ class CarController():
     self.lkas11_cnt = (self.lkas11_cnt + 1) % 0x10
 
     can_sends = []
-    new_actuators = actuators.copy()
-    new_actuators.steer = apply_steer / self.p.STEER_MAX
     
     can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
                                    CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
@@ -269,5 +267,8 @@ class CarController():
         state = 2 if self.car_fingerprint in FEATURES["send_hda_state_2"] else 1
         can_sends.append(create_hda_mfc(self.packer, activated_hda, state))
 
+    new_actuators = actuators.copy()
+    new_actuators.steer = apply_steer / self.p.STEER_MAX    
     new_actuators.accel = self.accel    
-    return actuators, can_sends
+    
+    return new_actuators, can_sends
