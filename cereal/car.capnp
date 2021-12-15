@@ -311,6 +311,7 @@ struct CarControl {
   active @7 :Bool;
 
   actuators @6 :Actuators;
+  actuatorsFinal @10 :Actuators;
   roll @8 :Float32;
   pitch @9 :Float32;
 
@@ -336,8 +337,8 @@ struct CarControl {
 
   struct Actuators {
     # range from 0.0 - 1.0
-    gasDEPRECATED @0: Float32;
-    brakeDEPRECATED @1: Float32;
+    gas @0: Float32;
+    brake @1: Float32;
     # range from -1.0 - 1.0
     steer @2: Float32;
     steeringAngleDeg @3: Float32;
@@ -466,7 +467,6 @@ struct CarParams {
   steerRateCost @33 :Float32; # Lateral MPC cost on steering rate
   steerControlType @34 :SteerControlType;
   radarOffCan @35 :Bool; # True when radar objects aren't visible on CAN
-  minSpeedCan @51 :Float32; # Minimum vehicle speed from CAN (below this value drops to 0)
   stoppingDecelRate @52 :Float32; # m/s^2/s while trying to stop
   startingAccelRate @53 :Float32; # m/s^2/s while trying to start
 
@@ -647,4 +647,5 @@ struct CarParams {
   safetyParamDEPRECATED @10 :Int16;
   safetyModelDEPRECATED @9 :SafetyModel;
   safetyModelPassiveDEPRECATED @42 :SafetyModel = silent;
+  minSpeedCanDEPRECATED @51 :Float32;
 }
