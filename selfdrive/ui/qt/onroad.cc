@@ -968,7 +968,7 @@ void OnroadHud::drawCgear(QPainter &p, UIState& s) {
   QString tgear, tgearshifter;
 
   tgear.sprintf("%.0f", t_gear);
-  configFont(p, "Open Sans", 150, "Bold");
+  configFont(p, "Open Sans", 150, "Semi Bold");
 
   shifter = 1; //디버그용
   p.setPen(QColor(255, 255, 255, 255)); 
@@ -995,7 +995,7 @@ void OnroadHud::drawBsd(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
   auto car_state = sm["carState"].getCarState();
 
-  const int car_size = 220;
+  const int car_size = 230;
   const int car_shift = 500;
   const int car_x_left =  s.fb_w/2 - car_shift;
   const int car_x_right = s.fb_w/2 + car_shift;
@@ -1015,8 +1015,8 @@ void OnroadHud::drawBsd(QPainter &p, UIState& s) {
   bool car_valid_left = bool(car_state.getLeftBlindspot());
   bool car_valid_right = bool(car_state.getRightBlindspot());
 
-  car_valid_left = 1; // 디버그용
-  car_valid_right = 1;
+  //car_valid_left = 1; // 디버그용
+  //car_valid_right = 1;
 
     if (car_valid_status_changed != car_valid_status) {
       blindspot_blinkingrate = 114;
