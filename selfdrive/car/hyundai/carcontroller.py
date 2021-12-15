@@ -78,7 +78,6 @@ class CarController():
     # Adjust it in the range of 0.7 to 1.3
     self.scc_smoother = SccSmoother()
     self.last_blinker_frame = 0
-    self.accel = 0
 
   def update(self, enabled, CS, frame, CC, actuators, pcm_cancel_cmd, visual_alert,
              left_lane, right_lane, left_lane_depart, right_lane_depart, set_speed, lead_visible, controls):
@@ -148,7 +147,6 @@ class CarController():
     self.lkas11_cnt = (self.lkas11_cnt + 1) % 0x10
 
     can_sends = []
-    
     can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
                                    CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
                                    left_lane_warning, right_lane_warning, 0, self.ldws_opt))
@@ -204,7 +202,6 @@ class CarController():
         stopping = controls.LoC.long_control_state == LongCtrlState.stopping
         apply_accel = clip(actuators.accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
         apply_accel = self.scc_smoother.get_apply_accel(CS, controls.sm, apply_accel, stopping)
-        self.accel = accel
 
         controls.apply_accel = apply_accel
         aReqValue = CS.scc12["aReqValue"]
@@ -267,8 +264,4 @@ class CarController():
         state = 2 if self.car_fingerprint in FEATURES["send_hda_state_2"] else 1
         can_sends.append(create_hda_mfc(self.packer, activated_hda, state))
 
-    new_actuators = actuators.copy()
-    new_actuators.steer = apply_steer / self.p.STEER_MAX    
-    new_actuators.accel = self.accel    
-    
-    return new_actuators, can_sends
+    return can_sends

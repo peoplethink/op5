@@ -428,9 +428,9 @@ class CarInterface(CarInterfaceBase):
 
   # scc smoother - hyundai only
   def apply(self, c, controls):
-    ret = self.CC.update(c.enabled, self.CS, self.frame, c, c.actuators,
-                         c.cruiseControl.cancel, c.hudControl.visualAlert, c.hudControl.leftLaneVisible,
-                         c.hudControl.rightLaneVisible, c.hudControl.leftLaneDepart, c.hudControl.rightLaneDepart,
-                         c.hudControl.setSpeed, c.hudControl.leadVisible, controls)
+    can_sends = self.CC.update(c.enabled, self.CS, self.frame, c, c.actuators,
+                               c.cruiseControl.cancel, c.hudControl.visualAlert, c.hudControl.leftLaneVisible,
+                               c.hudControl.rightLaneVisible, c.hudControl.leftLaneDepart, c.hudControl.rightLaneDepart,
+                               c.hudControl.setSpeed, c.hudControl.leadVisible, controls)
     self.frame += 1
-    return ret
+    return can_sends
