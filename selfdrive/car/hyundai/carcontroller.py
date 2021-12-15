@@ -78,6 +78,9 @@ class CarController():
     # Adjust it in the range of 0.7 to 1.3
     self.scc_smoother = SccSmoother()
     self.last_blinker_frame = 0
+	
+  def get_last_output(self):
+    return self.apply_steer_last / self.p.STEER_MAX	
 
   def update(self, enabled, CS, frame, CC, actuators, pcm_cancel_cmd, visual_alert,
              left_lane, right_lane, left_lane_depart, right_lane_depart, set_speed, lead_visible, controls):

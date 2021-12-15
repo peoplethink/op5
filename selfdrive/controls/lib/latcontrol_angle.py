@@ -8,7 +8,7 @@ STEER_ANGLE_SATURATION_THRESHOLD = 2.5  # Degrees
 
 
 class LatControlAngle(LatControl):
-   def update(self, active, CS, CP, VM, params, desired_curvature, desired_curvature_rate, roll):
+   def update(self, active, CS, CP, CI, VM, params, desired_curvature, desired_curvature_rate, roll):
     angle_log = log.ControlsState.LateralAngleState.new_message()
 
     if CS.vEgo < MIN_STEER_SPEED or not active:
