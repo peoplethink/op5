@@ -78,7 +78,7 @@ void OnroadWindow::updateState(const UIState &s) {
     if (alert.type == "controlsUnresponsive") {
       bgColor = bg_colors[STATUS_ALERT];
     }
-    if (!s.scene.is_OpenpilotViewEnabled)  
+    if (!QUIState::ui_state.is_OpenpilotViewEnabled)
     alerts->updateAlert(alert, bgColor);
   }
 
@@ -272,6 +272,7 @@ void OnroadHud::updateState(const UIState &s) {
   const auto cs = sm["controlsState"].getControlsState();
 	
   setProperty("status", s.status);
+  setProperty("ang_str", s.scene.angleSteers);
 	
   // update engageability and DM icons at 2Hz
   if (sm.frame % (UI_FREQ / 2) == 0) {
@@ -292,9 +293,10 @@ void OnroadHud::paintEvent(QPaintEvent *event) {
   p.fillRect(0, 0, width(), header_h, bg);
 	
   // engage-ability icon
-  if (engageable) {
+  //if (engageable) {
+  if (true) {
     drawIcon(p, rect().right() - radius / 2 - bdr_s * 2, radius / 2 + bdr_s,
-             engage_img, bg_colors[status], 1.0);
+             engage_img, bg_colors[status], 1.0, true, ang_str );
   }
 
   if(QUIState::ui_state.recording) {
@@ -323,12 +325,26 @@ void OnroadHud::drawTextWithColor(QPainter &p, int x, int y, const QString &text
   p.drawText(real_rect.x(), real_rect.bottom(), text);
 }
 
-void OnroadHud::drawIcon(QPainter &p, int x, int y, QPixmap &img, QBrush bg, float opacity) {
-  p.setPen(Qt::NoPen);
-  p.setBrush(bg);
-  p.drawEllipse(x - radius / 2, y - radius / 2, radius, radius);
-  p.setOpacity(opacity);
-  p.drawPixmap(x - img_size / 2, y - img_size / 2, img_size, img_size, img);
+void OnroadHud::drawIcon(QPainter &p, int x, int y, QPixmap &img, QBrush bg, float opacity, bool rotation, float angle) {
+  if (rotation) {
+    p.setPen(Qt::NoPen);
+    p.setBrush(bg);
+    p.drawEllipse(x - radius / 2, y - radius / 2, radius, radius);
+    p.setOpacity(opacity);
+    p.save();
+    p.translate(x, y);
+    p.rotate(-angle);
+    QRect r = img.rect();
+    r.moveCenter(QPoint(0,0));
+    p.drawPixmap(r, img);
+    p.restore();
+  } else {
+    p.setPen(Qt::NoPen);
+    p.setBrush(bg);
+    p.drawEllipse(x - radius / 2, y - radius / 2, radius, radius);
+    p.setOpacity(opacity);
+    p.drawPixmap(x - img_size / 2, y - img_size / 2, img);
+  }
 }
 
 // NvgWindow
