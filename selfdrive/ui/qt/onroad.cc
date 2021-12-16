@@ -243,6 +243,105 @@ void OnroadAlerts::paintEvent(QPaintEvent *event) {
 }
 
 // NvgWindow
+OnroadHud::OnroadHud(QWidget *parent) : QWidget(parent) {
+  engage_img = QPixmap("../assets/img_chffr_wheel.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+  //dm_img = QPixmap("../assets/img_driver_face.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+  connect(this, &OnroadHud::valueChanged, [=] { update(); });
+	
+  //ic_brake = QPixmap("../assets/images/img_brake_disc.png").scaled(img_size, img_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+  //ic_autohold_warning = QPixmap("../assets/images/img_autohold_warning.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+  //ic_autohold_active = QPixmap("../assets/images/img_autohold_active.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+  ic_nda = QPixmap("../assets/images/img_nda.png");
+  ic_hda = QPixmap("../assets/images/img_hda.png");
+  ic_tire_pressure = QPixmap("../assets/images/img_tire_pressure.png");
+  ic_turn_signal_l = QPixmap("../assets/images/turn_signal_l.png");
+  ic_turn_signal_r = QPixmap("../assets/images/turn_signal_r.png");
+  ic_satellite = QPixmap("../assets/images/satellite.png");
+  ic_bsd_l = QPixmap("../assets/images/img_car_left.png"); //bsd
+  ic_bsd_r = QPixmap("../assets/images/img_car_right.png"); //bsd
+}
+
+void OnroadHud::updateState(const UIState &s) {
+  const SubMaster &sm = *(s.sm);
+  const auto cs = sm["controlsState"].getControlsState();
+	
+  setProperty("status", s.status);
+  setProperty("ang_str", s.scene.angleSteers);
+	
+  // update engageability and DM icons at 2Hz
+  if (sm.frame % (UI_FREQ / 2) == 0) {
+    setProperty("engageable", cs.getEngageable() || cs.getEnabled());
+    //setProperty("dmActive", sm["driverMonitoringState"].getDriverMonitoringState().getIsActiveMode());
+  }
+}
+
+void OnroadHud::paintEvent(QPaintEvent *event) {
+  //UIState *s = &QUIState::ui_state;
+  QPainter p(this);
+  //p.setRenderHint(QPainter::Antialiasing);
+	
+  // Header gradient
+  //QLinearGradient bg(0, header_h - (header_h / 2.5), 0, header_h);
+  //bg.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0.45));
+  //bg.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
+  //p.fillRect(0, 0, width(), header_h, bg);
+	
+  // engage-ability icon
+  //if (engageable) {
+  if (true) {
+    drawIcon(p, rect().right() - radius / 2 - bdr_s * 2, radius / 2 + bdr_s,
+             engage_img, bg_colors[status], 1.0, true, ang_str );
+  }
+
+  if(QUIState::ui_state.recording) {
+    QPainter p(this);
+    drawCommunity(p, QUIState::ui_state);
+  }
+}
+
+void OnroadHud::drawText(QPainter &p, int x, int y, const QString &text, int alpha) {
+  QFontMetrics fm(p.font());
+  QRect init_rect = fm.boundingRect(text);
+  QRect real_rect = fm.boundingRect(init_rect, 0, text);
+  real_rect.moveCenter({x, y - real_rect.height() / 2});
+
+  p.setPen(QColor(0xff, 0xff, 0xff, alpha));
+  p.drawText(real_rect.x(), real_rect.bottom(), text);
+}
+
+void OnroadHud::drawTextWithColor(QPainter &p, int x, int y, const QString &text, QColor& color) {
+  QFontMetrics fm(p.font());
+  QRect init_rect = fm.boundingRect(text);
+  QRect real_rect = fm.boundingRect(init_rect, 0, text);
+  real_rect.moveCenter({x, y - real_rect.height() / 2});
+
+  p.setPen(color);
+  p.drawText(real_rect.x(), real_rect.bottom(), text);
+}
+
+void OnroadHud::drawIcon(QPainter &p, int x, int y, QPixmap &img, QBrush bg, float opacity, bool rotation, float angle) {
+  // 
+  if (rotation) {
+    p.setPen(Qt::NoPen);
+    p.setBrush(bg);
+    p.drawEllipse(x - radius / 2, y - radius / 2, radius, radius);
+    p.setOpacity(opacity);
+    p.save();
+    p.translate(x, y);
+    p.rotate(-angle);
+    QRect r = img.rect();
+    r.moveCenter(QPoint(0,0));
+    p.drawPixmap(r, img);
+    p.restore();
+  } else {
+    p.setPen(Qt::NoPen);
+    p.setBrush(bg);
+    p.drawEllipse(x - radius / 2, y - radius / 2, radius, radius);
+    p.setOpacity(opacity);
+    p.drawPixmap(x - img_size / 2, y - img_size / 2, img);
+  }
+}
+// NvgWindow
 void NvgWindow::initializeGL() {
   CameraViewWidget::initializeGL();
   qInfo() << "OpenGL version:" << QString((const char*)glGetString(GL_VERSION));
@@ -252,19 +351,6 @@ void NvgWindow::initializeGL() {
 
   prev_draw_t = millis_since_boot();
   setBackgroundColor(bg_colors[STATUS_DISENGAGED]);
-
-  // neokii
-  ic_brake = QPixmap("../assets/images/img_brake_disc.png").scaled(img_size, img_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-  ic_autohold_warning = QPixmap("../assets/images/img_autohold_warning.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-  ic_autohold_active = QPixmap("../assets/images/img_autohold_active.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-  ic_nda = QPixmap("../assets/images/img_nda.png");
-  ic_hda = QPixmap("../assets/images/img_hda.png");
-  ic_tire_pressure = QPixmap("../assets/images/img_tire_pressure.png");
-  ic_turn_signal_l = QPixmap("../assets/images/turn_signal_l.png");
-  ic_turn_signal_r = QPixmap("../assets/images/turn_signal_r.png");
-  ic_satellite = QPixmap("../assets/images/satellite.png");
-  ic_bsd_l = QPixmap("../assets/images/img_car_left.png"); // 측후방 이미지
-  ic_bsd_r = QPixmap("../assets/images/img_car_right.png"); // 측후방 이미지
 }
 
 void NvgWindow::updateFrameMat(int w, int h) {
@@ -375,41 +461,6 @@ void NvgWindow::showEvent(QShowEvent *event) {
   prev_draw_t = millis_since_boot();
 }
 
-void NvgWindow::drawText(QPainter &p, int x, int y, const QString &text, int alpha) {
-  QFontMetrics fm(p.font());
-  QRect init_rect = fm.boundingRect(text);
-  QRect real_rect = fm.boundingRect(init_rect, 0, text);
-  real_rect.moveCenter({x, y - real_rect.height() / 2});
-
-  p.setPen(QColor(0xff, 0xff, 0xff, alpha));
-  p.drawText(real_rect.x(), real_rect.bottom(), text);
-}
-
-void NvgWindow::drawTextWithColor(QPainter &p, int x, int y, const QString &text, QColor& color) {
-  QFontMetrics fm(p.font());
-  QRect init_rect = fm.boundingRect(text);
-  QRect real_rect = fm.boundingRect(init_rect, 0, text);
-  real_rect.moveCenter({x, y - real_rect.height() / 2});
-
-  p.setPen(color);
-  p.drawText(real_rect.x(), real_rect.bottom(), text);
-}
-
-void NvgWindow::drawIcon(QPainter &p, int x, int y, QPixmap &img, QBrush bg, float opacity) {
-  p.setPen(Qt::NoPen);
-  p.setBrush(bg);
-  p.drawEllipse(x - radius / 2, y - radius / 2, radius, radius);
-  p.setOpacity(opacity);
-  p.drawPixmap(x - img_size / 2, y - img_size / 2, img_size, img_size, img);
-}
-
-void NvgWindow::drawText2(QPainter &p, int x, int y, int flags, const QString &text, const QColor& color) {
-  QFontMetrics fm(p.font());
-  QRect rect = fm.boundingRect(text);
-  p.setPen(color);
-  p.drawText(QRect(x, y, rect.width(), rect.height()), flags, text);
-}
-
 void NvgWindow::drawHud(QPainter &p) {
 
   p.setRenderHint(QPainter::Antialiasing);
@@ -495,119 +546,9 @@ void NvgWindow::drawHud(QPainter &p) {
 
   // info
   configFont(p, "Open Sans", 34, "Regular");
-  p.setPen(QColor(0xff, 0xff, 0xff, 200));
-  p.drawText(rect().left() + 20, rect().height() - 15, infoText);
-
-  drawBottomIcons(p);
-}
-
-static const QColor get_tpms_color(float tpms) {
-    if(tpms < 5 || tpms > 60) // N/A
-        return QColor(255, 255, 255, 220);
-    if(tpms < 31)
-        return QColor(255, 90, 90, 220);
-    return QColor(255, 255, 255, 220);
-}
-
-static const QString get_tpms_text(float tpms) {
-    if(tpms < 5 || tpms > 60)
-        return "";
-
-    char str[32];
-    snprintf(str, sizeof(str), "%.0f", round(tpms));
-    return QString(str);
-}
-
-void NvgWindow::drawBottomIcons(QPainter &p) {
-  const SubMaster &sm = *(uiState()->sm);
-  auto car_state = sm["carState"].getCarState();
-  auto scc_smoother = sm["carControl"].getCarControl().getSccSmoother();
-
-  int x = radius / 2 + (bdr_s * 2) + (radius + 50);
-  const int y = rect().bottom() - footer_h / 2 - 10;
-
-  // tire pressure
-  {
-    const int w = 58;
-    const int h = 126;
-    const int x = 110;
-    const int y = height() - h - 80;
-
-    auto tpms = car_state.getTpms();
-    const float fl = tpms.getFl();
-    const float fr = tpms.getFr();
-    const float rl = tpms.getRl();
-    const float rr = tpms.getRr();
-
-    p.setOpacity(0.8);
-    p.drawPixmap(x, y, w, h, ic_tire_pressure);
-
-    configFont(p, "Open Sans", 38, "Bold");
-
-    QFontMetrics fm(p.font());
-    QRect rcFont = fm.boundingRect("9");
-
-    int center_x = x + 4;
-    int center_y = y + h/2;
-    const int marginX = (int)(rcFont.width() * 2.7f);
-    const int marginY = (int)((h/2 - rcFont.height()) * 0.7f);
-
-    drawText2(p, center_x-marginX, center_y-marginY-rcFont.height(), Qt::AlignRight, get_tpms_text(fl), get_tpms_color(fl));
-    drawText2(p, center_x+marginX, center_y-marginY-rcFont.height(), Qt::AlignLeft, get_tpms_text(fr), get_tpms_color(fr));
-    drawText2(p, center_x-marginX, center_y+marginY, Qt::AlignRight, get_tpms_text(rl), get_tpms_color(rl));
-    drawText2(p, center_x+marginX, center_y+marginY, Qt::AlignLeft, get_tpms_text(rr), get_tpms_color(rr));
-  }
-
-  // cruise gap
-  int gap = car_state.getCruiseGap();
-  bool longControl = scc_smoother.getLongControl();
-  int autoTrGap = scc_smoother.getAutoTrGap();
-
-  p.setPen(Qt::NoPen);
-  p.setBrush(QBrush(QColor(0, 0, 0, 255 * .1f)));
-  p.drawEllipse(x - radius / 2, y - radius / 2, radius, radius);
-
-  QString str;
-  float textSize = 50.f;
-  QColor textColor = QColor(255, 255, 255, 200);
-
-  if(gap <= 0) {
-    str = "N/A";
-  }
-  else if(longControl && gap == autoTrGap) {
-    str = "AUTO";
-    textColor = QColor(120, 255, 120, 200);
-  }
-  else {
-    str.sprintf("%d", (int)gap);
-    textColor = QColor(120, 255, 120, 200);
-    textSize = 70.f;
-  }
-
-  configFont(p, "Open Sans", 35, "Bold");
-  drawText(p, x, y-20, "GAP", 200);
-
-  configFont(p, "Open Sans", textSize, "Bold");
-  drawTextWithColor(p, x, y+50, str, textColor);
-
-  // brake
-  x = radius / 2 + (bdr_s * 2) + (radius + 50) * 2;
-  bool brake_valid = car_state.getBrakeLights();
-  float img_alpha = brake_valid ? 1.0f : 0.05f;
-  float bg_alpha = brake_valid ? 0.15f : 0.05f;
-  drawIcon(p, x, y, ic_brake, QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
-
-  // auto hold
-  int autohold = car_state.getAutoHold();
-  if(autohold >= 0) {
-    x = radius / 2 + (bdr_s * 2) + (radius + 50) * 3;
-    img_alpha = autohold > 0 ? 1.0f : 0.05f;
-    bg_alpha = autohold > 0 ? 0.15f : 0.05f;
-    drawIcon(p, x, y, autohold > 1 ? ic_autohold_warning : ic_autohold_active,
-            QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
-  }
-
-  p.setOpacity(1.);
+  p.setPen(QColor(0xff, 0xff, 0xff, 220));
+  p.drawText(rect().left() + 180, rect().height() - 15, infoText);
+  drawBottomIcons(p, s);
 }
 
 void NvgWindow::drawMaxSpeed(QPainter &p) {
@@ -670,7 +611,125 @@ void NvgWindow::drawSpeed(QPainter &p) {
   configFont(p, "Open Sans", 176, "Bold");
   drawText(p, rect().center().x(), 230, speed);
   configFont(p, "Open Sans", 66, "Regular");
-  drawText(p, rect().center().x(), 310, s->scene.is_metric ? "km/h" : "mph", 200);
+  //drawText(p, rect().center().x(), 310, s.scene.is_metric ? "km/h" : "mph", 200)
+}
+
+static const QColor get_tpms_color(float tpms) {
+    if(tpms < 5 || tpms > 60) // N/A
+        return QColor(255, 255, 255, 220);
+    if(tpms < 31)
+        return QColor(255, 90, 90, 220);
+    return QColor(255, 255, 255, 220);
+}
+
+static const QString get_tpms_text(float tpms) {
+    if(tpms < 5 || tpms > 60)
+        return "";
+
+    char str[32];
+    snprintf(str, sizeof(str), "%.0f", round(tpms));
+    return QString(str);
+}
+
+void OnroadHud::drawText2(QPainter &p, int x, int y, int flags, const QString &text, const QColor& color) {
+  QFontMetrics fm(p.font());
+  QRect rect = fm.boundingRect(text);
+  p.setPen(color);
+  p.drawText(QRect(x, y, rect.width(), rect.height()), flags, text);
+}
+
+void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
+  const SubMaster &sm = *(s.sm);
+  auto car_state = sm["carState"].getCarState();
+  auto scc_smoother = sm["carControl"].getCarControl().getSccSmoother();
+
+  int x = radius / 2 + (bdr_s * 2) + (radius + 50);
+  const int y = rect().bottom() - footer_h / 2 - 10;
+
+  // cruise gap
+  int gap = car_state.getCruiseGap();
+  bool longControl = scc_smoother.getLongControl();
+  int autoTrGap = scc_smoother.getAutoTrGap();
+
+  p.setPen(Qt::NoPen);
+  p.setBrush(QBrush(QColor(255, 255, 255, 255 * 0.0f)));
+  p.drawEllipse(x - radius / 2, y - radius / 2, radius, radius);
+
+  QString str;
+  float textSize = 50.f;
+  QColor textColor = QColor(255, 255, 255, 200);
+
+  if(gap <= 0) {
+    str = "N/A";
+  }
+  else if(longControl && gap == autoTrGap) {
+    str = "AUTO";
+    textColor = QColor(255, 255, 255, 250);
+  }
+  else {
+    str.sprintf("%d", (int)gap);
+    textColor = QColor(120, 255, 120, 200);
+    textSize = 70.f;
+  }
+
+  configFont(p, "Open Sans", 35, "Bold");
+  drawText(p, x, y-20, "", 200);
+
+  configFont(p, "Open Sans", textSize, "Bold");
+  drawTextWithColor(p, x-290, y+140, str, textColor);
+	
+  // brake
+  x = radius / 2 + (bdr_s * 2) + (radius + 50) * 2;
+  bool brake_valid = car_state.getBrakeLights();
+  float img_alpha = brake_valid ? 1.0f : 0.15f;
+  float bg_alpha = brake_valid ? 0.0f : 0.0f;
+  drawIcon(p, x, y, ic_brake, QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
+
+  // auto hold
+  int autohold = car_state.getAutoHold();
+  if(autohold >= 0) {
+    x = radius / 2 + (bdr_s * 2) + (radius + 50) * 3;
+    img_alpha = autohold > 0 ? 1.0f : 0.15f;
+    bg_alpha = autohold > 0 ? 0.0f : 0.0f;
+    drawIcon(p, x, y, autohold > 1 ? ic_autohold_warning : ic_autohold_active,
+            QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
+  }
+
+  p.setOpacity(1.);
+}
+
+void OnroadHud::drawTpms(QPainter &p, UIState& s) {
+  const SubMaster &sm = *(s.sm);
+  auto car_state = sm["carState"].getCarState();
+
+  const int w = 58;
+  const int h = 126;
+  const int x = 110 + 1635;
+  const int y = height() - h - 80 + 60;
+
+  auto tpms = car_state.getTpms();
+  const float fl = tpms.getFl();
+  const float fr = tpms.getFr();
+  const float rl = tpms.getRl();
+  const float rr = tpms.getRr();
+
+  p.setOpacity(0.8);
+  p.drawPixmap(x, y, w, h, ic_tire_pressure);
+
+  configFont(p, "Open Sans", 38, "Bold");
+
+  QFontMetrics fm(p.font());
+  QRect rcFont = fm.boundingRect("9");
+
+  int center_x = x + 4;
+  int center_y = y + h/2;
+  const int marginX = (int)(rcFont.width() * 2.7f);
+  const int marginY = (int)((h/2 - rcFont.height()) * 0.7f);
+
+  drawText2(p, center_x-marginX, center_y-marginY-rcFont.height(), Qt::AlignRight, get_tpms_text(fl), get_tpms_color(fl));
+  drawText2(p, center_x+marginX, center_y-marginY-rcFont.height(), Qt::AlignLeft, get_tpms_text(fr), get_tpms_color(fr));
+  drawText2(p, center_x-marginX, center_y+marginY, Qt::AlignRight, get_tpms_text(rl), get_tpms_color(rl));
+  drawText2(p, center_x+marginX, center_y+marginY, Qt::AlignLeft, get_tpms_text(rr), get_tpms_color(rr));
 }
 
 void NvgWindow::drawSpeedLimit(QPainter &p) {
