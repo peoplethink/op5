@@ -146,10 +146,10 @@ def manager_cleanup():
 def manager_thread():
 
   if EON:
-    Process(name="shutdownd", target=launcher, args=("selfdrive.shutdownd",)).start()
+    Process(name="shutdownd", target=launcher, args=("selfdrive.shutdownd", "shutdownd")).start()
     system("am startservice com.neokii.optool/.MainService")
 
-  Process(name="road_speed_limiter", target=launcher, args=("selfdrive.road_speed_limiter",)).start()
+  Process(name="road_speed_limiter", target=launcher, args=("selfdrive.road_speed_limiter", "road_speed_limiter")).start()
 
   cloudlog.bind(daemon="manager")
   cloudlog.info("manager start")

@@ -80,7 +80,6 @@ private:
   QFileSystemWatcher *fs_watch;
 };
 
-
 class C2NetworkPanel: public QWidget {
   Q_OBJECT
 public:
@@ -91,6 +90,8 @@ private:
   QString getIPAddress();
   LabelControl *ipaddress;
 };
+
+
 
 
 class SelectCar : public QWidget {

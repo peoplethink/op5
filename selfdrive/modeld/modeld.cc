@@ -114,7 +114,7 @@ void run_model(ModelState &model, VisionIpcClient &vipc_client) {
       frames_dropped = 0.;
     }
     run_count++;
-      
+
     float frame_drop_ratio = frames_dropped / (1 + frames_dropped);
 
     model_publish(pm, extra.frame_id, frame_id, frame_drop_ratio, *model_output, extra.timestamp_eof, model_execution_time,

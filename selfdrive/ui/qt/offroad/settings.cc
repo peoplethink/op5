@@ -114,7 +114,6 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
 }
 
 DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
-
   setSpacing(50);
   addItem(new LabelControl("Dongle ID", getDongleId().value_or("N/A")));
   addItem(new LabelControl("Serial", params.get("HardwareSerial").c_str()));
@@ -135,7 +134,7 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
       Params().putBool("SoftRestartTriggered", true);
     });
   });
-  
+
   // reset calibration button
   QPushButton *reset_calib_btn = new QPushButton("캘리 및 학습값 초기화");
   reset_calib_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #008299;");
@@ -394,7 +393,7 @@ QString C2NetworkPanel::getIPAddress() {
 
 QWidget *network_panel(QWidget *parent) {
 #ifdef QCOM
-  return new C2NetworkPanel(parent);  
+  return new C2NetworkPanel(parent);
 #else
   return new Networking(parent);
 #endif
@@ -656,7 +655,6 @@ CommunityPanel::CommunityPanel(QWidget* parent) : QWidget(parent) {
   )");
 
   QList<ParamControl*> toggles;
-  
   toggles.append(new ParamControl("PutPrebuilt", 
                                            "Smart Prebuilt 실행 ",
                                            "Prebuilt 파일을 생성하며 부팅속도를 향상시킵니다.",

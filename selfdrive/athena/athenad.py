@@ -133,7 +133,7 @@ def upload_handler(end_event):
 
     try:
       cur_upload_items[tid] = upload_queue.get(timeout=1)._replace(current=True)
-      
+
       if cur_upload_items[tid].id in cancelled_uploads:
         cancelled_uploads.remove(cur_upload_items[tid].id)
         continue
@@ -143,7 +143,7 @@ def upload_handler(end_event):
           cur_upload_items[tid] = cur_upload_items[tid]._replace(progress=cur / sz if sz else 1)
 
         _do_upload(cur_upload_items[tid], cb)
-       UploadQueueCache.cache(upload_queue) 
+        UploadQueueCache.cache(upload_queue)
       except (requests.exceptions.Timeout, requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
         cloudlog.warning(f"athena.upload_handler.retry {e} {cur_upload_items[tid]}")
 
@@ -552,6 +552,7 @@ def main():
   params = Params()
   dongle_id = params.get("DongleId", encoding='utf-8')
   UploadQueueCache.initialize(upload_queue)
+
   ws_uri = ATHENA_HOST + "/ws/v2/" + dongle_id
   api = Api(dongle_id)
 

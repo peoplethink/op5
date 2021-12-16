@@ -35,7 +35,7 @@ def launcher(proc, name):
 
     # add daemon name to cloudlog ctx
     cloudlog.bind(daemon=name)
-    
+
     # exec the process
     mod.main()
   except KeyboardInterrupt:

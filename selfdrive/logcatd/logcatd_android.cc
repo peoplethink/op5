@@ -17,7 +17,7 @@ int main() {
   struct timespec cur_time;
   clock_gettime(CLOCK_REALTIME, &cur_time);
   log_time last_log_time(cur_time);
-  logger_list *logger_list = nullptr; 
+  logger_list *logger_list = nullptr;
 
   while (!do_exit) {
     // setup android logging

@@ -115,7 +115,7 @@ class LongControl():
       freeze_integrator = prevent_overshoot
 
       output_accel = self.pid.update(self.v_pid, CS.vEgo, speed=CS.vEgo, deadzone=deadzone, feedforward=a_target, freeze_integrator=freeze_integrator)
-      
+
       if prevent_overshoot:
         output_accel = min(output_accel, 0.0)
 
@@ -126,6 +126,7 @@ class LongControl():
         output_accel -= CP.stoppingDecelRate * DT_CTRL * \
                         interp(output_accel, [CP.stopAccel, CP.stopAccel/2., 0], [0.3, 0.65, 1.2])
       output_accel = clip(output_accel, accel_limits[0], accel_limits[1])
+
       self.reset(CS.vEgo)
 
     # Intention is to move again, release brake fast before handing control to PID
