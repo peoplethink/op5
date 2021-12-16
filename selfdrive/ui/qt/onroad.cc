@@ -284,7 +284,7 @@ void OnroadHud::updateState(const UIState &s) {
 void OnroadHud::paintEvent(QPaintEvent *event) {
   //UIState *s = &QUIState::ui_state;
   QPainter p(this);
-  p.setRenderHint(QPainter::Antialiasing);
+  //p.setRenderHint(QPainter::Antialiasing);
 	
   // Header gradient
   QLinearGradient bg(0, header_h - (header_h / 2.5), 0, header_h);
