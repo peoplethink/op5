@@ -361,7 +361,7 @@ C2NetworkPanel::C2NetworkPanel(QWidget *parent) : QWidget(parent) {
   const char* gitpull = "sh /data/openpilot/gitpull.sh";
   auto gitpullbtn = new ButtonControl("GitPull", "실행");
   QObject::connect(gitpullbtn, &ButtonControl::clicked, [=]() {
-    if (ConfirmationDialog::confirm("GitPull 실행하시겠습니까?")){
+    if (ConfirmationDialog::confirm("GitPull 실행하시겠습니까?", this)){
       std::system(gitpull);
       QTimer::singleShot(1000, []() { Hardware::reboot(); });
     }
