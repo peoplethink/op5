@@ -85,11 +85,15 @@ typedef struct UIScene {
   bool world_objects_visible;
   int lateralControlSelect;
   float output_scale;
+  
+  bool brakePress;
+  bool brakeLights;
 
   bool is_OpenpilotViewEnabled;
   cereal::PandaState::PandaType pandaType;
   cereal::ControlsState::Reader controls_state;
   cereal::CarControl::Reader car_control;
+  cereal::CarState::Reader car_state;
   
   // modelV2
   float lane_line_probs[4];
