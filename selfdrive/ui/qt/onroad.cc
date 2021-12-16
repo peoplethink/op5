@@ -26,7 +26,7 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   hud = new OnroadHud(this);
   road_view_layout->addWidget(hud);
 
-  nvg->hud = hud;
+  //nvg->hud = hud;
 
   QWidget * split_wrapper = new QWidget;
   split = new QHBoxLayout(split_wrapper);
