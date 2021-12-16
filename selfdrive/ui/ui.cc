@@ -112,13 +112,14 @@ static void update_state(UIState *s) {
   SubMaster &sm = *(s->sm);
   UIScene &scene = s->scene;
   
-  if (sm.updated("carState"))
-  {
-    auto data = sm["carState"].getCarState();
-    auto car_state = (*s->sm)["carState"].getCarState();
-    scene.brakePress = data.getBrakePressed();
-    scene.brakeLights = data.getBrakeLights();
+  if (sm.updated("carState")){
+    scene.car_state = sm["carState"].getCarState();
+    auto cs_data = sm["carState"].getCarState();
+    scene.brakePress = cs_data.getBrakePressed();
+    scene.brakeLights = cs_data.getBrakeLights();
+    scene.angleSteers = cs_data.getSteeringAngleDeg();
   }
+  
   if (scene.started && sm.updated("controlsState")) {
     scene.controls_state = sm["controlsState"].getControlsState();
     scene.lateralControlSelect = scene.controls_state.getLateralControlSelect();
