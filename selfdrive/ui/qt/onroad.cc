@@ -904,7 +904,7 @@ void OnroadHud::drawGpsStatus(QPainter &p, UIState& s) {
 
   int w = 80;
   int h = 60;
-  int x = width() - w - 130;
+  int x = width() - w - 240;
   int y = 30;
 
   p.setOpacity(0.8);
