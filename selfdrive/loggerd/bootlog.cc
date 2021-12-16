@@ -13,7 +13,7 @@ static kj::Array<capnp::word> build_boot_log() {
     bootlog_commands.push_back("sudo nvme smart-log --output-format=json /dev/nvme0");
   }else if (Hardware::EON()) {
    bootlog_commands.push_back("logcat -d");
-    
+  }  
     
   MessageBuilder msg;
   auto boot = msg.initEvent().initBoot();
