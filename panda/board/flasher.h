@@ -6,7 +6,7 @@ bool unlocked = false;
 void debug_ring_callback(uart_ring *ring) {}
 #endif
 
-int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp) {
+int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp, bool hardwired) {
   int resp_len = 0;
 
   // flasher machine
@@ -57,11 +57,21 @@ int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp) {
     // **** 0xd1: enter bootloader mode
     case 0xd1:
       // this allows reflashing of the bootstub
+      // so it's blocked over wifi
       switch (setup->b.wValue.w) {
         case 0:
-          puts("-> entering bootloader\n");
-          enter_bootloader_mode = ENTER_BOOTLOADER_MAGIC;
-          NVIC_SystemReset();
+          // TODO: put this back when it's no longer a "devkit"
+          //#ifdef ALLOW_DEBUG
+          #if 1
+          if (hardwired) {
+          #else
+          // no more bootstub on UNO once OTP block is flashed
+          if (hardwired && ((hw_type != HW_TYPE_UNO) || (!is_provisioned()))) {
+          #endif
+            puts("-> entering bootloader\n");
+            enter_bootloader_mode = ENTER_BOOTLOADER_MAGIC;
+            NVIC_SystemReset();
+          }
           break;
         case 1:
           puts("-> entering softloader\n");
@@ -85,14 +95,16 @@ int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp) {
   return resp_len;
 }
 
-int usb_cb_ep1_in(void *usbdata, int len) {
+int usb_cb_ep1_in(void *usbdata, int len, bool hardwired) {
   UNUSED(usbdata);
   UNUSED(len);
+  UNUSED(hardwired);
   return 0;
 }
-void usb_cb_ep3_out(void *usbdata, int len) {
+void usb_cb_ep3_out(void *usbdata, int len, bool hardwired) {
   UNUSED(usbdata);
   UNUSED(len);
+  UNUSED(hardwired);
 }
 void usb_cb_ep3_out_complete(void) {}
 
@@ -102,7 +114,8 @@ void usb_cb_enumeration_complete(void) {
   is_enumerated = 1;
 }
 
-void usb_cb_ep2_out(void *usbdata, int len) {
+void usb_cb_ep2_out(void *usbdata, int len, bool hardwired) {
+  UNUSED(hardwired);
   current_board->set_led(LED_RED, 0);
   for (int i = 0; i < len/4; i++) {
     flash_write_word(prog_ptr, *(uint32_t*)(usbdata+(i*4)));
@@ -120,11 +133,11 @@ int spi_cb_rx(uint8_t *data, int len, uint8_t *data_out) {
   switch (data[0]) {
     case 0:
       // control transfer
-      resp_len = usb_cb_control_msg((USB_Setup_TypeDef *)(data+4), data_out);
+      resp_len = usb_cb_control_msg((USB_Setup_TypeDef *)(data+4), data_out, 0);
       break;
     case 2:
       // ep 2, flash!
-      usb_cb_ep2_out(data+4, data[2]);
+      usb_cb_ep2_out(data+4, data[2], 0);
       break;
   }
   return resp_len;

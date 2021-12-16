@@ -59,19 +59,19 @@ private:
 
   void drawText2(QPainter &p, int x, int y, int flags, const QString &text, const QColor& color);
 
-  void drawMaxSpeed(QPainter &p);
-  void drawSpeed(QPainter &p);
-  void drawBottomIcons(QPainter &p);
-  void drawSpeedLimit(QPainter &p);
-  void drawTurnSignals(QPainter &p);
-  void drawGpsStatus(QPainter &p);
-  void drawDebugText(QPainter &p);
-  void drawCgear(QPainter &p);//기어
-  void drawBsd(QPainter &p);//bsd
-  void drawTpms(QPainter &p);
+  void drawMaxSpeed(QPainter &p, UIState& s);
+  void drawSpeed(QPainter &p, UIState& s);
+  void drawBottomIcons(QPainter &p, UIState& s);
+  void drawSpeedLimit(QPainter &p, UIState& s);
+  void drawTurnSignals(QPainter &p, UIState& s);
+  void drawGpsStatus(QPainter &p, UIState& s);
+  void drawDebugText(QPainter &p, UIState& s);
+  void drawCgear(QPainter &p, UIState& s);//기어
+  void drawBsd(QPainter &p, UIState& s);//bsd
+  void drawTpms(QPainter &p, UIState& s);
   
 public:
-  void drawCommunity(QPainter &p);
+  void drawCommunity(QPainter &p, UIState& s);
 
 signals:
   void valueChanged();
@@ -98,14 +98,14 @@ class NvgWindow : public CameraViewWidget {
 
 public:
   explicit NvgWindow(VisionStreamType type, QWidget* parent = 0) : CameraViewWidget("camerad", type, true, parent) {}
-
-protected:
+  OnroadHud *hud;
   void paintGL() override;
+protected:
   void initializeGL() override;
   void showEvent(QShowEvent *event) override;
   void updateFrameMat(int w, int h) override;
-  void drawLaneLines(QPainter &painter, const UIScene &scene);
-  void drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const QPointF &vd, bool is_radar);
+  //void drawLaneLines(QPainter &painter, const UIScene &scene);
+  //void drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const QPointF &vd);
   inline QColor redColor(int alpha = 255) { return QColor(201, 34, 49, alpha); }
   double prev_draw_t = 0;
 };
@@ -122,9 +122,9 @@ protected:
   void mousePressEvent(QMouseEvent* e) override;
   void mouseReleaseEvent(QMouseEvent* e) override;
 
-  void paintEvent(QPaintEvent *event) override;
-
 private:
+  void paintEvent(QPaintEvent *event);
+  OnroadHud *hud;
   OnroadAlerts *alerts;
   NvgWindow *nvg;
   QColor bg = bg_colors[STATUS_DISENGAGED];
@@ -138,6 +138,10 @@ private:
   std::shared_ptr<QTimer> record_timer;
   QPoint startPos;
 #endif
+
+signals:
+  void updateStateSignal(const UIState &s);
+  void offroadTransitionSignal(bool offroad);
 
 private slots:
   void offroadTransition(bool offroad);

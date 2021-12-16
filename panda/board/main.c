@@ -198,7 +198,8 @@ int get_rtc_pkt(void *dat) {
 
 
 // send on serial, first byte to select the ring
-void usb_cb_ep2_out(void *usbdata, int len) {
+void usb_cb_ep2_out(void *usbdata, int len, bool hardwired) {
+  UNUSED(hardwired);
   uint8_t *usbdata8 = (uint8_t *)usbdata;
   uart_ring *ur = get_ring_by_number(usbdata8[0]);
   if ((len != 0) && (ur != NULL)) {
@@ -223,7 +224,7 @@ void usb_cb_enumeration_complete(void) {
   is_enumerated = 1;
 }
 
-int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp) {
+int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp, bool hardwired) {
   unsigned int resp_len = 0;
   uart_ring *ur = NULL;
   timestamp_t t;
@@ -319,13 +320,16 @@ int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp) {
     // **** 0xd1: enter bootloader mode
     case 0xd1:
       // this allows reflashing of the bootstub
+      // so it's blocked over wifi
       switch (setup->b.wValue.w) {
         case 0:
           // only allow bootloader entry on debug builds
           #ifdef ALLOW_DEBUG
-            puts("-> entering bootloader\n");
-            enter_bootloader_mode = ENTER_BOOTLOADER_MAGIC;
-            NVIC_SystemReset();
+            if (hardwired) {
+              puts("-> entering bootloader\n");
+              enter_bootloader_mode = ENTER_BOOTLOADER_MAGIC;
+              NVIC_SystemReset();
+            }
           #endif
           break;
         case 1:
@@ -420,7 +424,13 @@ int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp) {
 
     // **** 0xdc: set safety mode
     case 0xdc:
-      set_safety_mode(setup->b.wValue.w, (uint16_t) setup->b.wIndex.w);
+      // Blocked over WiFi.
+      // Allow SILENT, NOOUTPUT and ELM security mode to be set over wifi.
+      if (hardwired || (setup->b.wValue.w == SAFETY_SILENT) ||
+                       (setup->b.wValue.w == SAFETY_NOOUTPUT) ||
+                       (setup->b.wValue.w == SAFETY_ELM327)) {
+        set_safety_mode(setup->b.wValue.w, (uint16_t) setup->b.wIndex.w);
+      }
       break;
     // **** 0xdd: get healthpacket and CANPacket versions
     case 0xdd:
@@ -554,7 +564,6 @@ int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp) {
         heartbeat_counter = 0U;
         heartbeat_lost = false;
         heartbeat_disabled = false;
-        heartbeat_engaged = (setup->b.wValue.w == 1U);
         break;
       }
     // **** 0xf4: k-line/l-line 5 baud initialization
@@ -635,7 +644,7 @@ uint8_t loop_counter = 0U;
 void tick_handler(void) {
   if (TICK_TIMER->SR != 0) {
     // siren
-    //current_board->set_siren((loop_counter & 1U) && (siren_enabled || (siren_countdown > 0U)));
+    current_board->set_siren((loop_counter & 1U) && (siren_enabled || (siren_countdown > 0U)));
 
     // decimated to 1Hz
     if (loop_counter == 0U) {
@@ -682,16 +691,6 @@ void tick_handler(void) {
         controls_allowed_countdown -= 1U;
       } else {
 
-      }
-
-      // exit controls allowed if unused by openpilot for a few seconds
-      if (controls_allowed && !heartbeat_engaged) {
-        heartbeat_engaged_mismatches += 1U;
-        if (heartbeat_engaged_mismatches >= 3U) {
-          controls_allowed = 0U;
-        }
-      } else {
-        heartbeat_engaged_mismatches = 0U;
       }
 
       if (!heartbeat_disabled) {

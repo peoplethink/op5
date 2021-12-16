@@ -1,6 +1,5 @@
 #pragma once
 
-#include <QElapsedTimer>
 #include <QImage>
 #include <QMouseEvent>
 #include <QPushButton>
@@ -75,7 +74,6 @@ private:
 
   QString img_path;
   QVector<QRect> boundingRect;
-  QElapsedTimer click_timer;
 
 signals:
   void completedTraining();

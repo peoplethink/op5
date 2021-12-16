@@ -41,23 +41,27 @@ void debug_ring_callback(uart_ring *ring) {
   }
 }
 
-int usb_cb_ep1_in(void *usbdata, int len) {
+int usb_cb_ep1_in(void *usbdata, int len, bool hardwired) {
   UNUSED(usbdata);
   UNUSED(len);
+  UNUSED(hardwired);
   return 0;
 }
-void usb_cb_ep2_out(void *usbdata, int len) {
+void usb_cb_ep2_out(void *usbdata, int len, bool hardwired) {
   UNUSED(usbdata);
   UNUSED(len);
+  UNUSED(hardwired);
 }
-void usb_cb_ep3_out(void *usbdata, int len) {
+void usb_cb_ep3_out(void *usbdata, int len, bool hardwired) {
   UNUSED(usbdata);
   UNUSED(len);
+  UNUSED(hardwired);
 }
 void usb_cb_ep3_out_complete(void) {}
 void usb_cb_enumeration_complete(void) {}
 
-int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp) {
+int usb_cb_control_msg(USB_Setup_TypeDef *setup, uint8_t *resp, bool hardwired) {
+  UNUSED(hardwired);
   unsigned int resp_len = 0;
   uart_ring *ur = NULL;
   switch (setup->b.bRequest) {

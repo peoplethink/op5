@@ -421,7 +421,6 @@ struct CarParams {
   enableDsu @5 :Bool;        # driving support unit
   enableApgs @6 :Bool;       # advanced parking guidance system
   enableBsm @56 :Bool;       # blind spot monitoring
-  flags @64 :UInt32;         # flags for car specific quirks
 
   minEnableSpeed @7 :Float32;
   minSteerSpeed @8 :Float32;
@@ -492,14 +491,14 @@ struct CarParams {
     safetyParam @1 :Int16;
   }
   
-  mdpsBus @65: Int8;
-  sasBus @66: Int8;
-  sccBus @67: Int8;
-  enableAutoHold @68 :Bool;
-  hasScc13 @69 :Bool;
-  hasScc14 @70 :Bool;
-  hasEms @71 :Bool;
-  c3Mdps @72 : Bool;
+  mdpsBus @64: Int8;
+  sasBus @65: Int8;
+  sccBus @66: Int8;
+  enableAutoHold @67 :Bool;
+  hasScc13 @68 :Bool;
+  hasScc14 @69 :Bool;
+  hasEms @70 :Bool;
+  c3Mdps @71 : Bool;
 
   struct LateralParams {
     torqueBP @0 :List(Int32);
