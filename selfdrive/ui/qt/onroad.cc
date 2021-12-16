@@ -674,7 +674,7 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   drawText(p, x, y-20, "", 200);
 
   configFont(p, "Open Sans", textSize, "Bold");
-  drawTextWithColor(p, x-290, y+145, str, textColor);
+  drawTextWithColor(p, x-290, y+140, str, textColor);
 	
   // brake
   x = radius / 2 + (bdr_s * 2) + (radius + 50) * 2;
@@ -1012,13 +1012,13 @@ void OnroadHud::drawCgear(QPainter &p, UIState& s) {
   QString tgear, tgearshifter;
 
   tgear.sprintf("%.0f", t_gear);
-  configFont(p, "Open Sans", 150, "Semi Bold");
+  configFont(p, "Open Sans", 150, "Bold");
 
-  //shifter = 1; //디버그용
+  shifter = 1; //디버그용
   p.setPen(QColor(255, 255, 255, 255)); 
 
   int x_gear = 45;
-  int y_gear = 960;
+  int y_gear = 952;
   if ((t_gear < 9) && (t_gear !=0)) { 
     p.drawText(x_gear, y_gear, tgear);
   } else if (t_gear == 14 ) { 
