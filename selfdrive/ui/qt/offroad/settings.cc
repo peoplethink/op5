@@ -336,7 +336,7 @@ void SoftwarePanel::updateLabels() {
 
 C2NetworkPanel::C2NetworkPanel(QWidget *parent) : QWidget(parent) {
   QVBoxLayout *layout = new QVBoxLayout(this);
-  layout->setContentsMargins(50, 0, 50, 0);
+  layout->setContentsMargins(20, 0, 20, 0); // 공간조절
 
   ListWidget *list = new ListWidget();
   list->setSpacing(30);
@@ -491,13 +491,14 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   QPushButton *close_btn = new QPushButton("← 닫기");
   close_btn->setStyleSheet(R"(
     QPushButton {
-      font-size: 140px;
-      padding-bottom: 20px;
+      font-size: 50px;
       font-weight: bold;
-      border 1px grey solid;
-      border-radius: 100px;
-      background-color: #292929;
-      font-weight: 400;
+      margin: 0px;
+      padding: 15px;
+      border-width: 0;
+      border-radius: 30px;
+      color: #dddddd;
+      background-color: #444444;
     }
     QPushButton:pressed {
       background-color: #3B3B3B;
@@ -531,7 +532,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
 #endif
 
   const int padding = panels.size() > 3 ? 25 : 35;
-  
+
   nav_btns = new QButtonGroup(this);
   for (auto &[name, panel] : panels) {
     QPushButton *btn = new QPushButton(name);
@@ -542,7 +543,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
         color: grey;
         border: none;
         background: none;
-        font-size: 65px;
+        font-size: 60px;
         font-weight: 500;
         padding-top: %1px;
         padding-bottom: %1px;
@@ -554,7 +555,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
         color: #ADADAD;
       }
     )").arg(padding));
-    
+
     nav_btns->addButton(btn);
     sidebar_layout->addWidget(btn, 0, Qt::AlignRight);
 
@@ -570,7 +571,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     });
   }
   sidebar_layout->setContentsMargins(50, 50, 100, 50);
-  
+
   // main settings layout, sidebar + main panel
   QHBoxLayout *main_layout = new QHBoxLayout(this);
 
@@ -586,7 +587,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     SettingsWindow {
       background-color: black;
     }
-  )"); 
+  )");
 }
 
 void SettingsWindow::hideEvent(QHideEvent *event) {
