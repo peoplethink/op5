@@ -235,8 +235,8 @@ void DevicePanel::updateCalibDescription() {
         double pitch = calib.getRpyCalib()[1] * (180 / M_PI);
         double yaw = calib.getRpyCalib()[2] * (180 / M_PI);
         desc += QString(" 장치 장착상태는 %1° %2 그리고 %3° %4.")
-                    .arg(QString::number(std::abs(pitch), 'g', 1), pitch > 0 ? "위로" : "아래로",
-                         QString::number(std::abs(yaw), 'g', 1), yaw > 0 ? "우측으로" : "");
+                    .arg(QString::number(std::abs(pitch), 'g', 1), pitch > 0 ? "아래로" : "위로",
+                         QString::number(std::abs(yaw), 'g', 1), yaw > 0 ? "좌측으로" : "우측으로");
       }
     } catch (kj::Exception) {
       qInfo() << "invalid CalibrationParams";
