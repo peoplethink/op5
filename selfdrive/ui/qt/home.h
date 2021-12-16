@@ -43,6 +43,10 @@ signals:
   void openSettings();
   void closeSettings();
 
+  // forwarded signals
+  void update(const UIState &s);
+  void offroadTransitionSignal(bool offroad);
+
 public slots:
   void offroadTransition(bool offroad);
   void showDriverView(bool show);
