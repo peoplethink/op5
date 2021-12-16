@@ -96,7 +96,7 @@ def model_replay(lr, frs):
           log_msgs.append(messaging.recv_one(sm.sock[packet_from_camera[msg.which()]]))
 
         frame_idxs[msg.which()] += 1
-        if frame_idxs[msg.which()] >= frs[msg.which()].frame_count: 
+        if frame_idxs[msg.which()] >= frs[msg.which()].frame_count:
           break
 
         spinner.update("replaying models:  road %d/%d,  driver %d/%d" % (frame_idxs['roadCameraState'],
@@ -107,7 +107,7 @@ def model_replay(lr, frs):
     managed_processes['modeld'].stop()
     managed_processes['dmonitoringmodeld'].stop()
 
-    
+
   return log_msgs
 
 
@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
   # run replay
   log_msgs = model_replay(lr, frs)
- 
+
   # get diff
   failed = False
   if not update:
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     with open("model_diff.txt", "w") as f:
       f.write(diff2)
 
-  # upload new refs   
+  # upload new refs
   if update or failed:
     from selfdrive.test.openpilotci import upload_file
 
