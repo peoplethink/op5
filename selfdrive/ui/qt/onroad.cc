@@ -902,9 +902,9 @@ void OnroadHud::drawGpsStatus(QPainter &p, UIState& s) {
   if(accuracy < 0.01f || accuracy > 20.f)
     return;
 
-  int w = 80;
-  int h = 60;
-  int x = width() - w - 240;
+  int w = 90;
+  int h = 70;
+  int x = width() - w - 320;
   int y = 30;
 
   p.setOpacity(0.8);
