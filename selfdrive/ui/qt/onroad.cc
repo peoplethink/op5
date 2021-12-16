@@ -23,10 +23,6 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   road_view_layout->setStackingMode(QStackedLayout::StackAll);
   nvg = new NvgWindow(VISION_STREAM_RGB_BACK, this);
   road_view_layout->addWidget(nvg);
-  hud = new OnroadHud(this);
-  road_view_layout->addWidget(hud);
-
-  nvg->hud = hud;
 
   QWidget * split_wrapper = new QWidget;
   split = new QHBoxLayout(split_wrapper);
@@ -44,8 +40,8 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   alerts->raise();
 
   setAttribute(Qt::WA_OpaquePaintEvent);
-  QObject::connect(this, &OnroadWindow::updateStateSignal, this, &OnroadWindow::updateState);
-  QObject::connect(this, &OnroadWindow::offroadTransitionSignal, this, &OnroadWindow::offroadTransition);
+  QObject::connect(uiState(), &UIState::uiUpdate, this, &OnroadWindow::updateState);
+  QObject::connect(uiState(), &UIState::offroadTransition, this, &OnroadWindow::offroadTransition);
 
 #ifdef QCOM2
   // screen recoder - neokii
@@ -56,7 +52,7 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
       recorder->update_screen();
     }
   });
-	record_timer->start(1000/15);
+	record_timer->start(1000/UI_FREQ);
 
   QWidget* recorder_widget = new QWidget(this);
   QVBoxLayout * recorder_layout = new QVBoxLayout (recorder_widget);
@@ -81,8 +77,6 @@ void OnroadWindow::updateState(const UIState &s) {
     if (!s.scene.is_OpenpilotViewEnabled)  
     alerts->updateAlert(alert, bgColor);
   }
-
-  hud->updateState(s);
 
   if (bg != bgColor) {
     // repaint border
@@ -158,10 +152,10 @@ void OnroadWindow::mousePressEvent(QMouseEvent* e) {
 void OnroadWindow::offroadTransition(bool offroad) {
 #ifdef ENABLE_MAPS
   if (!offroad) {
-    if (map == nullptr && (QUIState::ui_state.has_prime || !MAPBOX_TOKEN.isEmpty())) {
+    if (map == nullptr && (uiState()->has_prime || !MAPBOX_TOKEN.isEmpty())) {
       MapWindow * m = new MapWindow(get_mapbox_settings());
       m->setFixedWidth(topWidget(this)->width() / 2);
-      QObject::connect(this, &OnroadWindow::offroadTransitionSignal, m, &MapWindow::offroadTransition);
+      QObject::connect(uiState(), &UIState::offroadTransition, m, &MapWindow::offroadTransition);
       split->addWidget(m, 0, Qt::AlignRight);
       map = m;
     }
@@ -248,7 +242,7 @@ void OnroadAlerts::paintEvent(QPaintEvent *event) {
   }
 }
 
-// OnroadHud
+// NvgWindow
 OnroadHud::OnroadHud(QWidget *parent) : QWidget(parent) {
   engage_img = QPixmap("../assets/img_chffr_wheel.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   //dm_img = QPixmap("../assets/img_driver_face.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -362,7 +356,7 @@ void NvgWindow::initializeGL() {
 void NvgWindow::updateFrameMat(int w, int h) {
   CameraViewWidget::updateFrameMat(w, h);
 
-  UIState *s = &QUIState::ui_state;
+  UIState *s = uiState();
   s->fb_w = w;
   s->fb_h = h;
   auto intrinsic_matrix = s->wide_camera ? ecam_intrinsic_matrix : fcam_intrinsic_matrix;
@@ -380,7 +374,7 @@ void NvgWindow::updateFrameMat(int w, int h) {
       .translate(-intrinsic_matrix.v[2], -intrinsic_matrix.v[5]);
 }
 
-void OnroadHud::drawLaneLines(QPainter &painter, const UIScene &scene) {
+void NvgWindow::drawLaneLines(QPainter &painter, const UIScene &scene) {
   if (!scene.end_to_end) {
     // lanelines
     for (int i = 0; i < std::size(scene.lane_line_vertices); ++i) {
@@ -401,7 +395,7 @@ void OnroadHud::drawLaneLines(QPainter &painter, const UIScene &scene) {
   painter.drawPolygon(scene.track_vertices.v, scene.track_vertices.cnt);
 }
 
-void OnroadHud::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const QPointF &vd, bool is_radar) {
+void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const QPointF &vd, bool is_radar) {
   const float speedBuff = 10.;
   const float leadBuff = 40.;
   const float d_rel = lead_data.getX()[0];
@@ -434,18 +428,22 @@ void OnroadHud::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
 }
 
 void NvgWindow::paintGL() {
+}
+
+void NvgWindow::paintEvent(QPaintEvent *event) {
+  QPainter p;
+  p.begin(this);
+
+  p.beginNativePainting();
   CameraViewWidget::paintGL();
-	
-  UIState *s = &QUIState::ui_state;
+  p.endNativePainting();
+
+  UIState *s = uiState();
   if (s->scene.world_objects_visible) {
-    if(!s->recording) {
-      QPainter p(this);
-      hud->drawCommunity(p, QUIState::ui_state);
-    }
-    else {
-      hud->update();
-    }
+    drawHud(p);
   }
+
+  p.end();
 
   double cur_draw_t = millis_since_boot();
   double dt = cur_draw_t - prev_draw_t;
@@ -459,11 +457,11 @@ void NvgWindow::paintGL() {
 void NvgWindow::showEvent(QShowEvent *event) {
   CameraViewWidget::showEvent(event);
 
-  ui_update_params(&QUIState::ui_state);
+  ui_update_params(uiState());
   prev_draw_t = millis_since_boot();
 }
 
-void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
+void NvgWindow::drawHud(QPainter &p) {
 
   p.setRenderHint(QPainter::Antialiasing);
   p.setPen(Qt::NoPen);
@@ -475,35 +473,37 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   bg.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
   p.fillRect(0, 0, width(), header_h, bg);
 
-  const SubMaster &sm = *(s.sm);
+  UIState *s = uiState();
 
-  drawLaneLines(p, s.scene);
+  const SubMaster &sm = *(s->sm);
+
+  drawLaneLines(p, s->scene);
 
   auto leads = sm["modelV2"].getModelV2().getLeadsV3();
   if (leads[0].getProb() > .5) {
-    drawLead(p, leads[0], s.scene.lead_vertices[0], s.scene.lead_radar[0]);
+    drawLead(p, leads[0], s->scene.lead_vertices[0], s->scene.lead_radar[0]);
   }
   if (leads[1].getProb() > .5 && (std::abs(leads[1].getX()[0] - leads[0].getX()[0]) > 3.0)) {
-    drawLead(p, leads[1], s.scene.lead_vertices[1], s.scene.lead_radar[1]);
+    drawLead(p, leads[1], s->scene.lead_vertices[1], s->scene.lead_radar[1]);
   }
 
-  drawMaxSpeed(p, s);
-  drawSpeed(p, s);
-  drawSpeedLimit(p, s);
-  drawTurnSignals(p, s);
-  drawGpsStatus(p, s);
+  drawMaxSpeed(p);
+  drawSpeed(p);
+  drawSpeedLimit(p);
+  drawTurnSignals(p);
+  drawGpsStatus(p);
 
-  if(s.show_tpms && width() > 1200)
-    drawTpms(p, s);
+  if(s->show_tpms && width() > 1200)
+    drawTpms(p);
 	
-  if(s.show_debug && width() > 1200)
-    drawDebugText(p, s);
+  if(s->show_debug && width() > 1200)
+    drawDebugText(p);
 	
-  if(s.show_gear && width() > 1200)
-    drawCgear(p, s);//기어
+  if(s->show_gear && width() > 1200)
+    drawCgear(p);//기어
 	
-  if(s.show_bsd && width() > 1200)
-    drawBsd(p, s);//bsd
+  if(s->show_bsd && width() > 1200)
+    drawBsd(p);//bsd
 
   char str[1024];
   const auto car_state = sm["carState"].getCarState();
@@ -515,7 +515,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   const char* lateral_state[] = {"PID", "INDI", "LQR"};
 
   const auto scc_smoother = sm["carControl"].getCarControl().getSccSmoother();
-  bool is_metric = s.scene.is_metric;
+  bool is_metric = s->scene.is_metric;
   bool long_control = scc_smoother.getLongControl();
 
   // kph
@@ -551,10 +551,11 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   drawBottomIcons(p, s);
 }
 
-void OnroadHud::drawMaxSpeed(QPainter &p, UIState& s) {
-  const SubMaster &sm = *(s.sm);
+void NvgWindow::drawMaxSpeed(QPainter &p) {
+  UIState *s = uiState();
+  const SubMaster &sm = *(s->sm);
   const auto scc_smoother = sm["carControl"].getCarControl().getSccSmoother();
-  bool is_metric = s.scene.is_metric;
+  bool is_metric = s->scene.is_metric;
   bool long_control = scc_smoother.getLongControl();
 
   // kph
@@ -600,10 +601,11 @@ void OnroadHud::drawMaxSpeed(QPainter &p, UIState& s) {
   }
 }
 
-void OnroadHud::drawSpeed(QPainter &p, UIState& s) {
-  const SubMaster &sm = *(s.sm);
-  float cur_speed = std::max(0.0, sm["carState"].getCarState().getCluSpeedMs() * (s.scene.is_metric ? MS_TO_KPH : MS_TO_MPH));
-	
+void NvgWindow::drawSpeed(QPainter &p) {
+  UIState *s = uiState();
+  const SubMaster &sm = *(s->sm);
+  float cur_speed = std::max(0.0, sm["carState"].getCarState().getCluSpeedMs() * (s->scene.is_metric ? MS_TO_KPH : MS_TO_MPH));
+
   QString speed;
   speed.sprintf("%.0f", cur_speed);
   configFont(p, "Open Sans", 176, "Bold");
@@ -730,8 +732,8 @@ void OnroadHud::drawTpms(QPainter &p, UIState& s) {
   drawText2(p, center_x+marginX, center_y+marginY, Qt::AlignLeft, get_tpms_text(rr), get_tpms_color(rr));
 }
 
-void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {
-  const SubMaster &sm = *(s.sm);
+void NvgWindow::drawSpeedLimit(QPainter &p) {
+  const SubMaster &sm = *(uiState()->sm);
   auto car_state = sm["carState"].getCarState();
   auto scc_smoother = sm["carControl"].getCarControl().getSccSmoother();
 
@@ -817,7 +819,7 @@ void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {
   }
 }
 
-void OnroadHud::drawTurnSignals(QPainter &p, UIState& s) {
+void NvgWindow::drawTurnSignals(QPainter &p) {
   static int blink_index = 0;
   static int blink_wait = 0;
   static double prev_ts = 0.0;
@@ -827,7 +829,7 @@ void OnroadHud::drawTurnSignals(QPainter &p, UIState& s) {
     blink_index = 0;
   }
   else {
-    const SubMaster &sm = *(s.sm);
+    const SubMaster &sm = *(uiState()->sm);
     auto car_state = sm["carState"].getCarState();
     bool left_on = car_state.getLeftBlinker();
     bool right_on = car_state.getRightBlinker();
@@ -895,8 +897,8 @@ void OnroadHud::drawTurnSignals(QPainter &p, UIState& s) {
   p.setOpacity(1.);
 }
 
-void OnroadHud::drawGpsStatus(QPainter &p, UIState& s) {
-  const SubMaster &sm = *(s.sm);
+void NvgWindow::drawGpsStatus(QPainter &p) {
+  const SubMaster &sm = *(uiState()->sm);
   auto gps = sm["gpsLocationExternal"].getGpsLocationExternal();
   float accuracy = gps.getAccuracy();
   if(accuracy < 0.01f || accuracy > 20.f)
@@ -923,8 +925,8 @@ void OnroadHud::drawGpsStatus(QPainter &p, UIState& s) {
   p.setOpacity(1.);
 }
 
-void OnroadHud::drawDebugText(QPainter &p, UIState& s) {
-  const SubMaster &sm = *(s.sm);
+void NvgWindow::drawDebugText(QPainter &p) {
+  const SubMaster &sm = *(uiState()->sm);
   QString str, temp;
 
   int y = 80;
@@ -1000,8 +1002,8 @@ void OnroadHud::drawDebugText(QPainter &p, UIState& s) {
   p.drawText(text_x, y, str);
 }
 //기어
-void OnroadHud::drawCgear(QPainter &p, UIState& s) {
-  const SubMaster &sm = *(s.sm);
+void NvgWindow::drawCgear(QPainter &p) {
+  const SubMaster &sm = *(uiState()->sm);
   auto car_state = sm["carState"].getCarState();
 
   auto t_gear = car_state.getCurrentGear();
@@ -1035,8 +1037,8 @@ void OnroadHud::drawCgear(QPainter &p, UIState& s) {
 
 }
 
-void OnroadHud::drawBsd(QPainter &p, UIState& s) {
-  const SubMaster &sm = *(s.sm);
+void NvgWindow::drawBsd(QPainter &p) {
+  const SubMaster &sm = *(uiState()->sm);
   auto car_state = sm["carState"].getCarState();
 
   const int car_size = 230;
