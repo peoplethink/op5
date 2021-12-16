@@ -585,13 +585,8 @@ void OnroadHud::drawMaxSpeed(QPainter &p, UIState& s) {
 }
 
 void OnroadHud::drawSpeed(QPainter &p, UIState& s) {
-  UIScene &scene = s->scene;
   const SubMaster &sm = *(s.sm);
   float cur_speed = std::max(0.0, sm["carState"].getCarState().getCluSpeedMs() * (s.scene.is_metric ? MS_TO_KPH : MS_TO_MPH));
-
-  val_color = QColor(255, 255, 255, 100);
-  if( s->scene.brakePress ) val_color = QColor(201, 34, 49, 100);
-  else if( s->scene.brakeLights ) val_color = QColor(201, 34, 49, 100);
 	
   QString speed;
   speed.sprintf("%.0f", cur_speed);
