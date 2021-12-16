@@ -326,6 +326,7 @@ void OnroadHud::drawTextWithColor(QPainter &p, int x, int y, const QString &text
 }
 
 void OnroadHud::drawIcon(QPainter &p, int x, int y, QPixmap &img, QBrush bg, float opacity, bool rotation, float angle) {
+  // 
   if (rotation) {
     p.setPen(Qt::NoPen);
     p.setBrush(bg);
@@ -346,7 +347,6 @@ void OnroadHud::drawIcon(QPainter &p, int x, int y, QPixmap &img, QBrush bg, flo
     p.drawPixmap(x - img_size / 2, y - img_size / 2, img);
   }
 }
-
 // NvgWindow
 void NvgWindow::initializeGL() {
   CameraViewWidget::initializeGL();
