@@ -252,9 +252,39 @@ static void update_status(UIState *s) {
   started_prev = s->scene.started;
 }
 
+/*static void update_extras(UIState *s)
+{
+   UIScene &scene = s->scene;
+   SubMaster &sm = *(s->sm);
 
-UIState::UIState(QObject *parent) : QObject(parent) {
-  sm = std::make_unique<SubMaster, const std::initializer_list<const char *>>({
+   if(sm.updated("carControl"))
+    scene.car_control = sm["carControl"].getCarControl();
+
+   if(sm.updated("gpsLocationExternal"))
+    scene.gps_ext = sm["gpsLocationExternal"].getGpsLocationExternal();
+
+   if(sm.updated("liveParameters"))
+    scene.live_params = sm["liveParameters"].getLiveParameters();
+
+   if (sm.updated("ubloxGnss")) {
+    auto data = sm["ubloxGnss"].getUbloxGnss();
+    if (data.which() == cereal::UbloxGnss::MEASUREMENT_REPORT) {
+      scene.satelliteCount = data.getMeasurementReport().getNumMeas();
+    }
+   }
+
+   if (sm.updated("radarState") && s->vg) {
+    std::optional<cereal::ModelDataV2::XYZTData::Reader> line;
+    if (sm.rcv_frame("modelV2") > 0) {
+      line = sm["modelV2"].getModelV2().getPosition();
+    }
+    update_leads_radar(s, sm["radarState"].getRadarState(), line);
+  }
+}*/
+
+
+QUIState::QUIState(QObject *parent) : QObject(parent) {
+  ui_state.sm = std::make_unique<SubMaster, const std::initializer_list<const char *>>({
     "modelV2", "controlsState", "liveCalibration", "radarState", "deviceState", "roadCameraState",
     "pandaStates", "carParams", "driverMonitoringState", "sensorEvents", "carState", "liveLocationKalman",
     "gpsLocationExternal", "carControl", "liveParameters", "ubloxGnss"});
@@ -287,8 +317,6 @@ void QUIState::update() {
 }
 
 Device::Device(QObject *parent) : brightness_filter(BACKLIGHT_OFFROAD, BACKLIGHT_TS, BACKLIGHT_DT), QObject(parent) {
-  setAwake(true);
-  resetInteractiveTimout();
 }
 
 void Device::update(const UIState &s) {
@@ -299,17 +327,17 @@ void Device::update(const UIState &s) {
   QUIState::ui_state.awake = awake;
 }
 
-void Device::setAwake(bool on) {
+void Device::setAwake(bool on, bool reset) {
   if (on != awake) {
     awake = on;
     Hardware::set_display_power(awake);
     LOGD("setting display power %d", awake);
     emit displayPowerChanged(awake);
   }
-}
 
-void Device::resetInteractiveTimout() {
-  interactive_timeout = (ignition_on ? 10 : 30) * UI_FREQ;
+  if (reset) {
+    awake_timeout = 30 * UI_FREQ;
+  }
 }
 
 void Device::updateBrightness(const UIState &s) {
@@ -340,28 +368,18 @@ void Device::updateBrightness(const UIState &s) {
   last_brightness = brightness;
 }
 
-bool Device::motionTriggered(const UIState &s) {
-  static float accel_prev = 0;
-  static float gyro_prev = 0;
-
-  bool accel_trigger = abs(s.scene.accel_sensor - accel_prev) > 0.2;
-  bool gyro_trigger = abs(s.scene.gyro_sensor - gyro_prev) > 0.15;
-
-  gyro_prev = s.scene.gyro_sensor;
-  accel_prev = (accel_prev * (accel_samples - 1) + s.scene.accel_sensor) / accel_samples;
-
-  return (!awake && accel_trigger && gyro_trigger);
-}
-
 void Device::updateWakefulness(const UIState &s) {
-  bool ignition_just_turned_off = !s.scene.ignition && ignition_on;
-  ignition_on = s.scene.ignition;
+  awake_timeout = std::max(awake_timeout - 1, 0);
 
-  if (ignition_just_turned_off || motionTriggered(s)) {
-    resetInteractiveTimout();
-  } else if (interactive_timeout > 0 && --interactive_timeout == 0) {
-    emit interactiveTimout();
+  bool should_wake = s.scene.started || s.scene.ignition;
+  if (!should_wake) {
+    // tap detection while display is off
+    bool accel_trigger = abs(s.scene.accel_sensor - accel_prev) > 0.2;
+    bool gyro_trigger = abs(s.scene.gyro_sensor - gyro_prev) > 0.15;
+    should_wake = accel_trigger && gyro_trigger;
+    gyro_prev = s.scene.gyro_sensor;
+    accel_prev = (accel_prev * (accel_samples - 1) + s.scene.accel_sensor) / accel_samples;
   }
 
-  setAwake(s.scene.ignition || interactive_timeout > 0);
+  setAwake(awake_timeout, should_wake);
 }

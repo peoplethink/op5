@@ -173,22 +173,22 @@ private:
   const float accel_samples = 5*UI_FREQ;
 
   bool awake = false;
-  int interactive_timeout = 0;
-  bool ignition_on = false;
+  int awake_timeout = 0;
+  float accel_prev = 0;
+  float gyro_prev = 0;
   int last_brightness = 0;
   FirstOrderFilter brightness_filter;
 
+  QTimer *timer;
+
   void updateBrightness(const UIState &s);
   void updateWakefulness(const UIState &s);
-  bool motionTriggered(const UIState &s);
-  void setAwake(bool on);
 
 signals:
   void displayPowerChanged(bool on);
-  void interactiveTimout();
 
 public slots:
-  void resetInteractiveTimout();
+  void setAwake(bool on, bool reset);
   void update(const UIState &s);
 };
 
