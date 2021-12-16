@@ -36,7 +36,6 @@ private:
   int status = STATUS_DISENGAGED;
   
   // neokii
-  QPixmap ic_engage;
   QPixmap ic_brake;
   QPixmap ic_autohold_warning;
   QPixmap ic_autohold_active;
