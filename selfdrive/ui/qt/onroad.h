@@ -34,7 +34,10 @@ private:
   const int radius = 192;
   const int img_size = (radius / 2) * 1.5;
   bool engageable = false;
+  int status = STATUS_ENGAGED;
   int status = STATUS_DISENGAGED;
+  int status = STATUS_WARNING;
+  
   float ang_str = 0;
   
   // neokii
