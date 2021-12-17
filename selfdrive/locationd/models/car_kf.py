@@ -19,7 +19,6 @@ else:
 
 
 i = 0
-ACCELERATION_DUE_TO_GRAVITY = 9.8
 
 def _slice(n):
   global i
@@ -54,7 +53,7 @@ class CarKalman(KalmanFilter):
     10.0, 0.0,
     0.0,
     0.0,
-    0.0,
+    0.0
   ])
 
   # process noise
@@ -67,7 +66,7 @@ class CarKalman(KalmanFilter):
     .1**2, .01**2,
     math.radians(0.1)**2,
     math.radians(0.1)**2,
-    math.radians(0.5)**2,
+    math.radians(1)**2,
   ])
   P_initial = Q.copy()
 
@@ -93,7 +92,7 @@ class CarKalman(KalmanFilter):
   def generate_code(generated_dir):
     dim_state = CarKalman.initial_x.shape[0]
     name = CarKalman.name
-    
+
     # vehicle models comes from The Science of Vehicle Dynamics: Handling, Braking, and Ride of Road and Race Cars
     # Model used is in 6.15 with formula from 6.198
 
@@ -128,7 +127,7 @@ class CarKalman(KalmanFilter):
     B = sp.Matrix(np.zeros((2, 1)))
     B[0, 0] = cF / m / sR
     B[1, 0] = (cF * aF) / j / sR
-    
+
     C = sp.Matrix(np.zeros((2, 1)))
     C[0, 0] = ACCELERATION_DUE_TO_GRAVITY
     C[1, 0] = 0
@@ -161,7 +160,7 @@ class CarKalman(KalmanFilter):
 
     gen_code(generated_dir, name, f_sym, dt, state_sym, obs_eqs, dim_state, dim_state, global_vars=global_vars)
 
-  def __init__(self, generated_dir, steer_ratio=15, stiffness_factor=1, angle_offset=0):  # pylint: disable=super-init-not-called
+  def __init__(self, generated_dir, steer_ratio=15, stiffness_factor=1, angle_offset=0, P_initial=None):  # pylint: disable=super-init-not-called
     dim_state = self.initial_x.shape[0]
     dim_state_err = self.P_initial.shape[0]
     x_init = self.initial_x
@@ -169,6 +168,8 @@ class CarKalman(KalmanFilter):
     x_init[States.STIFFNESS] = stiffness_factor
     x_init[States.ANGLE_OFFSET] = angle_offset
 
+    if P_initial is not None:
+      self.P_initial = P_initial
     # init filter
     self.filter = EKF_sym(generated_dir, self.name, self.Q, self.initial_x, self.P_initial, dim_state, dim_state_err, global_vars=self.global_vars, logger=cloudlog)
 

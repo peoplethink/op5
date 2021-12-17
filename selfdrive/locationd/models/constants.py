@@ -70,6 +70,8 @@ class ObservationKind:
     'Fast Angle Offset',
     'Stiffness',
     'Steer Ratio',
+    'Road Frame x speed',
+    'Road Roll',
   ]
 
   @classmethod
