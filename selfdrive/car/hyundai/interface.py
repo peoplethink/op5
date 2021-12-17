@@ -25,7 +25,7 @@ class CarInterface(CarInterfaceBase):
     v_current_kph = current_speed * CV.MS_TO_KPH
 
     gas_max_bp = [0., 10., 20., 50., 70., 130.]
-    gas_max_v = [CarControllerParams.ACCEL_MAX, 1.5, 0.85, 0.64, 0.4, 0.22]
+    gas_max_v = [CarControllerParams.ACCEL_MAX, 1.5, 0.9, 0.74, 0.47, 0.22]
 
     return CarControllerParams.ACCEL_MIN, interp(v_current_kph, gas_max_bp, gas_max_v)
 
@@ -68,7 +68,7 @@ class CarInterface(CarInterfaceBase):
           #ret.lateralTuning.pid.kdV = [1.]
           #ret.lateralTuning.pid.newKfTuned = True
           
-          ret.steerActuatorDelay = 0.0
+          ret.steerActuatorDelay = 0.05
           ret.steerRateCost = 0.4
           ret.steerLimitTimer = 2.5
           ret.steerRatio = 16.5 
@@ -104,8 +104,8 @@ class CarInterface(CarInterfaceBase):
           ret.lateralTuning.lqr.k = [-110, 451]
           ret.lateralTuning.lqr.l = [0.33, 0.318]
 
-    ret.steerRatio = 13.5
-    ret.steerActuatorDelay = 0.0
+    ret.steerRatio = 16.5
+    ret.steerActuatorDelay = 0.05
     ret.steerLimitTimer = 2.5
     ret.steerRateCost = 0.4
     ret.steerMaxBP = [0.]
@@ -428,9 +428,9 @@ class CarInterface(CarInterfaceBase):
 
   # scc smoother - hyundai only
   def apply(self, c, controls):
-    can_sends = self.CC.update(c.enabled, self.CS, self.frame, c, c.actuators,
+    ret = self.CC.update(c.enabled, self.CS, self.frame, c, c.actuators,
                                c.cruiseControl.cancel, c.hudControl.visualAlert, c.hudControl.leftLaneVisible,
                                c.hudControl.rightLaneVisible, c.hudControl.leftLaneDepart, c.hudControl.rightLaneDepart,
                                c.hudControl.setSpeed, c.hudControl.leadVisible, controls)
     self.frame += 1
-    return can_sends
+    return ret
