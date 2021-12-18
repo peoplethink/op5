@@ -1076,7 +1076,7 @@ void OnroadHud::drawBsd(QPainter &p, UIState& s) {
       } else {
         car_valid_status = 0;
       }
-      blindspot_blinkingrate -= 6;
+      //blindspot_blinkingrate -= 6;
       if(blindspot_blinkingrate<0) blindspot_blinkingrate = 120;
       if (blindspot_blinkingrate>=60) {
         p.setOpacity(1.0);
