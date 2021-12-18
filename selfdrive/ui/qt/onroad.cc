@@ -296,7 +296,7 @@ void OnroadHud::paintEvent(QPaintEvent *event) {
   //if (engageable) {
   if (true) {
     drawIcon(p, rect().right() - radius / 2 - bdr_s * 2, radius / 2 + bdr_s,
-             engage_img, bg_colors[status], 1.0, true, ang_str );
+             engage_img, bg_colors[status], 5.0, true, ang_str );
   }
 
   if(QUIState::ui_state.recording) {
