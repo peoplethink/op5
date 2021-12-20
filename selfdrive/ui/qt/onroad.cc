@@ -692,7 +692,6 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
     bg_alpha = autohold > 0 ? 0.0f : 0.0f;
     drawIcon(p, x, y, autohold > 1 ? ic_autohold_warning : ic_autohold_active,
             QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);*/
-  }
 
   p.setOpacity(1.);
 }
