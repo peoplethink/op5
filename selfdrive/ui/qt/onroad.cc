@@ -254,7 +254,7 @@ OnroadHud::OnroadHud(QWidget *parent) : QWidget(parent) {
   //dm_img = QPixmap("../assets/img_driver_face.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   connect(this, &OnroadHud::valueChanged, [=] { update(); });
 	
-  //ic_brake = QPixmap("../assets/images/img_brake_disc.png").scaled(img_size, img_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+  ic_brake = QPixmap("../assets/images/img_brake_disc.png").scaled(img_size, img_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
   //ic_autohold_warning = QPixmap("../assets/images/img_autohold_warning.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   //ic_autohold_active = QPixmap("../assets/images/img_autohold_active.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   ic_nda = QPixmap("../assets/images/img_nda.png");
@@ -492,7 +492,8 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   drawSpeedLimit(p, s);
   drawTurnSignals(p, s);
   drawGpsStatus(p, s);
-
+  drawBrakeStatus(p, s);
+	
   if(s.show_tpms && width() > 1200)
     drawTpms(p, s);
 	
@@ -675,7 +676,7 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
 
   configFont(p, "Open Sans", textSize, "Bold");
   drawTextWithColor(p, x-290, y+140, str, textColor);
-	
+/*	
   // brake
   x = radius / 2 + (bdr_s * 2) + (radius + 50) * 2;
   bool brake_valid = car_state.getBrakeLights();
@@ -690,7 +691,7 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
     img_alpha = autohold > 0 ? 1.0f : 0.15f;
     bg_alpha = autohold > 0 ? 0.0f : 0.0f;
     drawIcon(p, x, y, autohold > 1 ? ic_autohold_warning : ic_autohold_active,
-            QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
+            QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);*/
   }
 
   p.setOpacity(1.);
@@ -815,6 +816,20 @@ void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {
       p.drawText(rect, Qt::AlignCenter, "CAM");
     }
   }
+}
+
+void OnroadHud::drawBrakeStatus(QPainter &p, UIState& s) {
+  const SubMaster &sm = *(s.sm);
+  auto car_state = sm["carState"].getCarState();
+  bool brake_valid = car_state.getBrakeLights();
+
+  int w = 85;
+  int h = 65;
+  int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
+  int y = 40 - bdr_s + 50;
+
+  p.setOpacity(0.8);
+  p.drawPixmap(x, y, w, h, ic_brake);
 }
 
 void OnroadHud::drawTurnSignals(QPainter &p, UIState& s) {
