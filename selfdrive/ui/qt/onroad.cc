@@ -704,10 +704,10 @@ void OnroadHud::drawBrakeIcons(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
   auto car_state = sm["carState"].getCarState();
 	
-  int w = 1600;
-  int h = 30;
-  int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
-  int y = 40 - bdr_s + 30;
+  w = 1600;
+  h = 30;
+  x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
+  y = 40 - bdr_s + 30;
 
   bool brake_valid = car_state.getBrakeLights();
   float img_alpha = brake_valid ? 1.0f : 0.15f;
