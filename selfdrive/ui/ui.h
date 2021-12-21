@@ -86,8 +86,6 @@ typedef struct UIScene {
   int lateralControlSelect;
   float output_scale;
   
-  bool brakePress;
-  bool brakeLights;
   float angleSteers;
   bool steerOverride;
   bool is_OpenpilotViewEnabled;
