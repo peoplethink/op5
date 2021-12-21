@@ -709,9 +709,8 @@ void OnroadHud::drawBrakeIcons(QPainter &p, UIState& s) {
   int h = 30;
   int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
   int y = 40 - bdr_s + 30;
-
   bool brake_valid = car_state.getBrakeLights();
-  p.drawPixmap(x, y, w, h, brake_valid = 1 ? ic_brake);
+  p.drawPixmap(x, y, w, h, ic_brake);
   p.setOpacity(1.f);
 }
 	
