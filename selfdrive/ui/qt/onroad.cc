@@ -254,7 +254,7 @@ OnroadHud::OnroadHud(QWidget *parent) : QWidget(parent) {
   //dm_img = QPixmap("../assets/img_driver_face.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   connect(this, &OnroadHud::valueChanged, [=] { update(); });
 	
-  ic_brake = QPixmap("../assets/images/img_brake_disc.png").scaled(img_size, img_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+  ic_brake = QPixmap("../assets/images/img_brake_disc.png");
   //ic_autohold_warning = QPixmap("../assets/images/img_autohold_warning.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   //ic_autohold_active = QPixmap("../assets/images/img_autohold_active.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   ic_nda = QPixmap("../assets/images/img_nda.png");
@@ -492,7 +492,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   drawSpeedLimit(p, s);
   drawTurnSignals(p, s);
   drawGpsStatus(p, s);
-  drawBrakeIcons(p, s);
+  drawBrake(p, s);
 	
   if(s.show_tpms && width() > 1200)
     drawTpms(p, s);
@@ -701,7 +701,7 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
   p.setOpacity(1.);
 }
 
-void OnroadHud::drawBrakeIcons(QPainter &p, UIState& s) {
+void OnroadHud::drawBrake(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
   auto car_state = sm["carState"].getCarState();
 	
