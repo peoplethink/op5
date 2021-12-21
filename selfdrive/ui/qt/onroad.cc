@@ -763,10 +763,10 @@ void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {
 
   if(activeNDA > 0)
   {
-      int w = 120;
-      int h = 54;
-      int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
-      int y = 40 - bdr_s + 80;
+      int w = 185;
+      int h = 60;
+      int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s -844 + 24;
+      int y = 260;
 
       p.setOpacity(1.f);
       p.drawPixmap(x, y, w, h, activeNDA == 1 ? ic_nda : ic_hda);
@@ -776,8 +776,8 @@ void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {
   {
     int radius = 192;
 
-    int x = 30;
-    int y = 270;
+    int x = 1655;
+    int y = 255;
 
     p.setPen(Qt::NoPen);
     p.setBrush(QBrush(QColor(255, 0, 0, 255)));
@@ -860,8 +860,8 @@ void OnroadHud::drawTurnSignals(QPainter &p, UIState& s) {
     const int h = 180;
     const int gap = fb_w / 25;
     const int margin = (int)(fb_w / 3.8f);
-    const int base_y = (height() - h) / 2 - 330;
-    const int draw_count = 6;
+    const int base_y = (height() - h) / 2 - 360;
+    const int draw_count = 7;
 
     int x = center_x;
     int y = base_y;
