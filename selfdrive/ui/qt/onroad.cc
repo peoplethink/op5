@@ -822,10 +822,10 @@ void OnroadHud::drawBrakeStatus(QPainter &p, UIState& s) {
   auto car_state = sm["carState"].getCarState();
   bool brake_valid = car_state.getBrakeLights();
 
-  int w = 2000;
+  int w = 1800;
   int h = 30;
   int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
-  int y = 40 - bdr_s + 40;
+  int y = 40 - bdr_s + 30;
 
   p.setOpacity(0.8);
   p.drawPixmap(x, y, w, h, ic_brake);
