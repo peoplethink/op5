@@ -492,6 +492,7 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   drawSpeedLimit(p, s);
   drawTurnSignals(p, s);
   drawGpsStatus(p, s);
+  drawBrakeIcons(p, s);
 	
   if(s.show_tpms && width() > 1200)
     drawTpms(p, s);
@@ -704,16 +705,14 @@ void OnroadHud::drawBrakeIcons(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
   auto car_state = sm["carState"].getCarState();
 	
-  //w = 1600;
-  //h = 30;
+  int w = 1600;
+  int h = 30;
   int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
   int y = 40 - bdr_s + 30;
 
   bool brake_valid = car_state.getBrakeLights();
-  float img_alpha = brake_valid ? 1.0f : 0.15f;
-  float bg_alpha = brake_valid ? 0.0f : 0.0f;
-  drawIcon(p, x, y, ic_brake, QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
-  p.setOpacity(1.);
+  p.drawPixmap(x, y, w, h, brake_valid == 1 ? ic_brake);
+  p.setOpacity(1.f);
 }
 	
 void OnroadHud::drawTpms(QPainter &p, UIState& s) {
