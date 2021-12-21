@@ -220,6 +220,7 @@ void ui_update_params(UIState *s) {
   s->show_gear = params.getBool("ShowCgearUI");//기어
   s->show_bsd = params.getBool("ShowBsdUI");//bsd
   s->show_tpms = params.getBool("ShowTpmsUI");
+  s->show_brake = params.getBool("ShowBrakeUI");
 }
 
 static void update_status(UIState *s) {
