@@ -822,8 +822,8 @@ void OnroadHud::drawBrakeStatus(QPainter &p, UIState& s) {
   auto car_state = sm["carState"].getCarState();
   bool brake_valid = car_state.getBrakeLights();
 
-  int w = 85;
-  int h = 65;
+  int w = 500;
+  int h = 40;
   int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
   int y = 40 - bdr_s + 50;
 
