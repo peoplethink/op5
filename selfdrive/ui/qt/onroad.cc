@@ -707,7 +707,7 @@ void OnroadHud::drawBrake(QPainter &p, UIState& s) {
   bool brake_valid = car_state.getBrakeLights();
 	
   int w = 1600;
-  int h = 30;
+  int h = 25;
   int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
   int y = 40 - bdr_s + 30;
   
@@ -860,8 +860,8 @@ void OnroadHud::drawTurnSignals(QPainter &p, UIState& s) {
     const int h = 180;
     const int gap = fb_w / 25;
     const int margin = (int)(fb_w / 3.8f);
-    const int base_y = (height() - h) / 2 - 300;
-    const int draw_count = 8;
+    const int base_y = (height() - h) / 2 - 330;
+    const int draw_count = 6;
 
     int x = center_x;
     int y = base_y;
