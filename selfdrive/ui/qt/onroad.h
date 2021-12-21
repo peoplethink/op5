@@ -69,7 +69,7 @@ private:
   void drawCgear(QPainter &p, UIState& s);//기어
   void drawBsd(QPainter &p, UIState& s);//bsd
   void drawTpms(QPainter &p, UIState& s);
-  void drawBrakeIcons(QPainter &p, UIState& s);
+  void drawBrake(QPainter &p, UIState& s);
   
 public:
   void drawCommunity(QPainter &p, UIState& s);
