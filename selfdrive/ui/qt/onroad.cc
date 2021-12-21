@@ -707,7 +707,7 @@ void OnroadHud::drawBrake(QPainter &p, UIState& s) {
   bool brake_valid = car_state.getBrakeLights();
 	
   int w = 1600;
-  int h = 25;
+  int h = 30;
   int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
   int y = 40 - bdr_s + 30;
   
@@ -759,14 +759,14 @@ void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {
   int activeNDA = scc_smoother.getRoadLimitSpeedActive();
   int limit_speed = scc_smoother.getRoadLimitSpeed();
   int left_dist = scc_smoother.getRoadLimitSpeedLeftDist();
-  //activeNDA = 1; //
+  activeNDA = 1; //
 
   if(activeNDA > 0)
   {
       int w = 120;
       int h = 54;
       int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
-      int y = 40 - bdr_s;
+      int y = 40 - bdr_s + 80;
 
       p.setOpacity(1.f);
       p.drawPixmap(x, y, w, h, activeNDA == 1 ? ic_nda : ic_hda);
