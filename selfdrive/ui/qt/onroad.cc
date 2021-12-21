@@ -759,7 +759,7 @@ void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {
   int activeNDA = scc_smoother.getRoadLimitSpeedActive();
   int limit_speed = scc_smoother.getRoadLimitSpeed();
   int left_dist = scc_smoother.getRoadLimitSpeedLeftDist();
-  activeNDA = 1; //
+  //activeNDA = 1; //
 
   if(activeNDA > 0)
   {
