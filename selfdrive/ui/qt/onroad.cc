@@ -492,7 +492,6 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   drawSpeedLimit(p, s);
   drawTurnSignals(p, s);
   drawGpsStatus(p, s);
-  drawBrakeStatus(p, s);
 	
   if(s.show_tpms && width() > 1200)
     drawTpms(p, s);
@@ -676,13 +675,17 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
 
   configFont(p, "Open Sans", textSize, "Bold");
   drawTextWithColor(p, x-290, y+140, str, textColor);
-/*	
+	
   // brake
-  x = radius / 2 + (bdr_s * 2) + (radius + 50) * 2;
+  int w = 1600;
+  int h = 30;
+  int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
+  int y = 40 - bdr_s + 30;
+
   bool brake_valid = car_state.getBrakeLights();
   float img_alpha = brake_valid ? 1.0f : 0.15f;
   float bg_alpha = brake_valid ? 0.0f : 0.0f;
-  drawIcon(p, x, y, ic_brake, QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
+  drawIcon(p, w, h, x, y, ic_brake, QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
 
   // auto hold
   int autohold = car_state.getAutoHold();
@@ -691,8 +694,9 @@ void OnroadHud::drawBottomIcons(QPainter &p, UIState& s) {
     img_alpha = autohold > 0 ? 1.0f : 0.15f;
     bg_alpha = autohold > 0 ? 0.0f : 0.0f;
     drawIcon(p, x, y, autohold > 1 ? ic_autohold_warning : ic_autohold_active,
-            QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);*/
-
+            QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
+  }
+	
   p.setOpacity(1.);
 }
 
@@ -815,20 +819,6 @@ void OnroadHud::drawSpeedLimit(QPainter &p, UIState& s) {
       p.drawText(rect, Qt::AlignCenter, "CAM");
     }
   }
-}
-
-void OnroadHud::drawBrakeStatus(QPainter &p, UIState& s) {
-  const SubMaster &sm = *(s.sm);
-  auto car_state = sm["carState"].getCarState();
-  bool brake_valid = car_state.getBrakeLights();
-
-  int w = 1600;
-  int h = 30;
-  int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
-  int y = 40 - bdr_s + 30;
-
-  p.setOpacity(0.8);
-  p.drawPixmap(x, y, w, h, ic_brake);
 }
 
 void OnroadHud::drawTurnSignals(QPainter &p, UIState& s) {
