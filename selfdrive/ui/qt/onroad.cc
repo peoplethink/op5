@@ -713,6 +713,7 @@ void OnroadHud::drawBrakeIcons(QPainter &p, UIState& s) {
   float img_alpha = brake_valid ? 1.0f : 0.15f;
   float bg_alpha = brake_valid ? 0.0f : 0.0f;
   drawIcon(p, w, h, x, y, ic_brake, QColor(0, 0, 0, (255 * bg_alpha)), img_alpha);
+  p.setOpacity(1.);
 }
 	
 void OnroadHud::drawTpms(QPainter &p, UIState& s) {
