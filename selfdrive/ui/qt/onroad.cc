@@ -711,7 +711,7 @@ void OnroadHud::drawBrake(QPainter &p, UIState& s) {
   int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
   int y = 40 - bdr_s + 30;
   
-  if( brake_vaild) {
+  if( brake_valid) {
     p.drawPixmap(x, y, w, h, ic_brake);
     p.setOpacity(1.f);
   }
