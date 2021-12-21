@@ -115,8 +115,6 @@ static void update_state(UIState *s) {
   if (sm.updated("carState")){
     scene.car_state = sm["carState"].getCarState();
     auto cs_data = sm["carState"].getCarState();
-    scene.brakePress = cs_data.getBrakePressed();
-    scene.brakeLights = cs_data.getBrakeLights();
     scene.angleSteers = cs_data.getSteeringAngleDeg();
   }
   
