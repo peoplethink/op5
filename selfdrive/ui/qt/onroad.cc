@@ -723,12 +723,12 @@ void OnroadHud::drawLcr(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
   auto controls_state = sm["controlsState"].getControlsState().getEnabled();
   auto car_state = sm["cartate"].getCarState();
-  bool lcr_valid = (car_state.getVEgo() >= 0);//15.2777777778);
+  bool lcr_valid = (car_state.getCluSpeedMs() >= 0);//15.2777777778);
 	
-  const int w = 120;
-  const int h = 100;
-  const int x = width() - w - 50;
-  const int y = 630;
+  int w = 120;
+  int h = 100;
+  int x = width() - w - 50;
+  int y = 630;
 	
   if (lcr_valid) {
     p.setOpacity(1.f);
