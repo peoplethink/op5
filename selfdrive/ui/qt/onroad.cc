@@ -720,9 +720,7 @@ void OnroadHud::drawBrake(QPainter &p, UIState& s) {
 }
 
 void OnroadHud::drawLcr(QPainter &p, UIState& s) {
-  const SubMaster &sm = *(s.sm);
-  if (controls_state = sm["controlsState"].getControlState(); car_state = sm["carState"].getCarState().getVEgo() >= 15.2777777778) {
-	
+  if ((*s->sm)["controlsState"].getControlsState().getEnabled() && (*s->sm)["carState"].getCarState().getVEgo() >= 15.2777777778) {
     int w = 120;
     int h = 100;
     int x = width() - w - 30;
