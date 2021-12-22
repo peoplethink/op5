@@ -142,6 +142,7 @@ typedef struct UIState {
   bool show_bsd = false;//bsd
   bool show_tpms = false;
   bool show_brake = false;
+  bool show_lcr = false;
   
 } UIState;
 
