@@ -722,11 +722,13 @@ void OnroadHud::drawBrake(QPainter &p, UIState& s) {
 void OnroadHud::drawLcr(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
   if (sm["controlsState"].getControlsState().getEnabled() && (sm)["carState"].getCarState().getCluSpeedMs() >= 15.2777777778) {
-    const int radius = 90;
-    const int center_x = s->fb_w - radius - bdr_s * 2;
-    const int center_y = radius  + (bdr_s * 1.5) + 635;
-    drawIcon(p, center_x, center_y, radius, ic_lcr);  
+    int w = 85;
+    int h = 65;
+    int x = width() - w - 290;
+    int y = 30;
+
     p.setOpacity(1.f);
+    p.drawPixmap(x, y, w, h, ic_lcr);;
   }
 }
 	  
