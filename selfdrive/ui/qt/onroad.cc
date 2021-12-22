@@ -721,7 +721,7 @@ void OnroadHud::drawBrake(QPainter &p, UIState& s) {
 
 void OnroadHud::drawLcr(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
-  auto control_state = sm["controlState"].getControlState();
+  auto controls_state = sm["controlsState"].getControlsState();
   auto car_state = sm["cartate"].getCarState();
   bool lcr_valid = (car_state.getVEgo() >= 15.2777777778);
 	
