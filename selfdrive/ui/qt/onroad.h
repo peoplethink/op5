@@ -52,6 +52,7 @@ private:
   QPixmap ic_satellite;
   QPixmap ic_bsd_l;
   QPixmap ic_bsd_r;
+  QPixmap ic_lane_change_ready;
 
   inline QColor redColor(int alpha = 255) { return QColor(201, 34, 49, alpha); }
   void drawLaneLines(QPainter &painter, const UIScene &scene);
@@ -70,6 +71,7 @@ private:
   void drawBsd(QPainter &p, UIState& s);//bsd
   void drawTpms(QPainter &p, UIState& s);
   void drawBrake(QPainter &p, UIState& s);
+  void drawLaneChangeReady(QPainter &p, UIState& s);
   
 public:
   void drawCommunity(QPainter &p, UIState& s);
