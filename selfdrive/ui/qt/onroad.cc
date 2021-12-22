@@ -725,7 +725,7 @@ void OnroadHud::drawLcr(QPainter &p, UIState& s) {
     const int radius = 90;
     const int center_x = s->fb_w - radius - bdr_s * 2;
     const int center_y = radius  + (bdr_s * 1.5) + 635;
-    drawIcon(p, x, y, radius, ic_lcr);  
+    drawIcon(p, center_x, center_y, radius, ic_lcr);  
     p.setOpacity(1.f);
   }
 }
