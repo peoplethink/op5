@@ -730,10 +730,10 @@ void OnroadHud::drawLcr(QPainter &p, UIState& s) {
   int x = width() - w - 30;
   int y = 330;
 	
-  //if (lcr_valid) {
-  p.setOpacity(1.f);
-  p.drawPixmap(x, y, w, h, ic_lcr);
-  //}
+  if (lcr_valid) {
+    p.setOpacity(1.f);
+    p.drawPixmap(x, y, w, h, ic_lcr);
+  }
 }
 
 void OnroadHud::drawTpms(QPainter &p, UIState& s) {
