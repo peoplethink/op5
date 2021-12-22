@@ -713,12 +713,26 @@ void OnroadHud::drawBrake(QPainter &p, UIState& s) {
   int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
   int y = 40 - bdr_s + 30;
   
-  if( brake_valid) {
+  if (brake_valid) {
     p.drawPixmap(x, y, w, h, ic_brake);
     p.setOpacity(1.f);
   }
 }
+
+void OnroadHud::drawLcr(QPainter &p, UIState& s) {
+  const SubMaster &sm = *(s.sm);
+  if (controls_state = sm["controlsState"].getControlState(); car_state = sm["carState"].getCarState().getVEgo() >= 15.2777777778) {
 	
+    int w = 120;
+    int h = 100;
+    int x = width() - w - 30;
+    int y = 330;
+	
+    p.setOpacity(1.f);
+    p.drawPixmap(x, y, w, h, ic_lcr);
+  }
+}
+
 void OnroadHud::drawTpms(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
   auto car_state = sm["carState"].getCarState();
