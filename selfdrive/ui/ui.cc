@@ -221,6 +221,7 @@ void ui_update_params(UIState *s) {
   s->show_bsd = params.getBool("ShowBsdUI");//bsd
   s->show_tpms = params.getBool("ShowTpmsUI");
   s->show_brake = params.getBool("ShowBrakeUI");
+  s->show_brake = params.getBool("ShowLcrUI");
 }
 
 static void update_status(UIState *s) {
@@ -250,37 +251,6 @@ static void update_status(UIState *s) {
   }
   started_prev = s->scene.started;
 }
-
-/*static void update_extras(UIState *s)
-{
-   UIScene &scene = s->scene;
-   SubMaster &sm = *(s->sm);
-
-   if(sm.updated("carControl"))
-    scene.car_control = sm["carControl"].getCarControl();
-
-   if(sm.updated("gpsLocationExternal"))
-    scene.gps_ext = sm["gpsLocationExternal"].getGpsLocationExternal();
-
-   if(sm.updated("liveParameters"))
-    scene.live_params = sm["liveParameters"].getLiveParameters();
-
-   if (sm.updated("ubloxGnss")) {
-    auto data = sm["ubloxGnss"].getUbloxGnss();
-    if (data.which() == cereal::UbloxGnss::MEASUREMENT_REPORT) {
-      scene.satelliteCount = data.getMeasurementReport().getNumMeas();
-    }
-   }
-
-   if (sm.updated("radarState") && s->vg) {
-    std::optional<cereal::ModelDataV2::XYZTData::Reader> line;
-    if (sm.rcv_frame("modelV2") > 0) {
-      line = sm["modelV2"].getModelV2().getPosition();
-    }
-    update_leads_radar(s, sm["radarState"].getRadarState(), line);
-  }
-}*/
-
 
 QUIState::QUIState(QObject *parent) : QObject(parent) {
   ui_state.sm = std::make_unique<SubMaster, const std::initializer_list<const char *>>({
