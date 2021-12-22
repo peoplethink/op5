@@ -221,7 +221,7 @@ void ui_update_params(UIState *s) {
   s->show_bsd = params.getBool("ShowBsdUI");//bsd
   s->show_tpms = params.getBool("ShowTpmsUI");
   s->show_brake = params.getBool("ShowBrakeUI");
-  s->show_brake = params.getBool("ShowLcrUI");
+  s->show_lcr = params.getBool("ShowLcrUI");
 }
 
 static void update_status(UIState *s) {
