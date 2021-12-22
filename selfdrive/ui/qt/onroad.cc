@@ -721,11 +721,11 @@ void OnroadHud::drawBrake(QPainter &p, UIState& s) {
 
 void OnroadHud::drawLcr(QPainter &p, UIState& s) {
   const SubMaster &sm = *(s.sm);
-  if (sm["controlsState"].getControlsState().getEnabled() && (sm)["carState"].getCarState().getCluSpeedMs() >= 15.2777777778) {
-    int w = 85;
-    int h = 65;
-    int x = width() - w - 290;
-    int y = 30;
+  if (sm["controlsState"].getControlsState().getEnabled() && (sm)["carState"].getCarState().getCluSpeedMs() >= 0 {//15.2777777778) {
+    int w = 90;
+    int h = 90;
+    int x = width() - w - 30;
+    int y = 830;
 
     p.setOpacity(1.f);
     p.drawPixmap(x, y, w, h, ic_lcr);;
