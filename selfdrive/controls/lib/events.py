@@ -150,7 +150,7 @@ class SoftDisableAlert(Alert):
     super().__init__("핸들을 즉시 잡아주세요", alert_text_2,
                      AlertStatus.userPrompt, AlertSize.full,
                      Priority.MID, VisualAlert.steerRequired,
-                     AudibleAlert.warningSoft, 0.),
+                     AudibleAlert.none, 0.),
 
 
 # less harsh version of SoftDisable, where the condition is user-triggered
