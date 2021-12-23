@@ -120,11 +120,6 @@ void SNPEModel::addDesire(float *state, int state_size) {
   desireBuffer = this->addExtra(state, state_size, 1);
 }
 
-void SNPEModel::addImage(float *image_buf, int buf_size) {
-  input = image_buf;
-  input_size = buf_size;
-}
-
 std::unique_ptr<zdl::DlSystem::IUserBuffer> SNPEModel::addExtra(float *state, int state_size, int idx) {
   // get input and output names
   const auto &strListi_opt = snpe->getInputTensorNames();
@@ -141,12 +136,12 @@ std::unique_ptr<zdl::DlSystem::IUserBuffer> SNPEModel::addExtra(float *state, in
   return ret;
 }
 
-void SNPEModel::execute() {
+void SNPEModel::execute(float *net_input_buf, int buf_size) {
 #ifdef USE_THNEED
   if (Runtime == zdl::DlSystem::Runtime_t::GPU) {
-    float *inputs[4] = {recurrent, trafficConvention, desire, input};
+    float *inputs[4] = {recurrent, trafficConvention, desire, net_input_buf};
     if (thneed == NULL) {
-      bool ret = inputBuffer->setBufferAddress(input);
+      bool ret = inputBuffer->setBufferAddress(net_input_buf);
       assert(ret == true);
       if (!snpe->execute(inputMap, outputMap)) {
         PrintErrorStringAndExit();
@@ -180,7 +175,7 @@ void SNPEModel::execute() {
     }
   } else {
 #endif
-    bool ret = inputBuffer->setBufferAddress(input);
+    bool ret = inputBuffer->setBufferAddress(net_input_buf);
     assert(ret == true);
     if (!snpe->execute(inputMap, outputMap)) {
       PrintErrorStringAndExit();

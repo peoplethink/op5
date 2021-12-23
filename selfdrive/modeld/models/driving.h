@@ -9,7 +9,6 @@
 #include <memory>
 
 #include "cereal/messaging/messaging.h"
-#include "cereal/visionipc/visionipc_client.h"
 #include "selfdrive/common/mat.h"
 #include "selfdrive/common/modeldata.h"
 #include "selfdrive/common/util.h"
@@ -221,7 +220,6 @@ constexpr int NET_OUTPUT_SIZE = OUTPUT_SIZE + TEMPORAL_SIZE;
 // TODO: convert remaining arrays to std::array and update model runners
 struct ModelState {
   ModelFrame *frame;
-  ModelFrame *wide_frame;
   std::array<float, NET_OUTPUT_SIZE> output = {};
   std::unique_ptr<RunModel> m;
 #ifdef DESIRE
@@ -234,8 +232,8 @@ struct ModelState {
 };
 
 void model_init(ModelState* s, cl_device_id device_id, cl_context context);
-ModelOutput *model_eval_frame(ModelState* s, VisionBuf* buf, VisionBuf* buf_wide,
-                              const mat3 &transform, const mat3 &transform_wide, float *desire_in);
+ModelOutput *model_eval_frame(ModelState* s, cl_mem yuv_cl, int width, int height,
+                           const mat3 &transform, float *desire_in);
 void model_free(ModelState* s);
 void model_publish(PubMaster &pm, uint32_t vipc_frame_id, uint32_t frame_id, float frame_drop,
                    const ModelOutput &net_outputs, uint64_t timestamp_eof,

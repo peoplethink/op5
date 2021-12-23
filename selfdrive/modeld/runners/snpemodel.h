@@ -26,8 +26,7 @@ public:
   void addRecurrent(float *state, int state_size);
   void addTrafficConvention(float *state, int state_size);
   void addDesire(float *state, int state_size);
-  void addImage(float *image_buf, int buf_size);
-  void execute();
+  void execute(float *net_input_buf, int buf_size);
 
 #ifdef USE_THNEED
   Thneed *thneed = NULL;
@@ -46,8 +45,6 @@ private:
   // snpe input stuff
   zdl::DlSystem::UserBufferMap inputMap;
   std::unique_ptr<zdl::DlSystem::IUserBuffer> inputBuffer;
-  float *input;
-  size_t input_size;
 
   // snpe output stuff
   zdl::DlSystem::UserBufferMap outputMap;

@@ -21,12 +21,11 @@ int main(int argc, char* argv[]) {
   mdl.addRecurrent(state, TEMPORAL_SIZE);
   mdl.addDesire(desire, DESIRE_LEN);
   mdl.addTrafficConvention(traffic_convention, TRAFFIC_CONVENTION_LEN);
-  mdl.addImage(input, 0);
 
   // first run
   printf("************** execute 1 **************\n");
   memset(output, 0, OUTPUT_SIZE * sizeof(float));
-  mdl.execute();
+  mdl.execute(input, 0);
 
   // save model
   bool save_binaries = (argc > 3) && (strcmp(argv[3], "--binary") == 0);
