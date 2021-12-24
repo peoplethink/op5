@@ -17,12 +17,12 @@ from common.params import Params
 LON_MPC_STEP = 0.2  # first step is 0.2s
 AWARENESS_DECEL = -0.2  # car smoothly decel at .2m/s^2 when user is distracted
 A_CRUISE_MIN = -1.2
-A_CRUISE_MAX_VALS = [2.0, 1.5, 1.2, 1.0]
-A_CRUISE_MAX_BP = [0., 15., 25., 40.]
+A_CRUISE_MAX_VALS = [2.0, 1.9, 1.0, 0.8]
+A_CRUISE_MAX_BP = [0., 6.4, 22.5, 40.] #0., 20., 81., 144km
 
 # Lookup table for turns
 _A_TOTAL_MAX_V = [2.5, 3.8]
-_A_TOTAL_MAX_BP = [20., 40.]
+_A_TOTAL_MAX_BP = [15., 40.]
 
 
 def get_max_accel(v_ego):
