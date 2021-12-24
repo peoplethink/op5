@@ -433,9 +433,18 @@ void NvgWindow::paintGL() {
   CameraViewWidget::paintGL();
 	
   UIState *s = uiState();
-  if (s->scene.world_objects_visible) {
-    } 
-  } 
+  if (s->worldObjectsVisible()) {
+    
+    drawLaneLines(p, s.scene);
+
+    auto leads = sm["modelV2"].getModelV2().getLeadsV3();
+    if (leads[0].getProb() > .5) {
+      drawLead(p, leads[0], s.scene.lead_vertices[0], s.scene.lead_radar[0]);
+    }
+    if (leads[1].getProb() > .5 && (std::abs(leads[1].getX()[0] - leads[0].getX()[0]) > 3.0)) {
+      drawLead(p, leads[1], s.scene.lead_vertices[1], s.scene.lead_radar[1]);
+    }
+  }
 
   double cur_draw_t = millis_since_boot();
   double dt = cur_draw_t - prev_draw_t;
@@ -466,16 +475,6 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   p.fillRect(0, 0, width(), header_h, bg);
 
   const SubMaster &sm = *(s.sm);
-	
-  drawLaneLines(p, s.scene);
-
-  auto leads = sm["modelV2"].getModelV2().getLeadsV3();
-  if (leads[0].getProb() > .5) {
-    drawLead(p, leads[0], s.scene.lead_vertices[0], s.scene.lead_radar[0]);
-  }
-  if (leads[1].getProb() > .5 && (std::abs(leads[1].getX()[0] - leads[0].getX()[0]) > 3.0)) {
-    drawLead(p, leads[1], s.scene.lead_vertices[1], s.scene.lead_radar[1]);
-  }
 
   drawMaxSpeed(p, s);
   drawSpeed(p, s);
