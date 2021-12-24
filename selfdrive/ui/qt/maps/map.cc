@@ -106,7 +106,7 @@ void MapWindow::initLayers() {
 }
 
 void MapWindow::timerUpdate() {
-  if (!uiState()->scene.started) {
+  if (!QUIState::ui_state.scene.started) {
     return;
   }
 
@@ -387,7 +387,7 @@ void MapInstructions::updateDistance(float d) {
   d = std::max(d, 0.0f);
   QString distance_str;
 
-  if (uiState()->scene.is_metric) {
+  if (QUIState::ui_state.scene.is_metric) {
     if (d > 500) {
       distance_str.setNum(d / 1000, 'f', 1);
       distance_str += " km";
@@ -619,7 +619,7 @@ void MapETA::updateETA(float s, float s_typical, float d) {
   // Distance
   QString distance_str;
   float num = 0;
-  if (uiState()->scene.is_metric) {
+  if (QUIState::ui_state.scene.is_metric) {
     num = d / 1000.0;
     distance_unit->setText("km");
   } else {

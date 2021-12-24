@@ -107,7 +107,7 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
     bool locked = params.getBool((param + "Lock").toStdString());
     toggle->setEnabled(!locked);
     //if (!locked) {
-    //  connect(uiState(), &UIState::offroadTransition, toggle, &ParamControl::setEnabled);
+    //  connect(parent, &SettingsWindow::offroadTransition, toggle, &ParamControl::setEnabled);
     //}
     addItem(toggle);
   }
@@ -213,11 +213,11 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
     addItem(regulatoryBtn);
   }
 
-  /*QObject::connect(uiState(), &UIState::offroadTransition, [=](bool offroad) {
-    for (auto btn : findChildren<ButtonControl *>()) {
-      btn->setEnabled(offroad);
-    }
-  });*/
+  QObject::connect(parent, &SettingsWindow::offroadTransition, [=](bool offroad) {
+    //for (auto btn : findChildren<ButtonControl *>()) {
+    //  btn->setEnabled(offroad);
+    //}
+  });
 }
 
 void DevicePanel::updateCalibDescription() {
@@ -245,10 +245,10 @@ void DevicePanel::updateCalibDescription() {
 }
 
 void DevicePanel::reboot() {
-  if (uiState()->status == UIStatus::STATUS_DISENGAGED) {
+  if (QUIState::ui_state.status == UIStatus::STATUS_DISENGAGED) {
     if (ConfirmationDialog::confirm("재부팅 하시겠습니까?", this)) {
       // Check engaged again in case it changed while the dialog was open
-      if (uiState()->status == UIStatus::STATUS_DISENGAGED) {
+      if (QUIState::ui_state.status == UIStatus::STATUS_DISENGAGED) {
         Params().putBool("DoReboot", true);
       }
     }
@@ -258,10 +258,10 @@ void DevicePanel::reboot() {
 }
 
 void DevicePanel::poweroff() {
-  if (uiState()->status == UIStatus::STATUS_DISENGAGED) {
+  if (QUIState::ui_state.status == UIStatus::STATUS_DISENGAGED) {
     if (ConfirmationDialog::confirm("종료하시겠습니까?", this)) {
       // Check engaged again in case it changed while the dialog was open
-      if (uiState()->status == UIStatus::STATUS_DISENGAGED) {
+      if (QUIState::ui_state.status == UIStatus::STATUS_DISENGAGED) {
         Params().putBool("DoShutdown", true);
       }
     }
@@ -294,7 +294,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : ListWidget(parent) {
       params.putBool("DoUninstall", true);
     }
   });
-  connect(uiState(), &UIState::offroadTransition, uninstallBtn, &QPushButton::setEnabled);
+  connect(parent, SIGNAL(offroadTransition(bool)), uninstallBtn, SLOT(setEnabled(bool)));
 
   QWidget *widgets[] = {versionLbl, lastUpdateLbl, updateBtn, gitBranchLbl, gitCommitLbl, osVersionLbl, uninstallBtn};
   for (QWidget* w : widgets) {
