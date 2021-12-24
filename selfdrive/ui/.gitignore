@@ -5,7 +5,6 @@ _mui
 watch3
 installer/installers/*
 replay/replay
-replay/replay_ui
 replay/tests/test_replay
 qt/text
 qt/spinner

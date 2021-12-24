@@ -19,8 +19,6 @@ enum REPLAY_FLAGS {
   REPLAY_FLAG_NO_CUDA = 0x0100,
 };
 
-typedef std::map<int, std::unique_ptr<Segment>> SegmentMap;
-
 class Replay : public QObject {
   Q_OBJECT
 
@@ -28,8 +26,6 @@ public:
   Replay(QString route, QStringList allow, QStringList block, SubMaster *sm = nullptr,
           uint32_t flags = REPLAY_FLAG_NONE, QString data_dir = "", QObject *parent = 0);
   ~Replay();
-  inline const SegmentMap &segments() const { return segments_; }
-  inline const Route* route() const { return route_.get(); }
   bool load();
   void start(int seconds = 0);
   void stop();
@@ -46,6 +42,7 @@ protected slots:
   void segmentLoadFinished(bool sucess);
 
 protected:
+  typedef std::map<int, std::unique_ptr<Segment>> SegmentMap;
   void startStream(const Segment *cur_segment);
   void stream();
   void setCurrentSegment(int n);
@@ -83,6 +80,4 @@ protected:
   std::unique_ptr<Route> route_;
   std::unique_ptr<CameraServer> camera_server_;
   uint32_t flags_ = REPLAY_FLAG_NONE;
-
-  QString data_dir;
 };
