@@ -90,7 +90,6 @@ typedef struct {
 } line_vertices_data;
 
 typedef struct UIScene {
-  mat3 view_from_calib;
   int lateralControlSelect;
   float output_scale;
   
@@ -151,9 +150,6 @@ class QUIState : public QObject {
 
 public:
   QUIState(QObject* parent = 0);
-  inline bool worldObjectsVisible() const {
-    return sm->rcv_frame("liveCalibration") > scene.started_frame;
-  };
 
   // TODO: get rid of this, only use signal
   inline static UIState ui_state = {0};
