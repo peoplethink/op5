@@ -122,7 +122,12 @@ typedef struct UIScene {
   uint64_t started_frame;
 } UIScene;
 
-typedef struct UIState {
+class UIState : public QObject {
+  Q_OBJECT
+
+public:
+  UIState(QObject* parent = 0);
+
   int fb_w = 0, fb_h = 0;
 
   std::unique_ptr<SubMaster> sm;
@@ -143,18 +148,6 @@ typedef struct UIState {
   bool show_tpms = false;
   bool show_brake = false;
   bool show_lcr = false;
-  
-} UIState;
-
-
-class QUIState : public QObject {
-  Q_OBJECT
-
-public:
-  QUIState(QObject* parent = 0);
-
-  // TODO: get rid of this, only use signal
-  inline static UIState ui_state = {0};
 
 signals:
   void uiUpdate(const UIState &s);
@@ -168,6 +161,7 @@ private:
   bool started_prev = true;
 };
 
+UIState *uiState();
 
 // device management class
 
@@ -186,7 +180,7 @@ private:
   bool ignition_on = false;
   int last_brightness = 0;
   FirstOrderFilter brightness_filter;
-  
+
   void updateBrightness(const UIState &s);
   void updateWakefulness(const UIState &s);
   bool motionTriggered(const UIState &s);
