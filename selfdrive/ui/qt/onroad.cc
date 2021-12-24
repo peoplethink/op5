@@ -288,10 +288,10 @@ void OnroadHud::paintEvent(QPaintEvent *event) {
   //p.setRenderHint(QPainter::Antialiasing);
 	
   // Header gradient
-  QLinearGradient bg(0, header_h - (header_h / 2.5), 0, header_h);
-  bg.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0.45));
-  bg.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
-  p.fillRect(0, 0, width(), header_h, bg);
+  //QLinearGradient bg(0, header_h - (header_h / 2.5), 0, header_h);
+  //bg.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0.45));
+  //bg.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
+  //p.fillRect(0, 0, width(), header_h, bg);
 	
   // engage-ability icon
   //if (engageable) {
@@ -302,7 +302,7 @@ void OnroadHud::paintEvent(QPaintEvent *event) {
 
   if(uiState()->recording) {
     QPainter p(this);
-    drawCommunity(p, s);
+    drawCommunity(p, uiState());
   }
 }
 
@@ -441,7 +441,7 @@ void NvgWindow::paintGL() {
   if (s->scene.world_objects_visible) {
     if(!s->recording) {
       QPainter p(this);
-      hud->drawCommunity(p, s);
+      hud->drawCommunity(p, uiState());
     }
   }
 
