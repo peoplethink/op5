@@ -112,10 +112,12 @@ class CarInterface(CarInterfaceBase):
     ret.steerMaxV = [1.5]
 
     # longitudinal
-    ret.longitudinalTuning.kpBP = [0., 10., 20.]
-    ret.longitudinalTuning.kpV = [2.1, 1.5, 0.7]
-    ret.longitudinalTuning.kiBP = [0., 10., 12., 20., 27.]
-    ret.longitudinalTuning.kiV = [.47, .35, .20, .17, .1]
+    ret.longitudinalTuning.kpBP = [0., 5., 20.]
+    ret.longitudinalTuning.kpV = [1.3, 1.0, 0.7]
+    ret.longitudinalTuning.kiBP = [0., 5., 12., 20., 27.]
+    ret.longitudinalTuning.kiV = [.35, .23, .20, .17, .1]
+    ret.longitudinalTuning.deadzoneBP = [0., 8.05]
+    ret.longitudinalTuning.deadzoneV = [.0, .14]
 
     ret.startAccel = 0.0 #-0.8
     ret.stopAccel = -2.0
