@@ -300,9 +300,9 @@ void OnroadHud::paintEvent(QPaintEvent *event) {
              engage_img, bg_colors[status], 5.0, true, ang_str );
   }
 
-  if(uiState().recording) {
+  if(QUIState::ui_state.recording) {
     QPainter p(this);
-    drawCommunity(p, uiState());
+    drawCommunity(p, QUIState::ui_state);
   }
 }
 
@@ -441,7 +441,7 @@ void NvgWindow::paintGL() {
   if (s->scene.world_objects_visible) {
     if(!s->recording) {
       QPainter p(this);
-      hud->drawCommunity(p, uiState());
+      hud->drawCommunity(p, QUIState::ui_state);
     }
     else {
       hud->update();
