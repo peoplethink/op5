@@ -439,7 +439,7 @@ void NvgWindow::paintGL() {
   CameraViewWidget::paintGL();
 	
   UIState *s = &QUIState::ui_state;
-  if (s->) {worldObjectsVisible()) {
+  if (s->scene.world_objects_visible) {
     if(!s->recording) {
       QPainter p(this);
       hud->drawCommunity(p, QUIState::ui_state);
