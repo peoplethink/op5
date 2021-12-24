@@ -161,7 +161,10 @@ void OnroadWindow::offroadTransition(bool offroad) {
     if (map == nullptr && (uiState()->has_prime || !MAPBOX_TOKEN.isEmpty())) {
       MapWindow * m = new MapWindow(get_mapbox_settings());
       m->setFixedWidth(topWidget(this)->width() / 2);
+<<<<<<< HEAD
       m->offroadTransition(offroad);
+=======
+>>>>>>> parent of 805ac49 (Revert "uistate")
       QObject::connect(uiState(), &UIState::offroadTransition, m, &MapWindow::offroadTransition);
       split->addWidget(m, 0, Qt::AlignRight);
       map = m;
