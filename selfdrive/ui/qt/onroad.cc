@@ -302,7 +302,7 @@ void OnroadHud::paintEvent(QPaintEvent *event) {
 
   if(uiState()->recording) {
     QPainter p(this);
-    drawCommunity(p, s);
+    drawCommunity(p, UIState& s);
   }
 }
 
@@ -441,7 +441,7 @@ void NvgWindow::paintGL() {
   if (s->scene.world_objects_visible) {
     if(!s->recording) {
       QPainter p(this);
-      hud->drawCommunity(p, s);
+      hud->drawCommunity(p, UIState& s);
     }
   }
 
