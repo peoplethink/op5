@@ -91,7 +91,6 @@ typedef struct {
 
 typedef struct UIScene {
   mat3 view_from_calib;
-  bool world_objects_visible;
   
   int lateralControlSelect;
   float output_scale;
@@ -127,6 +126,9 @@ class UIState : public QObject {
 
 public:
   UIState(QObject* parent = 0);
+  inline bool worldObjectsVisible() const { 
+    return sm->rcv_frame("liveCalibration") > scene.started_frame;
+  };
 
   int fb_w = 0, fb_h = 0;
 
