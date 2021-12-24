@@ -443,9 +443,6 @@ void NvgWindow::paintGL() {
       QPainter p(this);
       hud->drawCommunity(p, s);
     }
-    else {
-      hud->update();
-    }
   }
 
   double cur_draw_t = millis_since_boot();
