@@ -434,10 +434,7 @@ void NvgWindow::paintGL() {
 	
   UIState *s = uiState();
   if (s->worldObjectsVisible()) {
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(Qt::NoPen);  
-	  
+    
     drawLaneLines(p, s.scene);
 
     auto leads = sm["modelV2"].getModelV2().getLeadsV3();
@@ -478,8 +475,6 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   p.fillRect(0, 0, width(), header_h, bg);
 
   const SubMaster &sm = *(s.sm);
-	
-  drawLaneLines(p, s.scene);
 
   drawMaxSpeed(p, s);
   drawSpeed(p, s);
