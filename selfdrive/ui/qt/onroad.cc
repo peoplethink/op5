@@ -299,11 +299,6 @@ void OnroadHud::paintEvent(QPaintEvent *event) {
     drawIcon(p, rect().right() - radius / 2 - bdr_s * 2, radius / 2 + bdr_s,
              engage_img, bg_colors[status], 5.0, true, ang_str );
   }
-
-  if(uiState()->recording) {
-    QPainter p(this);
-    drawCommunity(p, UIState& s);
-  }
 }
 
 void OnroadHud::drawText(QPainter &p, int x, int y, const QString &text, int alpha) {
@@ -438,13 +433,24 @@ void NvgWindow::paintGL() {
   CameraViewWidget::paintGL();
 	
   UIState *s = uiState();
-  if (s->scene.world_objects_visible) {
-    if(!s->recording) {
-      QPainter p(this);
-      hud->drawCommunity(p, UIState& s);
+  if (s->worldObjectsVisible()) {
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setPen(Qt::NoPen);  
+	  
+    drawLaneLines(painter, s->scene);
+
+    if (s->scene.longitudinal_control) {
+      auto leads = (*s->sm)["modelV2"].getModelV2().getLeadsV3();
+      if (leads[0].getProb() > .5) {
+        drawLead(painter, leads[0], s->scene.lead_vertices[0]);
+      }
+      if (leads[1].getProb() > .5 && (std::abs(leads[1].getX()[0] - leads[0].getX()[0]) > 3.0)) {
+        drawLead(painter, leads[1], s->scene.lead_vertices[1]);
+      }
     }
   }
-
+	
   double cur_draw_t = millis_since_boot();
   double dt = cur_draw_t - prev_draw_t;
   if (dt > 66) {
@@ -474,16 +480,6 @@ void OnroadHud::drawCommunity(QPainter &p, UIState& s) {
   p.fillRect(0, 0, width(), header_h, bg);
 
   const SubMaster &sm = *(s.sm);
-
-  drawLaneLines(p, s.scene);
-
-  auto leads = sm["modelV2"].getModelV2().getLeadsV3();
-  if (leads[0].getProb() > .5) {
-    drawLead(p, leads[0], s.scene.lead_vertices[0], s.scene.lead_radar[0]);
-  }
-  if (leads[1].getProb() > .5 && (std::abs(leads[1].getX()[0] - leads[0].getX()[0]) > 3.0)) {
-    drawLead(p, leads[1], s.scene.lead_vertices[1], s.scene.lead_radar[1]);
-  }
 
   drawMaxSpeed(p, s);
   drawSpeed(p, s);
