@@ -274,6 +274,8 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
   # ********** events with no alerts **********
 
   EventName.stockFcw: {},
+  
+  EventName.lkasDisabled: {},
 
   # ********** events only containing alerts displayed in all states **********
 
