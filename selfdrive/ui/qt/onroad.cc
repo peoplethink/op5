@@ -1085,7 +1085,7 @@ void OnroadHud::drawBsd(QPainter &p) {
   const int car_size = 230;
   const int car_x_left =  380;
   const int car_x_right = 1500;
-  const int car_y = 620;
+  const int car_y = 580;
   const int car_img_size_w = (car_size * 1);
   const int car_img_size_h = (car_size * 1);
   const int car_img_x_left = (car_x_left - (car_img_size_w / 2));
@@ -1102,8 +1102,8 @@ void OnroadHud::drawBsd(QPainter &p) {
   bool car_valid_left = bool(car_state.getLeftBlindspot());
   bool car_valid_right = bool(car_state.getRightBlindspot());
 
-  car_valid_left = 1; // 디버그용
-  car_valid_right = 1;
+  //car_valid_left = 1; // 디버그용
+  //car_valid_right = 1;
 
     if (car_valid_status_changed != car_valid_status) {
       blindspot_blinkingrate = 114;
