@@ -161,10 +161,6 @@ void OnroadWindow::offroadTransition(bool offroad) {
     if (map == nullptr && (uiState()->has_prime || !MAPBOX_TOKEN.isEmpty())) {
       MapWindow * m = new MapWindow(get_mapbox_settings());
       m->setFixedWidth(topWidget(this)->width() / 2);
-<<<<<<< HEAD
-      m->offroadTransition(offroad);
-=======
->>>>>>> parent of 805ac49 (Revert "uistate")
       QObject::connect(uiState(), &UIState::offroadTransition, m, &MapWindow::offroadTransition);
       split->addWidget(m, 0, Qt::AlignRight);
       map = m;
@@ -728,12 +724,15 @@ void OnroadHud::drawBrake(QPainter &p) {
 
 void OnroadHud::drawLcr(QPainter &p) {
   const SubMaster &sm = *(uiState()->sm);
-  if (sm["controlsState"].getControlsState().getEnabled() && (sm)["carState"].getCarState().getCluSpeedMs() >= 0) {
-    int w = 90;
-    int h = 90;
-    int x = width() - w - 30;
-    int y = 830;
-
+  auto car_state = sm["carState"].getCarState();
+  auto controls_state = sm["controlsState"].getControlsState().getEnabled();
+	
+  const int w = 90;
+  const int h = 90;
+  const int x = width() - w - 80;
+  const int y = 430;
+	
+  if ((int)car_state.getCluSpeedMs() >= 0) {
     p.setOpacity(1.f);
     p.drawPixmap(x, y, w, h, ic_lcr);;
   }
