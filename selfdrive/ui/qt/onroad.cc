@@ -733,7 +733,7 @@ void OnroadHud::drawLcr(QPainter &p) {
   const int x = width() - w - 80;
   const int y = 430;
 	
-  if (bool lcr_valid) {
+  if (lcr_valid) {
     p.setOpacity(1.f);
     p.drawPixmap(x, y, w, h, ic_lcr);;
   }
