@@ -711,7 +711,7 @@ void OnroadHud::drawBrake(QPainter &p) {
   auto car_state = sm["carState"].getCarState();
   bool brake_valid = car_state.getBrakeLights();
 	
-  int w = 1600;
+  int w = 1500;
   int h = 30;
   int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
   int y = 40 - bdr_s + 30;
@@ -724,15 +724,16 @@ void OnroadHud::drawBrake(QPainter &p) {
 
 void OnroadHud::drawLcr(QPainter &p) {
   const SubMaster &sm = *(uiState()->sm);
-  auto car_state = sm["carState"].getCarState();
   auto controls_state = sm["controlsState"].getControlsState().getEnabled();
+  auto car_state = sm["carState"].getCarState();
+  bool lcr_valid = car_state.getVEgo() >= 0);
 	
   const int w = 90;
   const int h = 90;
   const int x = width() - w - 80;
   const int y = 430;
 	
-  if ((int)car_state.getCluSpeedMs() >= 0) {
+  if (bool lcr_valid) {
     p.setOpacity(1.f);
     p.drawPixmap(x, y, w, h, ic_lcr);;
   }
