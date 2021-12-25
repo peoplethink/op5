@@ -726,7 +726,7 @@ void OnroadHud::drawLcr(QPainter &p) {
   const SubMaster &sm = *(uiState()->sm);
   auto controls_state = sm["controlsState"].getControlsState().getEnabled();
   auto car_state = sm["carState"].getCarState();
-  bool lcr_valid = car_state.getVEgo() >= 0);
+  bool lcr_valid = car_state.getVEgo() >= 0;
 	
   const int w = 90;
   const int h = 90;
