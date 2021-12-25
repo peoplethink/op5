@@ -42,10 +42,10 @@ LIMIT_COST = 1e6
 
 
 CRUISE_GAP_BP = [1., 2., 3., 4.]
-CRUISE_GAP_V = [1.2, 1.45, 2.0, 2.0]
+CRUISE_GAP_V = [1.0, 1.45, 2.0, 2.0]
 
 AUTO_TR_BP = [10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 30.*CV.KPH_TO_MS, 40.*CV.KPH_TO_MS, 50.*CV.KPH_TO_MS, 60.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 80.*CV.KPH_TO_MS, 100.*CV.KPH_TO_MS, 120.*CV.KPH_TO_MS]
-AUTO_TR_V = [1.00, 1.15, 1.25, 1.35, 1.35, 1.40, 1.45, 1.45, 1.45, 1.55]
+AUTO_TR_V = [1.20, 1.22, 1.25, 1.35, 1.35, 1.40, 1.45, 1.45, 1.45, 1.55]
 
 AUTO_TR_CRUISE_GAP = 4
 
@@ -61,7 +61,7 @@ T_IDXS = np.array(T_IDXS_LST)
 T_DIFFS = np.diff(T_IDXS, prepend=[0.])
 MIN_ACCEL = -3.5
 T_FOLLOW = 1.45
-COMFORT_BRAKE = 2.5
+COMFORT_BRAKE = 2.6
 STOP_DISTANCE = 6.0
 
 def get_stopped_equivalence_factor(v_lead):
