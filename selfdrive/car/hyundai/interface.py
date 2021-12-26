@@ -52,7 +52,7 @@ class CarInterface(CarInterfaceBase):
       if candidate in [CAR.GENESIS, CAR.GENESIS_G80, CAR.GENESIS_EQ900]:
           ret.lateralTuning.pid.kf = 0.00005
           ret.lateralTuning.pid.kpBP = [0., 10., 30.]
-          ret.lateralTuning.pid.kpV = [0.01, 0.05, 0.07]
+          ret.lateralTuning.pid.kpV = [0.01, 0.05, 0.065]
           ret.lateralTuning.pid.kiBP = [0., 30.]
           ret.lateralTuning.pid.kiV = [0.02, 0.02]
           ret.lateralTuning.pid.kdBP = [0.]
@@ -113,9 +113,9 @@ class CarInterface(CarInterfaceBase):
 
     # longitudinal
     ret.longitudinalTuning.kpBP = [0., 5., 20.]
-    ret.longitudinalTuning.kpV = [2.1, 1.5, 0.7]
+    ret.longitudinalTuning.kpV = [2.2, 1.5, 0.7]
     ret.longitudinalTuning.kiBP = [0., 5., 12., 20., 27.]
-    ret.longitudinalTuning.kiV = [.56, .45, .20, .17, .1]
+    ret.longitudinalTuning.kiV = [.56, .50, .30, .17, .1]
     ret.longitudinalTuning.deadzoneBP = [0., 8.05]
     ret.longitudinalTuning.deadzoneV = [.0, .14]
 
