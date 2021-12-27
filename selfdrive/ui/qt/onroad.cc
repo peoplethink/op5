@@ -56,7 +56,7 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
       recorder->update_screen();
     }
   });
-   record_timer->start(1000/UI_FREQ);
+        record_timer->start(1000/UI_FREQ);
 
   QWidget* recorder_widget = new QWidget(this);
   QVBoxLayout * recorder_layout = new QVBoxLayout (recorder_widget);
