@@ -13,7 +13,7 @@ ACCEL_MIN_ISO = -3.5  # m/s^2
 ACCEL_MAX_ISO = 2.0  # m/s^2
 
 
-def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_future, 
+def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_future,
                              output_accel, brake_pressed, cruise_standstill, radarState):
   """Update longitudinal control state machine"""
   stopping_condition = (v_ego < 2.0 and cruise_standstill) or \
@@ -88,6 +88,9 @@ class LongControl():
       v_target_future = 0.0
       a_target = 0.0
 
+    if a_target > 0.:
+      a_target *= interp(CS.vEgo, [0., 3.], [1.2, 1.])
+
     # TODO: This check is not complete and needs to be enforced by MPC
     a_target = clip(a_target, ACCEL_MIN_ISO, ACCEL_MAX_ISO)
 
@@ -133,7 +136,6 @@ class LongControl():
     elif self.long_control_state == LongCtrlState.starting:
       if output_accel < CP.startAccel:
         output_accel += CP.startingAccelRate * DT_CTRL
-      output_accel = min(output_accel, CP.startAccel)  
       self.reset(CS.vEgo)
 
     self.last_output_accel = output_accel

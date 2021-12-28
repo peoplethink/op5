@@ -35,14 +35,14 @@ X_EGO_COST = 0.
 V_EGO_COST = 0.
 A_EGO_COST = 0.
 J_EGO_COST = 5.0
-A_CHANGE_COST = .15
+A_CHANGE_COST = .125
 DANGER_ZONE_COST = 100.
 CRASH_DISTANCE = .5
 LIMIT_COST = 1e6
 
 
 CRUISE_GAP_BP = [1., 2., 3., 4.]
-CRUISE_GAP_V = [1.0, 1.45, 2.0, 2.0]
+CRUISE_GAP_V = [1.2, 1.35, 1.5, 1.7]
 
 AUTO_TR_BP = [10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 30.*CV.KPH_TO_MS, 40.*CV.KPH_TO_MS, 50.*CV.KPH_TO_MS, 60.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 80.*CV.KPH_TO_MS, 100.*CV.KPH_TO_MS, 120.*CV.KPH_TO_MS]
 AUTO_TR_V = [1.20, 1.22, 1.25, 1.35, 1.35, 1.40, 1.45, 1.45, 1.45, 1.55]
@@ -61,7 +61,7 @@ T_IDXS = np.array(T_IDXS_LST)
 T_DIFFS = np.diff(T_IDXS, prepend=[0.])
 MIN_ACCEL = -3.5
 T_FOLLOW = 1.45
-COMFORT_BRAKE = 2.6
+COMFORT_BRAKE = 2.5
 STOP_DISTANCE = 6.0
 
 def get_stopped_equivalence_factor(v_lead):
@@ -95,9 +95,9 @@ def gen_long_model():
   model.xdot = vertcat(x_ego_dot, v_ego_dot, a_ego_dot)
 
   # live parameters
+  x_obstacle = SX.sym('x_obstacle')
   a_min = SX.sym('a_min')
   a_max = SX.sym('a_max')
-  x_obstacle = SX.sym('x_obstacle')
   prev_a = SX.sym('prev_a')
   tr = SX.sym('tr')
   model.p = vertcat(a_min, a_max, x_obstacle, prev_a, tr)
@@ -157,7 +157,7 @@ def gen_long_mpc_solver():
   # Constraints on speed, acceleration and desired distance to
   # the obstacle, which is treated as a slack constraint so it
   # behaves like an assymetrical cost.
-  constraints = vertcat(v_ego,
+  constraints = vertcat((v_ego),
                         (a_ego - a_min),
                         (a_max - a_ego),
                         ((x_obstacle - x_ego) - (3/4) * (desired_dist_comfort)) / (v_ego + 10.))
@@ -203,18 +203,21 @@ def gen_long_mpc_solver():
   return ocp
 
 
-class LongitudinalMpc:
+class LongitudinalMpc():
   def __init__(self, e2e=False):
     self.e2e = e2e
     self.reset()
+    self.accel_limit_arr = np.zeros((N+1, 2))
+    self.accel_limit_arr[:,0] = -1.2
+    self.accel_limit_arr[:,1] = 1.2
     self.source = SOURCES[2]
 
   def reset(self):
     self.solver = AcadosOcpSolverFast('long', N, EXPORT_DIR)
-    self.v_solution = np.zeros(N+1)
-    self.a_solution = np.zeros(N+1)
+    self.v_solution = [0.0 for i in range(N+1)]
+    self.a_solution = [0.0 for i in range(N+1)]
     self.prev_a = np.array(self.a_solution)
-    self.j_solution = np.zeros(N)
+    self.j_solution = [0.0 for i in range(N)]
     self.yref = np.zeros((N+1, COST_DIM))
     for i in range(N):
       self.solver.cost_set(i, "yref", self.yref[i])
@@ -275,8 +278,7 @@ class LongitudinalMpc:
       self.x0[1] = v
       self.x0[2] = a
 
-  @staticmethod
-  def extrapolate_lead(x_lead, v_lead, a_lead, a_lead_tau):
+  def extrapolate_lead(self, x_lead, v_lead, a_lead, a_lead_tau):
     a_lead_traj = a_lead * np.exp(-a_lead_tau * (T_IDXS**2)/2.)
     v_lead_traj = np.clip(v_lead + np.cumsum(T_DIFFS * a_lead_traj), 0.0, 1e8)
     x_lead_traj = x_lead + np.cumsum(T_DIFFS * v_lead_traj)
@@ -370,12 +372,13 @@ class LongitudinalMpc:
     for i in range(N):
       self.solver.cost_set(i, "yref", self.yref[i])
     self.solver.cost_set(N, "yref", self.yref[N][:COST_E_DIM])
-    accel_limit_arr = np.full((N+1, 2), (-10., 10.))
+    self.accel_limit_arr[:,0] = -10.
+    self.accel_limit_arr[:,1] = 10.
     x_obstacle = 1e5*np.ones((N+1))
-    self.params = np.concatenate([accel_limit_arr,
-                                  x_obstacle[:,None],
-                                  self.prev_a[:,None]],
-                                  np.full((N+1,1), self.param_tr), axis=1)
+    self.params = np.concatenate([self.accel_limit_arr,
+                             x_obstacle[:,None],
+                             self.prev_a[:,None]],
+                             np.full((N+1,1), self.param_tr), axis=1)
     self.run()
 
 
