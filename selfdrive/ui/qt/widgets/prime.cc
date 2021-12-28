@@ -240,7 +240,7 @@ SetupWidget::SetupWidget(QWidget* parent) : QFrame(parent) {
 
   finishRegistationLayout->addStretch();
 
-  QPushButton* pair = new QPushButton("Pair device");
+  QPushButton* pair = new QPushButton("Happy New Year! \U00002603");
   pair->setFixedHeight(220);
   pair->setStyleSheet(R"(
     QPushButton {
