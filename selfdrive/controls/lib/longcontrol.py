@@ -49,7 +49,7 @@ def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_fut
       elif output_accel >= CP.startAccel:
         long_control_state = LongCtrlState.pid
 
-  return long_control_stat
+  return long_control_state
 
 
 class LongControl():
