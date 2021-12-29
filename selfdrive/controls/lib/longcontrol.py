@@ -84,8 +84,8 @@ class LongControl():
       a_target_upper = 2 * (v_target_upper - long_plan.speeds[0])/longitudinalActuatorDelayUpperBound - long_plan.accels[0]
      
       v_target = long_plan.speeds[0]
-      a_target = min(a_target_lower, a_target_upper)
       v_target_future = long_plan.speeds[-1]
+      a_target = min(a_target_lower, a_target_upper)
     else:
       v_target = 0.0
       v_target_future = 0.0
