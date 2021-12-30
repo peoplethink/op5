@@ -877,14 +877,14 @@ void NvgWindow::drawSpeedLimit(QPainter &p) {
   int activeNDA = scc_smoother.getRoadLimitSpeedActive();
   int limit_speed = scc_smoother.getRoadLimitSpeed();
   int left_dist = scc_smoother.getRoadLimitSpeedLeftDist();
-  activeNDA = 1; //
+  //activeNDA = 1; //
 
   if(activeNDA > 0)
   {
       int w = 180;
-      int h = 46;
+      int h = 40;
       int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
-      int y = 270 - bdr_s;
+      int y = 275 - bdr_s;
 
       p.setOpacity(1.f);
       p.drawPixmap(x, y, w, h, activeNDA == 1 ? ic_nda : ic_hda);
