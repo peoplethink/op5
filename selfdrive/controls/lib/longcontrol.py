@@ -90,6 +90,9 @@ class LongControl():
       v_target = 0.0
       v_target_future = 0.0
       a_target = 0.0
+      
+    if a_target > 0.:
+      a_target *= interp(CS.vEgo, [0., 3.], [1.2, 1.0])   
 
     # TODO: This check is not complete and needs to be enforced by MPC
     a_target = clip(a_target, ACCEL_MIN_ISO, ACCEL_MAX_ISO)
