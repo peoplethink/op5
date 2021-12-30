@@ -203,7 +203,7 @@ ButtonsWindow::ButtonsWindow(QWidget *parent) : QWidget(parent) {
   QWidget *btns_wrapper = new QWidget;
   QHBoxLayout *btns_layout  = new QHBoxLayout(btns_wrapper);
   btns_layout->setSpacing(0);
-  btns_layout->setContentsMargins(0, 255, 30, 30);
+  btns_layout->setContentsMargins(0, 250, 30, 30);
 
   main_layout->addWidget(btns_wrapper, 0, Qt::AlignTop);
 
@@ -881,10 +881,10 @@ void NvgWindow::drawSpeedLimit(QPainter &p) {
 
   if(activeNDA > 0)
   {
-      int w = 185;
-      int h = 50;
+      int w = 180;
+      int h = 46;
       int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
-      int y = 380 - bdr_s;
+      int y = 270 - bdr_s;
 
       p.setOpacity(1.f);
       p.drawPixmap(x, y, w, h, activeNDA == 1 ? ic_nda : ic_hda);
