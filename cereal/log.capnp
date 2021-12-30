@@ -912,6 +912,8 @@ struct LateralPlan @0xe1e9318e2ae8b51e {
   
   autoLaneChangeEnabled @30 :Bool;
   autoLaneChangeTimer @31 :Int8;
+  
+  dynamicLaneProfile @32 :Bool;
 
   enum Desire {
     none @0;

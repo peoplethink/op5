@@ -3,6 +3,7 @@
 #include <string>
 #include <cassert>
 #include <cmath>
+#include <string>
 
 #include "common/transformations/orientation.hpp"
 #include "selfdrive/common/params.h"
@@ -204,6 +205,11 @@ static void update_state(UIState *s) {
     scene.light_sensor = std::clamp<float>(1.0 - (ev / max_ev), 0.0, 1.0);
   }
   scene.started = sm["deviceState"].getDeviceState().getStarted() && scene.ignition;
+  if (sm.updated("lateralPlan")) {
+    auto data = sm["lateralPlan"].getLateralPlan();
+
+    scene.lateralPlan.dynamicLaneProfileStatus = data.getDynamicLaneProfile();
+  }
   if (Params().getBool("IsOpenpilotViewEnabled")) {
     scene.started = sm["deviceState"].getDeviceState().getStarted();
   } else {
@@ -244,6 +250,7 @@ static void update_status(UIState *s) {
       s->scene.started_frame = s->sm->frame;
       s->scene.end_to_end = Params().getBool("EndToEndToggle");
       s->wide_camera = Hardware::TICI() ? Params().getBool("EnableWideCamera") : false;
+      s->scene.dynamic_lane_profile = std::stoi(Params().get("DynamicLaneProfile"));
     }
   }
   started_prev = s->scene.started;
@@ -254,7 +261,7 @@ UIState::UIState(QObject *parent) : QObject(parent) {
   sm = std::make_unique<SubMaster, const std::initializer_list<const char *>>({
     "modelV2", "controlsState", "liveCalibration", "radarState", "deviceState", "roadCameraState",
     "pandaStates", "carParams", "driverMonitoringState", "sensorEvents", "carState", "liveLocationKalman",
-    "gpsLocationExternal", "carControl", "liveParameters", "ubloxGnss"});
+    "gpsLocationExternal", "carControl", "liveParameters", "lateralPlan", "ubloxGnss"});
 
   Params params;
   wide_camera = Hardware::TICI() ? params.getBool("EnableWideCamera") : false;

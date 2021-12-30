@@ -42,6 +42,8 @@ def manager_init():
     ("OpenpilotEnabledToggle", "1"),
     ("CommunityFeaturesToggle", "1"),
     ("IsMetric", "1"),
+    ("DynamicLaneProfile", "2"),
+    ("EndToEndToggle", "1"),
 
     # HKG
     ("UseClusterSpeed", "0"),

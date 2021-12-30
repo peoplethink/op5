@@ -100,6 +100,10 @@ typedef struct UIScene {
   float angleSteersDes;
   
   cereal::PandaState::PandaType pandaType;
+  
+  int dynamic_lane_profile;
+
+  cereal::LateralPlan::Reader lateral_plan;
   cereal::ControlsState::Reader controls_state;
   cereal::CarControl::Reader car_control;
   cereal::CarState::Reader car_state;
@@ -119,6 +123,11 @@ typedef struct UIScene {
   float light_sensor, accel_sensor, gyro_sensor;
   bool started, ignition, is_metric, longitudinal_control, end_to_end;
   uint64_t started_frame;
+  
+  struct _LateralPlan
+  {
+    bool dynamicLaneProfileStatus;
+  } lateralPlan;
 } UIScene;
 
 class UIState : public QObject {
