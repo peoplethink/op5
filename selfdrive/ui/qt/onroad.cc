@@ -203,7 +203,7 @@ ButtonsWindow::ButtonsWindow(QWidget *parent) : QWidget(parent) {
   QWidget *btns_wrapper = new QWidget;
   QHBoxLayout *btns_layout  = new QHBoxLayout(btns_wrapper);
   btns_layout->setSpacing(0);
-  btns_layout->setContentsMargins(0, 330, 30, 30);
+  btns_layout->setContentsMargins(0, 280, 30, 30);
 
   main_layout->addWidget(btns_wrapper, 0, Qt::AlignTop);
 
@@ -227,7 +227,7 @@ ButtonsWindow::ButtonsWindow(QWidget *parent) : QWidget(parent) {
     }
   });
   dlpBtn->setFixedWidth(187);
-  dlpBtn->setFixedHeight(140);
+  dlpBtn->setFixedHeight(135);
   btns_layout->addWidget(dlpBtn, 0, Qt::AlignLeft);
   btns_layout->addSpacing(0);
 
@@ -249,13 +249,13 @@ ButtonsWindow::ButtonsWindow(QWidget *parent) : QWidget(parent) {
 
 void ButtonsWindow::updateState(const UIState &s) {
   if (uiState()->scene.dynamic_lane_profile == 0) {
-    dlpBtn->setStyleSheet(QString("font-size: 38px; border-radius: 100px; border-color: %1").arg(dlpBtnColors.at(0)));
+    dlpBtn->setStyleSheet(QString("font-size: 40px; border-radius: 100px; border-color: %1").arg(dlpBtnColors.at(0)));
     dlpBtn->setText("Lane\nonly");
   } else if (uiState()->scene.dynamic_lane_profile == 1) {
-    dlpBtn->setStyleSheet(QString("font-size: 38px; border-radius: 100px; border-color: %1").arg(dlpBtnColors.at(1)));
+    dlpBtn->setStyleSheet(QString("font-size: 40px; border-radius: 100px; border-color: %1").arg(dlpBtnColors.at(1)));
     dlpBtn->setText("Lane\nless");
   } else if (uiState()->scene.dynamic_lane_profile == 2) {
-    dlpBtn->setStyleSheet(QString("font-size: 38px; border-radius: 100px; border-color: %1").arg(dlpBtnColors.at(2)));
+    dlpBtn->setStyleSheet(QString("font-size: 40px; border-radius: 100px; border-color: %1").arg(dlpBtnColors.at(2)));
     dlpBtn->setText("Auto\nLane");
   }
 }
@@ -877,14 +877,14 @@ void NvgWindow::drawSpeedLimit(QPainter &p) {
   int activeNDA = scc_smoother.getRoadLimitSpeedActive();
   int limit_speed = scc_smoother.getRoadLimitSpeed();
   int left_dist = scc_smoother.getRoadLimitSpeedLeftDist();
-  //activeNDA = 1; //
+  activeNDA = 1; //
 
   if(activeNDA > 0)
   {
       int w = 185;
-      int h = 60;
-      int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s -844 + 24;
-      int y = 260;
+      int h = 50;
+      int x = (width() + (bdr_s*2))/2 - w/2 - bdr_s;
+      int y = 80 - bdr_s;
 
       p.setOpacity(1.f);
       p.drawPixmap(x, y, w, h, activeNDA == 1 ? ic_nda : ic_hda);
