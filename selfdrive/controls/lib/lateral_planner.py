@@ -100,6 +100,11 @@ class LateralPlanner:
       self.use_lanelines = not Params().get_bool("EndToEndToggle")
       self.dynamic_lane_profile = int(Params().get("DynamicLaneProfile", encoding="utf8"))
       self.second = 0.0
+      
+    lane_change_set_timer = int(Params().get("AutoLaneChangeTimer", encoding="utf8"))
+    lane_change_auto_timer = 0.0 if lane_change_set_timer == 0 else 0.1 if lane_change_set_timer == 1 else 0.5 if lane_change_set_timer == 2 \
+      else 1.0 if lane_change_set_timer == 3 else 1.5 if lane_change_set_timer == 4 else 2.0
+  
     v_ego = sm['carState'].vEgo
     active = sm['controlsState'].active
     measured_curvature = sm['controlsState'].curvature

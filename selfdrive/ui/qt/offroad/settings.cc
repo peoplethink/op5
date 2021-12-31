@@ -425,6 +425,7 @@ VIPPanel::VIPPanel(QWidget* parent) : QWidget(parent) {
   layout->addWidget(horizontal_line());
   layout->addWidget(new LabelControl("제어메뉴", ""));
   layout->addWidget(new LateralControlSelect());
+  layout->addWidget(new AutoLaneChangeTimer());
   layout->addWidget(new ParamControl("C3MdpsSet",
                                             "C3 MDPS 버스1 고정",
                                             "콤마3 MDPS 개조 버스1로 고정",
