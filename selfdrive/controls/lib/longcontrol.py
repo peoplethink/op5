@@ -14,7 +14,7 @@ ACCEL_MAX_ISO = 2.0  # m/s^2
 
 
 def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_future,
-                             brake_pressed, cruise_standstill, radarState):
+                             output_accel, brake_pressed, cruise_standstill, radarState):
   """Update longitudinal control state machine"""
   stopping_condition = (v_ego < 2.0 and cruise_standstill) or \
                        (v_ego < CP.vEgoStopping and
@@ -40,6 +40,12 @@ def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_fut
 
     elif long_control_state == LongCtrlState.stopping:
       if starting_condition:
+        long_control_state = LongCtrlState.starting
+
+    elif long_control_state == LongCtrlState.starting:
+      if stopping_condition:
+        long_control_state = LongCtrlState.stopping
+      elif output_accel >= CP.startAccel:
         long_control_state = LongCtrlState.pid
 
   return long_control_state
@@ -94,8 +100,8 @@ class LongControl():
     # Update state machine
     output_accel = self.last_output_accel
     self.long_control_state = long_control_state_trans(CP, active, self.long_control_state, CS.vEgo,
-                                                       v_target_future, CS.brakePressed, 
-                                                       CS.cruiseState.standstill, radarState)
+                                                       v_target_future, output_accel,
+                                                       CS.brakePressed, CS.cruiseState.standstill, radarState)
 
     if self.long_control_state == LongCtrlState.off or CS.gasPressed:
       self.reset(CS.vEgo)
@@ -104,13 +110,10 @@ class LongControl():
     # tracking objects and driving
     elif self.long_control_state == LongCtrlState.pid:
       self.v_pid = long_plan.speeds[0]
-      accelerating = v_target_future > self.v_pid
-      if CS.vEgo < 0.3 and accelerating:
-        self.v_pid = min(CS.vEgo, self.v_pid)
 
       # Toyota starts braking more when it thinks you want to stop
       # Freeze the integrator so we don't accelerate to compensate, and don't allow positive acceleration
-      prevent_overshoot = not CP.stoppingControl and CS.vEgo < 1.5 and v_target_future < 0.7 and not accelerating
+      prevent_overshoot = not CP.stoppingControl and CS.vEgo < 1.5 and v_target_future < 0.7 and v_target_future < self.v_pid
       deadzone = interp(CS.vEgo, CP.longitudinalTuning.deadzoneBP, CP.longitudinalTuning.deadzoneV)
       freeze_integrator = prevent_overshoot
 
@@ -127,6 +130,12 @@ class LongControl():
                         interp(output_accel, [CP.stopAccel, CP.stopAccel/2., 0], [0.3, 0.65, 1.2])
       output_accel = clip(output_accel, accel_limits[0], accel_limits[1])
 
+      self.reset(CS.vEgo)
+
+    # Intention is to move again, release brake fast before handing control to PID
+    elif self.long_control_state == LongCtrlState.starting:
+      if output_accel < CP.startAccel:
+        output_accel += CP.startingAccelRate * DT_CTRL
       self.reset(CS.vEgo)
 
     self.last_output_accel = output_accel
