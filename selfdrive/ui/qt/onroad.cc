@@ -610,9 +610,27 @@ void NvgWindow::drawCommunity(QPainter &p) {
   const auto controls_state = sm["controlsState"].getControlsState();
   const auto car_params = sm["carParams"].getCarParams();
   const auto live_params = sm["liveParameters"].getLiveParameters();
+  const auto device_state = sm["deviceState"].getDeviceState();
 	
   int lateralControlState = controls_state.getLateralControlSelect();
   const char* lateral_state[] = {"PID", "INDI", "LQR"};
+	
+  auto cpuList = device_state.getCpuTempC();
+  float cpuTemp = 0;
+
+  if (cpuList.size() > 0) {
+      for(int i = 0; i < cpuList.size(); i++)
+          cpuTemp += cpuList[i];
+      cpuTemp /= cpuList.size();
+  }
+
+  // Orange Color if more than 70℃ / Red Color if more than 80℃
+  //if ((int)(cpuTemp) >= 30) { QColor(1, 0, 255, 200); }
+  if ((int)(cpuTemp) >= 70) { QColor(255, 188, 3, 200); }
+  if ((int)(cpuTemp) >= 80) { QColor(255, 0, 0, 200); }
+	
+	
+
 
   const auto scc_smoother = sm["carControl"].getCarControl().getSccSmoother();
   bool is_metric = s->scene.is_metric;
@@ -628,7 +646,7 @@ void NvgWindow::drawCommunity(QPainter &p) {
   int scc_bus = car_params.getSccBus();
 
   QString infoText;
-  infoText.sprintf(" %s SR(%.2f) SC(%.2f) SD(%.2f) (%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f   **DURANGO  GENESIS_0813**)",
+  infoText.sprintf(" %s SR(%.2f) SC(%.2f) SD(%.2f) (%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)  CPU온도 %.1f°C  GENESIS_0813)",
 		      lateral_state[lateralControlState],
                       //live_params.getAngleOffsetDeg(),
                       //live_params.getAngleOffsetAverageDeg(),
@@ -641,7 +659,8 @@ void NvgWindow::drawCommunity(QPainter &p) {
                       controls_state.getSccBrakeFactor(),
                       controls_state.getSccCurvatureFactor(),
 		      controls_state.getLongitudinalActuatorDelayLowerBound(),
-                      controls_state.getLongitudinalActuatorDelayUpperBound()
+                      controls_state.getLongitudinalActuatorDelayUpperBound(),
+	              cpuTemp
                       );
 
   // info

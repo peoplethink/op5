@@ -98,6 +98,7 @@ typedef struct UIScene {
   bool steerOverride;
   bool is_OpenpilotViewEnabled;
   float angleSteersDes;
+  float cpuTempAvg;
   
   cereal::PandaState::PandaType pandaType;
   
