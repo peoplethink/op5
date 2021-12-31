@@ -628,7 +628,7 @@ void NvgWindow::drawCommunity(QPainter &p) {
   int scc_bus = car_params.getSccBus();
 
   QString infoText;
-  infoText.sprintf(" %s SR(%.2f) SC(%.2f) SD(%.2f) (%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)",
+  infoText.sprintf(" %s SR(%.2f) SC(%.2f) SD(%.2f) (%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f   **DURANGO  GENESIS_0813**)",
 		      lateral_state[lateralControlState],
                       //live_params.getAngleOffsetDeg(),
                       //live_params.getAngleOffsetAverageDeg(),
@@ -648,6 +648,10 @@ void NvgWindow::drawCommunity(QPainter &p) {
   configFont(p, "Open Sans", 34, "Regular");
   p.setPen(QColor(0xff, 0xff, 0xff, 0xff));
   p.drawText(rect().left() + 180, rect().height() - 15, infoText);
+  const int h = 60;
+  QRect bar_rc(rect().left(), rect().bottom() - h, rect().width(), h);
+  p.setBrush(QColor(0, 0, 0, 100));
+  p.drawRect(bar_rc);
   drawBottomIcons(p);
 }
 
@@ -841,8 +845,8 @@ void NvgWindow::drawTpms(QPainter &p) {
 
   const int w = 58;
   const int h = 126;
-  const int x = 110 + 1635;
-  const int y = height() - h - 80 + 60;
+  const int x = 110 + 1625;
+  const int y = height() - h - 80;
 
   auto tpms = car_state.getTpms();
   const float fl = tpms.getFl();
