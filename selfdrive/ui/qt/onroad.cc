@@ -625,8 +625,8 @@ void NvgWindow::drawCommunity(QPainter &p) {
   }
 
   // Orange Color if more than 70℃ / Red Color if more than 80℃
-  if ((int)(cpuTemp) >= 30) { QColor(1, 0, 255, 200); }
-  //if ((int)(cpuTemp) >= 70) { QColor(255, 188, 3, 200); }
+  //if ((int)(cpuTemp) >= 30) { QColor(1, 0, 255, 200); }
+  if ((int)(cpuTemp) >= 70) { QColor(255, 188, 3, 200); }
   if ((int)(cpuTemp) >= 80) { QColor(255, 0, 0, 200); }
 	
 	
