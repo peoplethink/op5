@@ -25,7 +25,7 @@ private:
   QPushButton *dlpBtn;
 
   //int dlpStatus = -1;
-  const QStringList dlpBtnColors = {"#87ceeb", "#2231eb", "#a9a9a9"};
+  const QStringList dlpBtnColors = {"#87ceeb", "#2231eb", "#808080"};
 
 public slots:
   void updateState(const UIState &s);
