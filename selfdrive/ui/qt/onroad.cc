@@ -483,11 +483,11 @@ void NvgWindow::drawLaneLines(QPainter &painter, const UIScene &scene) {
   QLinearGradient bg(0, height(), 0, height() / 4);
   if ((*s->sm)["controlsState"].getControlsState().getEnabled()) {
   if (steerOverride) {
-      bg.setColorAt(0, blackColor(80));
-      bg.setColorAt(1, blackColor(20));
+      bg.setColorAt(0, redColor(50));
+      bg.setColorAt(1, redColor(20));
     } else {
-      bg.setColorAt(0, scene.lateralPlan.dynamicLaneProfileStatus ? redColor() : skyBlueColor());
-      bg.setColorAt(1, scene.lateralPlan.dynamicLaneProfileStatus ? redColor(0) : skyBlueColor(0));
+      bg.setColorAt(0, scene.lateralPlan.dynamicLaneProfileStatus ? graceBlueColor() : skyBlueColor());
+      bg.setColorAt(1, scene.lateralPlan.dynamicLaneProfileStatus ? graceBlueColor(0) : skyBlueColor(0));
     } 
   } else {
     bg.setColorAt(0, QColor(255, 255, 255));
