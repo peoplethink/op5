@@ -14,7 +14,7 @@ ACCEL_MAX_ISO = 2.0  # m/s^2
 
 
 def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_future, v_pid,
-                             output_accel, brake_pressed, cruise_standstill, radarState):
+                             brake_pressed, cruise_standstill, radarState):
   """Update longitudinal control state machine"""
   stopping_condition = (v_ego < 2.0 and cruise_standstill) or \
                        (v_ego < CP.vEgoStopping and
@@ -40,12 +40,6 @@ def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_fut
 
     elif long_control_state == LongCtrlState.stopping:
       if starting_condition:
-        long_control_state = LongCtrlState.starting
-
-    elif long_control_state == LongCtrlState.starting:
-      if stopping_condition:
-        long_control_state = LongCtrlState.stopping
-      elif output_accel >= CP.startAccel:
         long_control_state = LongCtrlState.pid
 
   return long_control_state
@@ -100,7 +94,7 @@ class LongControl():
     # Update state machine
     output_accel = self.last_output_accel
     self.long_control_state = long_control_state_trans(CP, active, self.long_control_state, CS.vEgo,
-                                                       v_target_future, self.v_pid, output_accel,
+                                                       v_target_future, self.v_pid,
                                                        CS.brakePressed, CS.cruiseState.standstill, radarState)
 
     if self.long_control_state == LongCtrlState.off or CS.gasPressed:
@@ -130,12 +124,6 @@ class LongControl():
                         interp(output_accel, [CP.stopAccel, CP.stopAccel/2., CP.stopAccel/4., 0.], [0.3, 0.65, 1., 5.])
       output_accel = clip(output_accel, accel_limits[0], accel_limits[1])
 
-      self.reset(CS.vEgo)
-
-    # Intention is to move again, release brake fast before handing control to PID
-    elif self.long_control_state == LongCtrlState.starting:
-      if output_accel < CP.startAccel:
-        output_accel += CP.startingAccelRate * DT_CTRL
       self.reset(CS.vEgo)
 
     self.last_output_accel = output_accel
