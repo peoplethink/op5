@@ -58,7 +58,7 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
 
 #ifdef QCOM2
   // screen recoder - neokii
-
+/*
   record_timer = std::make_shared<QTimer>();
 	QObject::connect(record_timer.get(), &QTimer::timeout, [=]() {
     if(recorder) {
@@ -72,13 +72,13 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   recorder_layout->setMargin(35);
   recorder = new ScreenRecoder(this);
   recorder_layout->addWidget(recorder);
- // recorder_layout->setAlignment(recorder, Qt::AlignRight | Qt::AlignBottom);
+  recorder_layout->setAlignment(recorder, Qt::AlignRight | Qt::AlignBottom);
 
   stacked_layout->addWidget(recorder_widget);
   recorder_widget->raise();
   alerts->raise();
 #endif
-}
+}*/
 
 void OnroadWindow::updateState(const UIState &s) {
   QColor bgColor = bg_colors[s.status];
