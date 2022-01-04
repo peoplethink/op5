@@ -66,7 +66,7 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
     }
   });
         record_timer->start(1000/UI_FREQ);
-
+/*
   QWidget* recorder_widget = new QWidget(this);
   QVBoxLayout * recorder_layout = new QVBoxLayout (recorder_widget);
   recorder_layout->setMargin(35);
@@ -76,7 +76,7 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
 
   stacked_layout->addWidget(recorder_widget);
   recorder_widget->raise();
-  alerts->raise();
+  alerts->raise();*/
 #endif
 }
 
