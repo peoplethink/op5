@@ -72,7 +72,7 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   recorder_layout->setMargin(35);
   recorder = new ScreenRecoder(this);
   recorder_layout->addWidget(recorder);
-  recorder_layout->setAlignment(recorder, Qt::AlignRight | Qt::AlignBottom);
+ // recorder_layout->setAlignment(recorder, Qt::AlignRight | Qt::AlignBottom);
 
   stacked_layout->addWidget(recorder_widget);
   recorder_widget->raise();
