@@ -483,7 +483,7 @@ void NvgWindow::drawLaneLines(QPainter &painter, const UIScene &scene) {
   QLinearGradient bg(0, height(), 0, height() / 4);
   if ((*s->sm)["controlsState"].getControlsState().getEnabled()) {
   if (steerOverride) {
-      bg.setColorAt(0, redColor(50));
+      bg.setColorAt(0, redColor(60));
       bg.setColorAt(1, redColor(20));
     } else {
       bg.setColorAt(0, scene.lateralPlan.dynamicLaneProfileStatus ? graceBlueColor() : skyBlueColor());
@@ -518,7 +518,13 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
 
   float g_xo = sz / 5;
   float g_yo = sz / 10;
-
+	
+  int x_int = (int)x;
+  int y_int = (int)y;
+	
+  QString v_rel_str = QString::number(std::nearbyint(v_rel * 3.6));
+  QString d_rel_str = QString::number(std::nearbyint(d_rel));
+	
   QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_xo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
   painter.setBrush(is_radar ? QColor(86, 121, 216, 255) : QColor(218, 202, 37, 255));
   painter.drawPolygon(glow, std::size(glow));
@@ -527,6 +533,14 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
   QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
   painter.setBrush(redColor(fillAlpha));
   painter.drawPolygon(chevron, std::size(chevron));
+	
+  //painter.setPen(QColor(0xff, 0xff, 0xff));
+  //configFont(painter, "Open Sans", 60, "Regular");
+  //painter.drawText(x_int - 10, y_int + 125, v_rel_str);
+	
+  painter.setPen(QColor(0xff, 0xff, 0xff));
+  configFont(painter, "Open Sans", 60, "Regular");
+  painter.drawText(x_int - 15, y_int + 125, d_rel_str);
 }
 
 void NvgWindow::paintGL() {
@@ -646,7 +660,7 @@ void NvgWindow::drawCommunity(QPainter &p) {
   int scc_bus = car_params.getSccBus();
 
   QString infoText;
-  infoText.sprintf(" %s SR(%.2f) SC(%.2f) SD(%.2f) (%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)  CPU온도 %.1f°C  GENESIS_0813)",
+  infoText.sprintf(" %s SR(%.2f) SC(%.2f) SD(%.2f) (%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)  CPU온도 %.1f°  GENESIS_0813)",
 		      lateral_state[lateralControlState],
                       //live_params.getAngleOffsetDeg(),
                       //live_params.getAngleOffsetAverageDeg(),
