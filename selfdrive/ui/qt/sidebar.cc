@@ -96,7 +96,7 @@ void Sidebar::paintEvent(QPaintEvent *event) {
   p.setPen(Qt::NoPen);
   p.setRenderHint(QPainter::Antialiasing);
 
-  p.fillRect(rect(), QColor(57, 57, 57));
+  p.fillRect(rect(), QColor(0, 0, 0));
 
   // static imgs
   p.setOpacity(0.65);
@@ -125,7 +125,7 @@ void Sidebar::paintEvent(QPaintEvent *event) {
 
   // metrics
   configFont(p, "Open Sans", 35, "Regular");
-  drawMetric(p, "이온온도", temp_status.first, temp_status.second, 338);
+  drawMetric(p, "장치온도", temp_status.first, temp_status.second, 338);
   drawMetric(p, panda_status.first, "", panda_status.second, 518);
   drawMetric(p, connect_status.first, "", connect_status.second, 676);
 }

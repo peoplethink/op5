@@ -13,13 +13,13 @@ ACCEL_MIN_ISO = -3.5  # m/s^2
 ACCEL_MAX_ISO = 2.0  # m/s^2
 
 
-def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_future, 
+def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_future,
                              brake_pressed, cruise_standstill, radarState):
   """Update longitudinal control state machine"""
   stopping_condition = (v_ego < 2.0 and cruise_standstill) or \
                        (v_ego < CP.vEgoStopping and
                         (v_target_future < CP.vEgoStopping or brake_pressed))
-
+  
   starting_condition = v_target_future > CP.vEgoStarting and not cruise_standstill
 
   # neokii
@@ -83,7 +83,7 @@ class LongControl():
       a_target = 0.0
 
     if a_target > 0.:
-      a_target *= interp(CS.vEgo, [0., 3., 10.], [1.5, 1.3, 1.1])
+      a_target *= interp(CS.vEgo, [0., 3.], [1.5, 1.2])
 
     # TODO: This check is not complete and needs to be enforced by MPC
     a_target = clip(a_target, ACCEL_MIN_ISO, ACCEL_MAX_ISO)
@@ -120,8 +120,10 @@ class LongControl():
     elif self.long_control_state == LongCtrlState.stopping:
       # Keep applying brakes until the car is stopped
       if not CS.standstill or output_accel > CP.stopAccel:
-        output_accel -= CP.stoppingDecelRate * DT_CTRL 
+        output_accel -= CP.stoppingDecelRate * DT_CTRL * \
+                        interp(output_accel, [CP.stopAccel, CP.stopAccel/2., 0], [0.3, 0.65, 1.2])
       output_accel = clip(output_accel, accel_limits[0], accel_limits[1])
+
       self.reset(CS.vEgo)
 
     self.last_output_accel = output_accel

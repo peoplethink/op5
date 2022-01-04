@@ -524,7 +524,7 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
 	
   QString v_rel_str = QString::number(std::nearbyint(v_rel * 3.6));
   QString d_rel_str = QString::number(std::nearbyint(d_rel));
-	
+  
   QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_xo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
   painter.setBrush(is_radar ? QColor(86, 121, 216, 255) : QColor(218, 202, 37, 255));
   painter.drawPolygon(glow, std::size(glow));
@@ -534,13 +534,13 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
   painter.setBrush(redColor(fillAlpha));
   painter.drawPolygon(chevron, std::size(chevron));
 	
-  //painter.setPen(QColor(0xff, 0xff, 0xff));
-  //configFont(painter, "Open Sans", 60, "Regular");
-  //painter.drawText(x_int - 10, y_int + 125, v_rel_str);
+ // painter.setPen(QColor(0xff, 0xff, 0xff));
+ // configFont(painter, "Open Sans", 60, "Regular");
+ // painter.drawText(x_int - 10, y_int + 125, v_rel_str);
 	
   painter.setPen(QColor(0xff, 0xff, 0xff));
-  configFont(painter, "Open Sans", 60, "Regular");
-  painter.drawText(x_int - 15, y_int + 125, d_rel_str);
+  configFont(painter, "Open Sans", 58, "Regular");
+  painter.drawText(x_int - 35, y_int + 120, d_rel_str);
 }
 
 void NvgWindow::paintGL() {
