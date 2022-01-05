@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QColor>
+#include <QFuture>
 #include <QTransform>
 
 #include "cereal/messaging/messaging.h"
@@ -136,6 +137,7 @@ class UIState : public QObject {
 
 public:
   UIState(QObject* parent = 0);
+  void updateStatus();
   inline bool worldObjectsVisible() const { 
     return sm->rcv_frame("liveCalibration") > scene.started_frame;
   };
@@ -192,6 +194,7 @@ private:
   bool ignition_on = false;
   int last_brightness = 0;
   FirstOrderFilter brightness_filter;
+  QFuture<void> brightness_future;
 
   void updateBrightness(const UIState &s);
   void updateWakefulness(const UIState &s);

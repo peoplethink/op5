@@ -35,7 +35,7 @@ X_EGO_COST = 0.
 V_EGO_COST = 0.
 A_EGO_COST = 0.
 J_EGO_COST = 5.0
-A_CHANGE_COST = .5
+A_CHANGE_COST = .125
 DANGER_ZONE_COST = 100.
 CRASH_DISTANCE = .5
 LIMIT_COST = 1e6
@@ -49,7 +49,9 @@ AUTO_TR_V = [1., 1.2, 1.35, 1.45]
 
 AUTO_TR_CRUISE_GAP = 4
 
-# Less timestamps doesn't hurt performance and leads to
+
+
+# Fewer timestamps don't hurt performance and lead to
 # much better convergence of the MPC with low iterations
 N = 12
 MAX_T = 10.0
@@ -180,7 +182,7 @@ def gen_long_mpc_solver():
   ocp.constraints.idxsh = np.arange(CONSTR_DIM)
 
   # The HPIPM solver can give decent solutions even when it is stopped early
-  # Which is critical for our purpose where the compute time is strictly bounded
+  # Which is critical for our purpose where compute time is strictly bounded
   # We use HPIPM in the SPEED_ABS mode, which ensures fastest runtime. This
   # does not cause issues since the problem is well bounded.
   ocp.solver_options.qp_solver = 'PARTIAL_CONDENSING_HPIPM'
@@ -206,9 +208,6 @@ class LongitudinalMpc:
     self.e2e = e2e
     self.v_ego = 0.
     self.reset()
-    self.accel_limit_arr = np.zeros((N+1, 2))
-    self.accel_limit_arr[:,0] = -1.2
-    self.accel_limit_arr[:,1] = 1.2
     self.source = SOURCES[2]
 
   def reset(self):
@@ -237,6 +236,9 @@ class LongitudinalMpc:
   def set_weights(self):
     if self.e2e:
       self.set_weights_for_xva_policy()
+      self.params[:,0] = -10.
+      self.params[:,1] = 10.
+      self.params[:,2] = 1e5
     else:
       self.set_weights_for_lead_policy()
 
@@ -358,6 +360,7 @@ class LongitudinalMpc:
       self.params[:,3] = np.copy(self.prev_a)
     else:
       self.params[:,3] = a_ego
+
     self.params[:,4] = self.param_tr
 
     self.run()
@@ -374,15 +377,9 @@ class LongitudinalMpc:
     for i in range(N):
       self.solver.cost_set(i, "yref", self.yref[i])
     self.solver.cost_set(N, "yref", self.yref[N][:COST_E_DIM])
-    self.accel_limit_arr[:,0] = -10.
-    self.accel_limit_arr[:,1] = 10.
-    x_obstacle = 1e5*np.ones((N+1))
-    self.params = np.concatenate([self.accel_limit_arr,
-                                  x_obstacle[:,None],
-                                  self.prev_a[:,None]],
-                                  np.full((N+1,1), self.param_tr), axis=1)
+    self.params[:,3] = np.copy(self.prev_a)
+    self.params[:,4] = self.param_tr
     self.run()
-
 
   def run(self):
     for i in range(N+1):

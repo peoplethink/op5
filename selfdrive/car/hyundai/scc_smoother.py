@@ -15,7 +15,7 @@ from selfdrive.ntune import ntune_scc_get
 from selfdrive.road_speed_limiter import road_speed_limiter_get_max_speed, road_speed_limiter_get_active, \
   get_road_speed_limiter
 
-SYNC_MARGIN = 5.
+SYNC_MARGIN = 4.
 
 # do not modify
 MIN_SET_SPEED_KPH = V_CRUISE_MIN
@@ -355,10 +355,10 @@ class SccSmoother:
     gas_factor = ntune_scc_get("sccGasFactor")
     brake_factor = ntune_scc_get("sccBrakeFactor")
 
-    lead = self.get_lead(sm)
-    if lead is not None:
-      if not lead.radar:
-        brake_factor *= 0.95
+    #lead = self.get_lead(sm)
+    #if lead is not None:
+    #  if not lead.radar:
+    #    brake_factor *= 0.975
 
     if accel > 0:
       accel *= gas_factor

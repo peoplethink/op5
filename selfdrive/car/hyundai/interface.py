@@ -50,7 +50,7 @@ class CarInterface(CarInterfaceBase):
     # -------------PID
     if Params().get("LateralControlSelect", encoding='utf8') == "0":
       if candidate in [CAR.GENESIS, CAR.GENESIS_G80, CAR.GENESIS_EQ900]:
-          ret.lateralTuning.pid.kf = 0.00005
+          ret.lateralTuning.pid.kf = 0.000055
           ret.lateralTuning.pid.kpBP = [0., 10., 30.]
           ret.lateralTuning.pid.kpV = [0.01, 0.05, 0.065]
           ret.lateralTuning.pid.kiBP = [0., 30.]
@@ -71,7 +71,7 @@ class CarInterface(CarInterfaceBase):
           ret.steerActuatorDelay = 0.05
           ret.steerRateCost = 0.4
           ret.steerLimitTimer = 2.5
-          ret.steerRatio = 14.8 
+          ret.steerRatio = 14.8
     
     # ---------------INDI
     elif Params().get("LateralControlSelect", encoding='utf8') == "1":
@@ -113,16 +113,14 @@ class CarInterface(CarInterfaceBase):
 
     # longitudinal
     ret.longitudinalTuning.kpBP = [0., 5.*CV.KPH_TO_MS, 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
-    ret.longitudinalTuning.kpV = [1.7, 1.2, 0.92, 0.8, 0.48]
+    ret.longitudinalTuning.kpV = [1.6, 1.18, 0.9, 0.78, 0.48]
     ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
     ret.longitudinalTuning.kiV = [0.13, 0.08]
-    
-    #ret.startAccel = -0.8
+
     ret.stopAccel = -2.0
-    #ret.startingAccelRate = 5.0  # brake_travel/s while releasing on restart
-    ret.stoppingDecelRate = 0.5  # brake_travel/s while trying to stop
+    ret.stoppingDecelRate = 0.6  # brake_travel/s while trying to stop
     ret.vEgoStopping = 0.5
-    ret.vEgoStarting = 0.5
+    ret.vEgoStarting = 0.5  # needs to be >= vEgoStopping to avoid state transition oscillation
 
     # genesis
     if candidate == CAR.GENESIS:
@@ -216,11 +214,13 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1640. + STD_CARGO_KG
       ret.wheelbase = 2.845
       ret.centerToFront = ret.wheelbase * 0.385
+      ret.steerRatio = 17.5
     elif candidate in [CAR.GRANDEUR_IG_FL, CAR.GRANDEUR_IG_FL_HEV]:
       tire_stiffness_factor = 0.8
       ret.mass = 1725. + STD_CARGO_KG
       ret.wheelbase = 2.885
       ret.centerToFront = ret.wheelbase * 0.385
+      ret.steerRatio = 17.5
     elif candidate == CAR.VELOSTER:
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
@@ -276,6 +276,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1650. + STD_CARGO_KG
       ret.wheelbase = 2.855
       ret.centerToFront = ret.wheelbase * 0.4
+      ret.steerRatio = 17.5
     elif candidate == CAR.SELTOS:
       ret.mass = 1310. + STD_CARGO_KG
       ret.wheelbase = 2.6
@@ -286,6 +287,15 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 3.15
       ret.centerToFront = ret.wheelbase * 0.4
       tire_stiffness_factor = 0.8
+
+      ret.steerRatio = 14.5
+      ret.steerRateCost = 0.4
+
+      ret.lateralTuning.lqr.scale = 1650.
+      ret.lateralTuning.lqr.ki = 0.01
+      ret.lateralTuning.lqr.dcGain = 0.0027
+
+
 
     ret.radarTimeStep = 0.05
 
