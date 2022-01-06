@@ -34,18 +34,18 @@ X_EGO_OBSTACLE_COST = 3.
 X_EGO_COST = 0.
 V_EGO_COST = 0.
 A_EGO_COST = 0.
-J_EGO_COST = 5.0
-A_CHANGE_COST = .125
+J_EGO_COST = 3.0
+A_CHANGE_COST = .3
 DANGER_ZONE_COST = 100.
 CRASH_DISTANCE = .5
 LIMIT_COST = 1e6
 
 
 CRUISE_GAP_BP = [1., 2., 3., 4.]
-CRUISE_GAP_V = [1.2, 1.35, 2.2, 2.2]
+CRUISE_GAP_V = [1.2, 1.35, 2.0, 2.0]
 
 AUTO_TR_BP = [0., 10.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 110.*CV.KPH_TO_MS]
-AUTO_TR_V = [1.2, 1.25, 1.35, 1.45]
+AUTO_TR_V = [1.25, 1.35, 1.4, 1.6]
 
 AUTO_TR_CRUISE_GAP = 4
 
@@ -243,8 +243,8 @@ class LongitudinalMpc:
       self.set_weights_for_lead_policy()
 
   def set_weights_for_lead_policy(self):
-    _J_EGO_COST = J_EGO_COST * interp(self.v_ego, [0.5, 1.0], [0.1, 1.0])
-    _A_CHANGE_COST = A_CHANGE_COST * interp(self.v_ego, [0.5, 1.0], [0.1, 1.0])
+    _J_EGO_COST = J_EGO_COST * interp(self.v_ego, [0.3, 8.0], [0.1, 0.8])
+    _A_CHANGE_COST = A_CHANGE_COST * interp(self.v_ego, [0.3, 8.0], [0.1, 0.8])
     
     W = np.asfortranarray(np.diag([X_EGO_OBSTACLE_COST, X_EGO_COST, V_EGO_COST, A_EGO_COST, _A_CHANGE_COST, _J_EGO_COST]))
     for i in range(N):

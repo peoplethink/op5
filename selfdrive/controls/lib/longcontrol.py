@@ -10,7 +10,7 @@ LongCtrlState = car.CarControl.Actuators.LongControlState
 
 # As per ISO 15622:2018 for all speeds
 ACCEL_MIN_ISO = -3.5  # m/s^2
-ACCEL_MAX_ISO = 2.0  # m/s^2
+ACCEL_MAX_ISO = 1.9  # m/s^2
 
 
 def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_future, v_pid,
@@ -77,7 +77,7 @@ class LongControl():
       v_target_upper = interp(longitudinalActuatorDelayUpperBound, T_IDXS[:CONTROL_N], speeds)
       a_target_upper = 2 * (v_target_upper - speeds[0])/longitudinalActuatorDelayUpperBound - long_plan.accels[0]
       a_target = min(a_target_lower, a_target_upper)
-      
+
       v_target = speeds[0]
       v_target_future = speeds[-1]
     else:
@@ -85,8 +85,8 @@ class LongControl():
       v_target_future = 0.0
       a_target = 0.0
 
-    if a_target > 0.:
-      a_target *= interp(CS.vEgo, [0., 3.], [1.2, 1.])
+    #if a_target > 0.:
+    #  a_target *= interp(CS.vEgo, [0., 3.], [1.2, 1.])
 
     # TODO: This check is not complete and needs to be enforced by MPC
     a_target = clip(a_target, ACCEL_MIN_ISO, ACCEL_MAX_ISO)
