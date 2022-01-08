@@ -232,6 +232,7 @@ void Localizer::handle_sensors(double current_time, const capnp::List<cereal::Se
     if (sensor_reading.getSensor() == SENSOR_ACCELEROMETER && sensor_reading.getType() == SENSOR_TYPE_ACCELEROMETER) {
       auto v = sensor_reading.getAcceleration().getV();
 
+      // TODO: reduce false positives and re-enable this check
       // check if device fell, estimate 10 for g
       // 40m/s**2 is a good filter for falling detection, no false positives in 20k minutes of driving
       //this->device_fell |= (floatlist2vector(v) - Vector3d(10.0, 0.0, 0.0)).norm() > 40.0;
