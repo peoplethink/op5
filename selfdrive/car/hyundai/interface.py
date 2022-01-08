@@ -24,8 +24,8 @@ class CarInterface(CarInterfaceBase):
 
     v_current_kph = current_speed * CV.MS_TO_KPH
 
-    gas_max_bp = [0., 10., 20., 50., 70., 130.]
-    gas_max_v = [CarControllerParams.ACCEL_MAX, 1.4, 0.85, 0.72, 0.47, 0.22]
+    gas_max_bp = [0., 10., 20., 30., 40., 50., 70., 130.]
+    gas_max_v = [CarControllerParams.ACCEL_MAX, 1.6, 1.5, 1.1, 1.0, 0.68, 0.47, 0.22]
 
     return CarControllerParams.ACCEL_MIN, interp(v_current_kph, gas_max_bp, gas_max_v)
 
@@ -50,9 +50,9 @@ class CarInterface(CarInterfaceBase):
     # -------------PID
     if Params().get("LateralControlSelect", encoding='utf8') == "0":
       if candidate in [CAR.GENESIS, CAR.GENESIS_G80, CAR.GENESIS_EQ900]:
-          ret.lateralTuning.pid.kf = 0.000057
+          ret.lateralTuning.pid.kf = 0.000055
           ret.lateralTuning.pid.kpBP = [0., 10., 30.]
-          ret.lateralTuning.pid.kpV = [0.01, 0.05, 0.065]
+          ret.lateralTuning.pid.kpV = [0.01, 0.052, 0.065]
           ret.lateralTuning.pid.kiBP = [0., 30.]
           ret.lateralTuning.pid.kiV = [0.02, 0.02]
           ret.lateralTuning.pid.kdBP = [0.]
@@ -115,12 +115,12 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.kpBP = [0., 5.*CV.KPH_TO_MS, 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
     ret.longitudinalTuning.kpV = [1.6, 1.18, 0.9, 0.78, 0.48]
     ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
-    ret.longitudinalTuning.kiV = [0.13, 0.08]
+    ret.longitudinalTuning.kiV = [0.1, 0.06]
 
     ret.stopAccel = -2.0
-    ret.stoppingDecelRate = 0.7  # brake_travel/s while trying to stop
-    ret.vEgoStopping = 0.2
-    ret.vEgoStarting = 0.2  # needs to be >= vEgoStopping to avoid state transition oscillation
+    ret.stoppingDecelRate = 0.6  # brake_travel/s while trying to stop
+    ret.vEgoStopping = 0.5
+    ret.vEgoStarting = 0.5  # needs to be >= vEgoStopping to avoid state transition oscillation
 
     # genesis
     if candidate == CAR.GENESIS:
