@@ -538,10 +538,10 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
   painter.setBrush(redColor(fillAlpha));
   painter.drawPolygon(chevron, std::size(chevron));
 	
-  painter.setPen(QColor(10, 255, 226, 255));
+  painter.setPen(QColor(255, 255, 225, 255));
   configFont(painter, "Open Sans", 55, "Regular");
   painter.drawText(x_int - 104, y_int + 118, radar_v_abs_str);
-  painter.setPen(QColor(10, 255, 226, 255));
+  painter.setPen(QColor(255, 255, 225, 255));
   configFont(painter, "Open Sans", 55, "Regular");
   painter.drawText(x_int - 72, y_int + 182, radar_d_rel_str);//35, 120
 }
