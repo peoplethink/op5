@@ -499,11 +499,13 @@ void NvgWindow::drawLaneLines(QPainter &painter, const UIScene &scene) {
   painter.drawPolygon(scene.track_vertices.v, scene.track_vertices.cnt);
 }
 
-void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const QPointF &vd, bool is_radar) {
+void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const cereal::RadarState::LeadData::Reader &radar_lead_data, const QPointF &vd, bool cluspeedms, bool is_radar) {
   const float speedBuff = 10.;
   const float leadBuff = 40.;
   const float d_rel = lead_data.getX()[0];
   const float v_rel = lead_data.getV()[0];
+  const float radar_d_rel = radar_lead_data.getDRel();
+  const float radar_v_abs = (cluspeedms + radar_lead_data.getVRel()) * 3.6;
 
   float fillAlpha = 0;
   if (d_rel < leadBuff) {
@@ -524,8 +526,8 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
   int x_int = (int)x;
   int y_int = (int)y;
 	
-  QString v_rel_str = QString::number(std::nearbyint(v_rel * 3.6));
-  QString d_rel_str = QString::number(std::nearbyint(d_rel));
+  QString radar_v_abs_str = QString::number(std::nearbyint(radar_v_abs)) + " km/h";
+  QString radar_d_rel_str = QString::number(std::nearbyint(radar_d_rel)) + " m";
   
   QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_xo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
   painter.setBrush(is_radar ? QColor(86, 121, 216, 255) : QColor(218, 202, 37, 255));
@@ -536,13 +538,12 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
   painter.setBrush(redColor(fillAlpha));
   painter.drawPolygon(chevron, std::size(chevron));
 	
- // painter.setPen(QColor(0xff, 0xff, 0xff));
- // configFont(painter, "Open Sans", 60, "Regular");
- // painter.drawText(x_int - 10, y_int + 125, v_rel_str);
-	
-  painter.setPen(QColor(0xff, 0xff, 0xff));
-  configFont(painter, "Open Sans", 58, "Regular");
-  painter.drawText(x_int - 35, y_int + 120, d_rel_str);
+  painter.setPen(QColor(10, 255, 226, 255));
+  configFont(painter, "Open Sans", 55, "Regular");
+  painter.drawText(x_int - 104, y_int + 118, radar_v_abs_str);
+  painter.setPen(QColor(10, 255, 226, 255));
+  configFont(painter, "Open Sans", 55, "Regular");
+  painter.drawText(x_int - 72, y_int + 182, radar_d_rel_str);//35, 120
 }
 
 void NvgWindow::paintGL() {
@@ -595,11 +596,10 @@ void NvgWindow::drawCommunity(QPainter &p) {
   const SubMaster &sm = *(s->sm);
 
   auto leads = sm["modelV2"].getModelV2().getLeadsV3();
+  auto radar_lead_one = (*s->sm)["radarState"].getRadarState().getLeadOne();
+  bool cluspeedms = (*s->sm)["carState"].getCarState().getCluSpeedMs();
   if (leads[0].getProb() > .5) {
-    drawLead(p, leads[0], s->scene.lead_vertices[0], s->scene.lead_radar[0]);
-  }
-  if (leads[1].getProb() > .5 && (std::abs(leads[1].getX()[0] - leads[0].getX()[0]) > 3.0)) {
-    drawLead(p, leads[1], s->scene.lead_vertices[1], s->scene.lead_radar[1]);
+    drawLead(p, leads[0], radar_lead_one, s->scene.lead_vertices[0], s->scene.lead_radar[0], cluspeedms);
   }
 
   drawMaxSpeed(p);
@@ -639,15 +639,7 @@ void NvgWindow::drawCommunity(QPainter &p) {
           cpuTemp += cpuList[i];
       cpuTemp /= cpuList.size();
   }
-
-  // Orange Color if more than 70℃ / Red Color if more than 80℃
-  //if ((int)(cpuTemp) >= 30) { QColor(1, 0, 255, 200); }
-  if ((int)(cpuTemp) >= 70) { QColor(255, 188, 3, 200); }
-  if ((int)(cpuTemp) >= 80) { QColor(255, 0, 0, 200); }
 	
-	
-
-
   const auto scc_smoother = sm["carControl"].getCarControl().getSccSmoother();
   bool is_metric = s->scene.is_metric;
   bool long_control = scc_smoother.getLongControl();

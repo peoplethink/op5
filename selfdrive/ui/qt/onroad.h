@@ -87,7 +87,7 @@ protected:
   void showEvent(QShowEvent *event) override;
   void updateFrameMat(int w, int h) override;
   void drawLaneLines(QPainter &painter, const UIScene &scene);
-  void drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const QPointF &vd, bool is_radar);
+  void drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const cereal::RadarState::LeadData::Reader &radar_lead_data, const QPointF &vd, bool cluspeedms, bool is_radar);
   inline QColor redColor(int alpha = 200) { return QColor(201, 34, 49, alpha); }
   inline QColor blackColor(int alpha = 200) { return QColor(0, 0, 0, alpha); }
   inline QColor greenColor(int alpha = 200) { return QColor(49, 201, 34, alpha); }
