@@ -538,7 +538,7 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
   painter.setBrush(redColor(fillAlpha));
   painter.drawPolygon(chevron, std::size(chevron));
 	
-  painter.setPen(QColor(255, 255, 225, 255));
+  painter.setPen(QColor(255, 255, 255, 255));
   configFont(painter, "Open Sans", 55, "Regular");
   painter.drawText(x_int - 104, y_int + 118, radar_v_abs_str);
   painter.setPen(QColor(255, 255, 225, 255));
@@ -654,7 +654,7 @@ void NvgWindow::drawCommunity(QPainter &p) {
   int scc_bus = car_params.getSccBus();
 
   QString infoText;
-  infoText.sprintf(" %s SR(%.2f) SC(%.2f) SD(%.2f) (%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)  CPU온도 %.1f°  GENESIS_0813)",
+  infoText.sprintf(" %s SR(%.2f) SC(%.2f) SD(%.2f) (%d) (A%.2f/B%.2f/C%.2f/D%.2f/%.2f)  CPU온도 %.1f°  GENESIS_0813",
 		      lateral_state[lateralControlState],
                       //live_params.getAngleOffsetDeg(),
                       //live_params.getAngleOffsetAverageDeg(),

@@ -243,8 +243,8 @@ class LongitudinalMpc:
       self.set_weights_for_lead_policy()
 
   def set_weights_for_lead_policy(self):
-    _J_EGO_COST = J_EGO_COST * interp(self.v_ego, [0.2, 8.0], [0.1, 0.7])
-    _A_CHANGE_COST = A_CHANGE_COST * interp(self.v_ego, [0.2, 8.0], [0.1, 0.7])
+    _J_EGO_COST = J_EGO_COST * interp(self.v_ego, [0.1, 8.0], [0.1, 0.7])
+    _A_CHANGE_COST = A_CHANGE_COST * interp(self.v_ego, [0.1, 8.0], [0.1, 0.7])
     
     W = np.asfortranarray(np.diag([X_EGO_OBSTACLE_COST, X_EGO_COST, V_EGO_COST, A_EGO_COST, _A_CHANGE_COST, _J_EGO_COST]))
     for i in range(N):
