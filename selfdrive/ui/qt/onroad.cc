@@ -333,6 +333,12 @@ void OnroadHud::updateState(const UIState &s) {
   const SubMaster &sm = *(s.sm);
   const auto cs = sm["controlsState"].getControlsState();
 	
+  auto deviceState = sm["deviceState"].getDeviceState();
+  setProperty("netType", network_type[deviceState.getNetworkType()]);
+  int strength = (int)deviceState.getNetworkStrength();
+  setProperty("netStrength", strength > 0 ? strength + 1 : 0);
+  setProperty("wifiAddr", deviceState.getWifiIpAddress().cStr());
+
   setProperty("status", s.status);
   setProperty("ang_str", s.scene.angleSteers);
 	
@@ -349,7 +355,38 @@ void OnroadHud::updateState(const UIState &s) {
 void OnroadHud::paintEvent(QPaintEvent *event) {
   //UIState *s = &QUIState::ui_state;
   QPainter p(this);
+  p.setPen(Qt::NoPen);
+  p.fillRect(rect(), QColor(0, 0, 0));
+	
+  // static imgs
+  p.setOpacity(0.65);
+  p.drawPixmap(settings_btn.x(), settings_btn.y());
+  p.setOpacity(1.0);
+  p.drawPixmap(60, 1080 - 180 - 40);
+
+  // network
+  int x = 58;
+  const QColor gray(0x54, 0x54, 0x54);
+  for (int i = 0; i < 5; ++i) {
+    p.setBrush(i < net_strength ? Qt::white : gray);
+    p.drawEllipse(x, 196, 27, 27);
+    x += 37;
+  }
+
+  configFont(p, "Open Sans", 30, "Regular");
+  p.setPen(QColor(0xff, 0xff, 0xff));
+
+  const QRect r = QRect(0, 247, event->rect().width(), 50);
+
+  if(net_type == network_type[cereal::DeviceState::NetworkType::WIFI])
+    p.drawText(r, Qt::AlignCenter, wifi_addr);
+  else
+    p.drawText(r, Qt::AlignCenter, net_type);
+	
+	
+	
   //p.setRenderHint(QPainter::Antialiasing);
+	
 	
   // Header gradient
   //QLinearGradient bg(0, header_h - (header_h / 2.5), 0, header_h);
