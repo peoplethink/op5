@@ -608,6 +608,7 @@ void NvgWindow::drawCommunity(QPainter &p) {
   drawTurnSignals(p);
   drawGpsStatus(p);
   drawBrake(p);
+  drawLcr(p);
 	
   if(s->show_tpms && width() > 1200)
     drawTpms(p);
@@ -852,17 +853,16 @@ void NvgWindow::drawBrake(QPainter &p) {
 void NvgWindow::drawLcr(QPainter &p) {
   const SubMaster &sm = *(uiState()->sm);
   auto controls_state = sm["controlsState"].getControlsState().getEnabled();
-  auto car_state = sm["carState"].getCarState();
-  bool lcr_valid = car_state.getVEgo() >= 0;
+  auto car_state = sm["carState"].getCarState().getCluSpeedMs();
+
+  const int w = 115;
+  const int h = 115;
+  const int x = width() - w - 70;
+  const int y = 650;
 	
-  const int w = 90;
-  const int h = 90;
-  const int x = width() - w - 80;
-  const int y = 430;
-	
-  if (lcr_valid) {
+  if (sm["controlsState"].getControlsState().getEnabled() && (sm["carState"].getCarState().getCluSpeedMs()) >= 15.5555555556) {
     p.setOpacity(1.f);
-    p.drawPixmap(x, y, w, h, ic_lcr);;
+    p.drawPixmap(x, y, w, h, ic_lcr);
   }
 }
 	  
