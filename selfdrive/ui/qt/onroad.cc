@@ -860,7 +860,7 @@ void NvgWindow::drawLcr(QPainter &p) {
   const int x = width() - w - 70;
   const int y = 650;
 	
-  if (sm["controlsState"].getControlsState().getEnabled() && (sm["carState"].getCarState().getCluSpeedMs()) >= 15.5555555556) {
+  if (sm["controlsState"].getControlsState().getEnabled() && (sm["carState"].getCarState().getCluSpeedMs()) >= 16.111111111) {
     p.setOpacity(1.f);
     p.drawPixmap(x, y, w, h, ic_lcr);
   }
