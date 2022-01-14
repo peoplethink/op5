@@ -77,6 +77,8 @@ class LongControl():
       v_target_upper = interp(longitudinalActuatorDelayUpperBound, T_IDXS[:CONTROL_N], speeds)
       a_target_upper = 2 * (v_target_upper - speeds[0])/longitudinalActuatorDelayUpperBound - long_plan.accels[0]
       a_target = min(a_target_lower, a_target_upper)
+      j_target = interp(longitudinalActuatorDelayUpperBound, T_IDXS[:CONTROL_N], long_plan.jerks)
+      a_target += j_target / 10.
 
       v_target = speeds[0]
       v_target_future = speeds[-1]
