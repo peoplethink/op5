@@ -222,7 +222,7 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
 
 void DevicePanel::updateCalibDescription() {
   QString desc =
-      "오픈파일럿은 좌우로 4° 위아래로 5° 를 보정합니다."
+      "오픈파일럿은 좌우로 4° 위로 5° 아래로 8도 를 보정합니다."
       "그 이상의 경우 보정이 필요합니다.";
   std::string calib_bytes = Params().get("CalibrationParams");
   if (!calib_bytes.empty()) {

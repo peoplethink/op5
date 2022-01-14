@@ -12,6 +12,8 @@ ENABLE_INC_LANE_PROB = True
 
 TRAJECTORY_SIZE = 33
 # camera offset is meters from center car to camera
+# model path is in the frame of EON's camera. TICI is 0.1 m away,
+# however the average measured path difference is 0.04 m
 if EON:
   CAMERA_OFFSET = -0.06
   PATH_OFFSET = 0.0
@@ -61,8 +63,8 @@ class LanePlanner:
 
       cameraOffset = ntune_common_get("cameraOffset") + 0.08 if self.wide_camera else ntune_common_get("cameraOffset")
 
-      self.lll_y = np.array(lane_lines[1].y) + cameraOffset
-      self.rll_y = np.array(lane_lines[2].y) + cameraOffset
+      self.lll_y = np.array(lane_lines[1].y) - cameraOffset
+      self.rll_y = np.array(lane_lines[2].y) - cameraOffset
       self.lll_prob = md.laneLineProbs[1]
       self.rll_prob = md.laneLineProbs[2]
       self.lll_std = md.laneLineStds[1]
@@ -80,7 +82,7 @@ class LanePlanner:
     l_prob, r_prob = self.lll_prob, self.rll_prob
     width_pts = self.rll_y - self.lll_y
     prob_mods = []
-    for t_check in [0.0, 1.5, 3.0]:
+    for t_check in (0.0, 1.5, 3.0):
       width_at_t = interp(t_check * (v_ego + 7), self.ll_x, width_pts)
       prob_mods.append(interp(width_at_t, [4.0, 5.0], [1.0, 0.0]))
     mod = min(prob_mods)

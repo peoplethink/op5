@@ -540,8 +540,8 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
 	
   painter.setPen(QColor(255, 255, 255, 255));
   configFont(painter, "Open Sans", 55, "Regular");
-  painter.drawText(x_int - 104, y_int + 118, radar_v_abs_str);
-  painter.setPen(QColor(255, 255, 225, 255));
+  painter.drawText(x_int - 100, y_int + 118, radar_v_abs_str);
+  painter.setPen(QColor(0, 255, 0, 255));
   configFont(painter, "Open Sans", 55, "Regular");
   painter.drawText(x_int - 72, y_int + 182, radar_d_rel_str);//35, 120
 }
@@ -675,7 +675,7 @@ void NvgWindow::drawCommunity(QPainter &p) {
   // info
   configFont(p, "Open Sans", 34, "Regular");
   p.setPen(QColor(0xff, 0xff, 0xff, 0xff));
-  p.drawText(rect().left() + 180, rect().height() - 15, infoText);
+  p.drawText(rect().left() + 180, rect().height() - 15, infoText);	
   const int h = 60;
   QRect bar_rc(rect().left(), rect().bottom() - h, rect().width(), h);
   p.setBrush(QColor(0, 0, 0, 100));
@@ -855,10 +855,10 @@ void NvgWindow::drawLcr(QPainter &p) {
   auto controls_state = sm["controlsState"].getControlsState().getEnabled();
   auto car_state = sm["carState"].getCarState().getCluSpeedMs();
 
-  const int w = 115;
-  const int h = 115;
-  const int x = width() - w - 70;
-  const int y = 650;
+  const int w = 120;
+  const int h = 120;
+  const int x = width() - w - 60;
+  const int y = 620;
 	
   if (sm["controlsState"].getControlsState().getEnabled() && (sm["carState"].getCarState().getCluSpeedMs()) >= 16.111111111) {
     p.setOpacity(1.f);
@@ -929,13 +929,13 @@ void NvgWindow::drawSpeedLimit(QPainter &p) {
     int y = 255;
 
     p.setPen(Qt::NoPen);
-    p.setBrush(QBrush(QColor(255, 0, 0, 255)));
+    p.setBrush(QBrush(QColor(255, 127, 080, 255)));
     QRect rect = QRect(x, y, radius, radius);
     p.drawEllipse(rect);
 
     p.setBrush(QBrush(QColor(255, 255, 255, 255)));
 
-    const int tickness = 14;
+    const int tickness = 18;
     rect.adjust(tickness, tickness, -tickness, -tickness);
     p.drawEllipse(rect);
 

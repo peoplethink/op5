@@ -21,7 +21,6 @@ struct InitData {
   kernelVersion @15 :Text;
   osVersion @18 :Text;
 
-  gctx @1 :Text;
   dongleId @2 :Text;
 
   deviceType @3 :DeviceType;
@@ -55,6 +54,7 @@ struct InitData {
   }
 
   # ***** deprecated stuff *****
+  gctxDEPRECATED @1 :Text;
   androidBuildInfo @5 :AndroidBuildInfo;
   androidSensorsDEPRECATED @6 :List(AndroidSensor);
   chffrAndroidExtraDEPRECATED @7 :ChffrAndroidExtra;
@@ -1523,6 +1523,7 @@ struct Event {
     clocks @35 :Clocks;
     deviceState @6 :DeviceState;
     logMessage @18 :Text;
+    errorLogMessage @85 :Text;
 
     # navigation
     navInstruction @82 :NavInstruction;
@@ -1530,7 +1531,7 @@ struct Event {
     navThumbnail @84: Thumbnail;
     
     # neokii
-    roadLimitSpeed @85 :RoadLimitSpeed;
+    roadLimitSpeed @86 :RoadLimitSpeed;
 
     # *********** debug ***********
     testJoystick @52 :Joystick;

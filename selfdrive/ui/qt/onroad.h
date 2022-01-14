@@ -93,6 +93,7 @@ protected:
   inline QColor greenColor(int alpha = 200) { return QColor(49, 201, 34, alpha); }
   inline QColor graceBlueColor(int alpha = 200) { return QColor (34, 49, 201, alpha); }
   inline QColor skyBlueColor(int alpha = 200) { return QColor (135, 206, 230, alpha); }
+  inline QColor coralColor(int alpha = 255) { return QColor (255, 127, 080, alpha); }
   double prev_draw_t = 0;
   
   // neokii
