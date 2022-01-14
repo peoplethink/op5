@@ -929,7 +929,7 @@ void NvgWindow::drawSpeedLimit(QPainter &p) {
     int y = 255;
 
     p.setPen(Qt::NoPen);
-    p.setBrush(QBrush(QColor(255, 127, 080, 255)));
+    p.setBrush(QBrush(QColor(255, 0, 0, 255)));
     QRect rect = QRect(x, y, radius, radius);
     p.drawEllipse(rect);
 
