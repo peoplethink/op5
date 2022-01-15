@@ -925,17 +925,17 @@ void NvgWindow::drawSpeedLimit(QPainter &p) {
   {
     int radius = 192;
 
-    int x = 1655;
+    int x = 1650;
     int y = 255;
 
     p.setPen(Qt::NoPen);
-    p.setBrush(QBrush(QColor(255, 0, 0, 255)));
+    p.setBrush(QBrush(QColor(255, 99, 71, 255)));
     QRect rect = QRect(x, y, radius, radius);
     p.drawEllipse(rect);
 
     p.setBrush(QBrush(QColor(255, 255, 255, 255)));
 
-    const int tickness = 18;
+    const int tickness = 20;
     rect.adjust(tickness, tickness, -tickness, -tickness);
     p.drawEllipse(rect);
 
@@ -970,13 +970,13 @@ void NvgWindow::drawSpeedLimit(QPainter &p) {
 
       p.setPen(Qt::NoPen);
 
-      p.setBrush(QBrush(QColor(255, 0, 0, 255)));
+      p.setBrush(QBrush(QColor(255, 99, 71, 255)));
       QRect rect = QRect(x, y, radius, radius);
       p.drawEllipse(rect);
 
       p.setBrush(QBrush(QColor(255, 255, 255, 255)));
 
-      const int tickness = 14;
+      const int tickness = 20;
       rect.adjust(tickness, tickness, -tickness, -tickness);
       p.drawEllipse(rect);
 
