@@ -129,7 +129,7 @@ class nTune():
     if self.checkValue("useLiveSteerRatio", 0., 1., 1.):
       updated = True
 
-    if self.checkValue("steerRatio", 10.0, 20.0, 16.5):
+    if self.checkValue("steerRatio", 10.0, 20.0, 15.5):
       updated = True
 
     if self.checkValue("steerActuatorDelay", 0., 0.8, 0.1):
@@ -163,10 +163,10 @@ class nTune():
   def checkValidISCC(self):
     updated = False
 
-    if self.checkValue("sccGasFactor", 0.5, 1.5, 1.0):
+    if self.checkValue("sccGasFactor", 0.5, 1.5, 0.9):
       updated = True
 
-    if self.checkValue("sccBrakeFactor", 0.5, 1.5, 1.0):
+    if self.checkValue("sccBrakeFactor", 0.5, 1.5, 0.8):
       updated = True
 
     if self.checkValue("sccCurvatureFactor", 0.5, 1.5, 0.98):
@@ -175,7 +175,7 @@ class nTune():
     if self.checkValue("longitudinalActuatorDelayLowerBound", 0.1, 1.5, 0.15):
       updated = True
 
-    if self.checkValue("longitudinalActuatorDelayUpperBound", 0.1, 1.5, 0.3):
+    if self.checkValue("longitudinalActuatorDelayUpperBound", 0.1, 1.5, 0.15):
       updated = True
 
     return updated
