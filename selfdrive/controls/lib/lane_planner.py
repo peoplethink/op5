@@ -63,8 +63,8 @@ class LanePlanner:
 
       cameraOffset = ntune_common_get("cameraOffset") + 0.08 if self.wide_camera else ntune_common_get("cameraOffset")
 
-      self.lll_y = np.array(lane_lines[1].y) - cameraOffset
-      self.rll_y = np.array(lane_lines[2].y) - cameraOffset
+      self.lll_y = np.array(lane_lines[1].y) + cameraOffset
+      self.rll_y = np.array(lane_lines[2].y) + cameraOffset
       self.lll_prob = md.laneLineProbs[1]
       self.rll_prob = md.laneLineProbs[2]
       self.lll_std = md.laneLineStds[1]
